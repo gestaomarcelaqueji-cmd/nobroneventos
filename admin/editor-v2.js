@@ -44,7 +44,7 @@ function root(){
 }
 function renderNav(){
  const nav=$("#v2-nav");if(!nav)return;
- const hide=["edit","pick","review","reorder","projectEdit","security"].includes(st.view);
+ const hide=["page","edit","pick","review","reorder","projectEdit","security"].includes(st.view);
  nav.hidden=hide;
  nav.innerHTML=menus.map(([key,text,ico])=>'<button data-nav="'+key+'" '+(st.view===key?'aria-current="page"':'')+'><span>'+ico+'</span><small>'+text+'</small></button>').join("");
  $$("[data-nav]",nav).forEach(b=>b.onclick=()=>navigate(b.dataset.nav));
