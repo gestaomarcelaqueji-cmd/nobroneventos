@@ -235,3 +235,7 @@ body.cms-v2-open button{margin:0;transform:none;min-height:0;border-radius:0;fon
  .v2-page-details small{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.v2-app *, .v2-app *:before,.v2-app *:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+.v2-divider-line{height:1px;background:#44444c;margin:7px 0}
+.v2-small-heading{font-size:15px!important;letter-spacing:-.03em!important;margin:0!important}
