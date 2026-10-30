@@ -12,6 +12,7 @@ const pref=()=>st.session?.access_token||"";
 const request=(endpoint,method="GET",body=null)=>fetch(baseUrl+"/rest/v1/"+endpoint,{method,cache:"no-store",headers:{apikey:publishable,Authorization:"Bearer "+pref(),...(body?{"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=representation"}:{})},...(body?{body:JSON.stringify(body)}:{})});
 const showErr=async response=>{const body=await response.json().catch(()=>({}));throw Error(body?.message||body?.error||"Falha na operação ("+response.status+").")};
 const sectionName=s=>s?.title||"Seção";
+const MEDIA_TYPES=new Set(["homeHero","solutionsHero","designHero","motionHero","systemsHero","projectsHero","aboutHero","contactHero","serviceFeature","systemsDigital","contactBand"]);
 const pageDoc=k=>copy(st.drafts.get("page:"+k)?.payload||st.published.get("page:"+k)?.payload||{sections:pages[k].sections});
 const hasChanges=()=>st.dirty||st.projectDirty;
 function toast(message,bad=false){const box=$("#v2-toast");if(!box)return;box.textContent=message;box.dataset.kind=bad?"bad":"good";clearTimeout(toast.timer);toast.timer=setTimeout(()=>{box.textContent=""},4700);}
@@ -152,7 +153,7 @@ window.addEventListener("message",evt=>{
 });
 function editSection(id){
  const section=st.doc?.sections.find(s=>s.id===id);if(!section)return;
- st.section=copy(section);st.selected=id;st.tab="media";st.view="edit";renderNav();renderLayer();
+ st.section=copy(section);st.selected=id;st.tab=MEDIA_TYPES.has(section.type)?"media":"content";st.view="edit";renderNav();renderLayer();
 }
 function updatePreview(){if(st.view==="edit")sendDraft()}
 function render(){
@@ -174,7 +175,7 @@ function render(){
 function renderLayer(){
  const wrap=$("#v2-layer");if(!wrap||!st.section)return;
  const sec=st.section;
- wrap.innerHTML='<div class="v2-sheet-backdrop"></div><div class="v2-sheet" role="dialog" aria-modal="true" aria-label="Editar seção"><header class="v2-sheet-header"><div><small>'+html(label(st.page))+' / SEÇÃO</small><h2>'+html(sec.title)+'</h2></div><button id="v2-edit-close" aria-label="Fechar">×</button></header><div class="v2-tabs" role="tablist"><button data-edit-tab="content">Conteúdo</button><button data-edit-tab="media">Mídia</button><button data-edit-tab="visual">Visual</button></div><div class="v2-sheet-body" id="v2-sheet-content"></div><div class="v2-sheet-footer"><button id="v2-edit-cancel">Cancelar</button><button id="v2-edit-apply" class="v2-primary">Aplicar alterações</button></div></div>';
+ wrap.innerHTML='<div class="v2-sheet-backdrop"></div><div class="v2-sheet" role="dialog" aria-modal="true" aria-label="Editar seção"><header class="v2-sheet-header"><div><small>'+html(label(st.page))+' / SEÇÃO</small><h2>'+html(sec.title)+'</h2></div><button id="v2-edit-close" aria-label="Fechar">×</button></header><div class="v2-tabs" role="tablist"><button data-edit-tab="content">Conteúdo</button>'+(MEDIA_TYPES.has(sec.type)?'<button data-edit-tab="media">Mídia</button>':"")+'<button data-edit-tab="visual">Visual</button></div><div class="v2-sheet-body" id="v2-sheet-content"></div><div class="v2-sheet-footer"><button id="v2-edit-cancel">Cancelar</button><button id="v2-edit-apply" class="v2-primary">Aplicar alterações</button></div></div>';
  $$(".v2-sheet-backdrop,#v2-edit-close,#v2-edit-cancel").forEach(el=>el.onclick=cancelEdit);
  $("#v2-edit-apply").onclick=applySection;
  $$("[data-edit-tab]").forEach(b=>b.onclick=()=>{st.tab=b.dataset.editTab;renderEditContent()});
@@ -186,7 +187,7 @@ function renderEditContent(){
  const s=st.section;
  if(st.tab==="content"){
  const canCta=["homeHero","serviceFeature","designHero","motionHero","systemsHero","contactBand"].includes(s.type);
- root.innerHTML='<label class="v2-field"><span>Título</span><input id="v2-title" maxlength="150" value="'+html(s.title)+'"></label><label class="v2-field"><span>Descrição</span><textarea id="v2-description" rows="4" maxlength="1200">'+html(s.description||"")+'</textarea></label>'+(canCta?'<div class="v2-divider-line"></div><h3 class="v2-small-heading">Botão da seção</h3><label class="v2-field"><span>Texto do botão</span><input id="v2-cta-label" maxlength="80" value="'+html(s.cta?.label||"")+'" placeholder="Usar texto padrão"></label><label class="v2-field"><span>Destino (URL)</span><input id="v2-cta-href" maxlength="400" value="'+html(s.cta?.href||"")+'" placeholder="/contato"></label><label class="v2-checkbox"><input id="v2-cta-visible" type="checkbox" '+(s.cta?.visible===false?"":"checked")+'> Mostrar botão</label>':"")+'<div class="v2-divider-line"></div><label class="v2-checkbox"><input id="v2-visible" type="checkbox" '+(s.visible===false?"":"checked")+'> Mostrar esta seção no site</label>';
+ root.innerHTML='<label class="v2-field"><span>Título</span><input id="v2-title" maxlength="150" value="'+html(s.title)+'"></label><label class="v2-field"><span>Descrição</span><textarea id="v2-description" rows="4" maxlength="1200">'+html(s.description||"")+'</textarea></label>'+(canCta?'<div class="v2-divider-line"></div><h3 class="v2-small-heading">Botão da seção</h3><label class="v2-field"><span>Texto do botão</span><input id="v2-cta-label" maxlength="80" value="'+html(s.cta?.label||"")+'" placeholder="Usar texto padrão"></label><label class="v2-field"><span>Destino (URL)</span><input id="v2-cta-href" maxlength="400" value="'+html(s.cta?.href||"")+'" placeholder="/contato"></label><label class="v2-checkbox"><input id="v2-cta-visible" type="checkbox" '+(s.cta?.visible===false?"":"checked")+'> Mostrar botão</label>':"")+(!MEDIA_TYPES.has(s.type)&&/Gallery|Work|allGallery/.test(s.type)?'<p class="v2-tip">Esta galeria utiliza os trabalhos cadastrados em <b>Projetos</b>. As capas e mídias são editadas naquela área.</p>':"")+'<div class="v2-divider-line"></div><label class="v2-checkbox"><input id="v2-visible" type="checkbox" '+(s.visible===false?"":"checked")+'> Mostrar esta seção no site</label>';
  $("#v2-title").oninput=e=>{st.section.title=e.target.value;sendDraft()};
  $("#v2-description").oninput=e=>{st.section.description=e.target.value;sendDraft()};
  $("#v2-visible").onchange=e=>{st.section.visible=e.target.checked;sendDraft()};
