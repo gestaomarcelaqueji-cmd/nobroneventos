@@ -12,7 +12,7 @@ const API=(path,opts={})=>fetch(REST+path,{...opts,headers:{apikey:publishable,A
 const field=(label,id,value,tag="input",attrs="")=>'<label class="cms-field"><span>'+E(label)+'</span>'+(tag==="textarea"?'<textarea id="'+id+'" '+attrs+'>'+E(value)+'</textarea>':'<input id="'+id+'" value="'+E(value)+'" '+attrs+'>')+'</label>';
 function shell(){
  $("#inside").innerHTML='<div class="cms-layout"><aside class="cms-sidebar"><div class="cms-sidebar-top"><strong>noBRon.</strong><small>GESTÃO DO SITE</small></div><nav class="cms-side-nav">'+menu()+'</nav><div class="cms-side-footer"><a href="/" target="_blank" rel="noopener">Abrir site ↗</a><button id="cms-exit" type="button">Sair</button></div></aside><div class="cms-area"><header class="cms-toolbar"><div><small>NO BRON / ADMIN</small><h1 id="cms-title">Páginas</h1></div><div class="cms-toolbar-actions"><a href="/" target="_blank" rel="noopener">Ver site ↗</a><button type="button" id="cms-logout">Sair</button></div></header><section id="cms-content" aria-live="polite"></section></div><nav class="cms-mobile-nav">'+menu()+'</nav></div><div id="cms-toast" role="status" aria-live="polite"></div>';
- $("#cms-exit").onclick=$("#cms-logout").onclick=()=>$("#logout").click();
+ $("#cms-exit").onclick=$("#cms-logout").onclick=()=>window.nobronAdminLogout?.();
  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{STATE.tab=b.dataset.tab;STATE.dirty=false;render()});
 }
 const menu=()=>[["pages","Páginas","▤"],["projects","Projetos","▦"],["library","Biblioteca","▧"],["publish","Publicação","⇧"]].map(([id,label,icon])=>'<button type="button" data-tab="'+id+'" class="'+(STATE.tab===id?"selected":"")+'"><span>'+icon+'</span><b>'+label+'</b></button>').join("");
