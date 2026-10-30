@@ -7,7 +7,13 @@ const S={page:{},projects:[],filter:"todos"};
 const esc=t=>String(t??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
 const pkey=()=>R[location.pathname.replace(/\/+$/,"")||"/"]||"home";
 const current=()=>({...pages[pkey()],sections:S.page[pkey()]?.sections||pages[pkey()].sections});
-const btn=(to,name)=>'<a class="vx-btn" href="'+esc(to)+'">'+esc(name)+' ↗</a>';
+const btn=(to,name,section)=>{
+ const opts=section?.cta||{};
+ if(opts.visible===false)return "";
+ const destination=typeof opts.href==="string"&&/^(\/(?!\/)|https:\/\/)/.test(opts.href)?opts.href:to;
+ const text=typeof opts.label==="string"&&opts.label.trim()?opts.label.trim():name;
+ return '<a class="vx-btn" href="'+esc(destination)+'">'+esc(text)+' ↗</a>';
+};
 const title=s=>'<div class="vx-heading"><small>noBRon. / '+esc(pages[pkey()].label)+'</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p></div>';
 const style=(s,d)=>'object-position:'+Number(s.device?.[d]?.position||50)+'% 50%;transform:scale('+(Math.max(1,Math.min(1.8,(Number(s.device?.[d]?.zoom)||100)/100)))+')';
 const url=a=>a&&(typeof a==="string"?a:a.src)||"";
@@ -39,21 +45,21 @@ function works(cat="todos",limit=99){
 function pageBody(s,i){
  const work=(cat,cl)=>'<section class="vx-section '+cl+'"><div class="vx-wrap">'+title(s)+works(cat,8)+'</div></section>';
  switch(s.type){
- case "homeHero":return '<section class="vx-home-hero"><div class="vx-copy"><small>ESTÚDIO DIGITAL</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/projetos","Ver trabalhos")+'</div>'+media(s,"vx-home-image",'<span class="vx-giant">noBRon.</span><strong>DESIGN<br>MOTION<br>SISTEMAS</strong>')+'</section>';
+ case "homeHero":return '<section class="vx-home-hero"><div class="vx-copy"><small>ESTÚDIO DIGITAL</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/projetos","Ver trabalhos",s)+'</div>'+media(s,"vx-home-image",'<span class="vx-giant">noBRon.</span><strong>DESIGN<br>MOTION<br>SISTEMAS</strong>')+'</section>';
  case "homeServices":return '<section class="vx-section vx-light"><div class="vx-wrap">'+title(s)+'<div class="vx-home-services">'+services.map((v,j)=>'<a href="'+v.path+'"><small>0'+(j+1)+'</small><b>'+v.name+'</b><p>'+v.description+'</p><span>↗</span></a>').join("")+'</div></div></section>';
  case "homeWork":return work("todos","vx-dark vx-work-home");
  case "solutionsHero":return '<section class="vx-sol-hero"><small>TRÊS FRENTES</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p><div class="vx-vertical-labels"><span>01 / DESIGN</span><span>02 / MOTION</span><span>03 / SISTEMAS</span></div>'+media(s,"vx-sol-image","")+'</section>';
  case "serviceFeature":{
  const dest=services.find(v=>v.id===s.service)?.path||"/solucoes";
- return '<section class="vx-feature vx-feature-'+s.service+'"><div class="vx-wrap"><div class="vx-feature-copy"><small>0'+i+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+btn(dest,"Ver serviço")+'</div>'+media(s,"vx-feature-art",s.service==="sistemas"?'<span>GESTÃO<br>DE EVENTOS</span>':'<strong>'+esc(s.title)+'</strong>')+'</div></section>'}
+ return '<section class="vx-feature vx-feature-'+s.service+'"><div class="vx-wrap"><div class="vx-feature-copy"><small>0'+i+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+btn(dest,"Ver serviço",s)+'</div>'+media(s,"vx-feature-art",s.service==="sistemas"?'<span>GESTÃO<br>DE EVENTOS</span>':'<strong>'+esc(s.title)+'</strong>')+'</div></section>'}
  case "compactWork":return work("todos","vx-light");
- case "designHero":return '<section class="vx-design-hero"><div class="vx-copy"><small>DESIGN DIGITAL</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=design","Solicitar arte")+'</div><div class="vx-design-art">'+media(s,"vx-design-image",'<small>FORMATO DIGITAL</small><b>FLYER<br>EVENTO</b><span>STORY / FEED / PAINEL</span>')+'<div class="vx-flyer-back">LINE-UP<br>ARTES DIGITAIS</div></div></section>';
+ case "designHero":return '<section class="vx-design-hero"><div class="vx-copy"><small>DESIGN DIGITAL</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=design","Solicitar arte",s)+'</div><div class="vx-design-art">'+media(s,"vx-design-image",'<small>FORMATO DIGITAL</small><b>FLYER<br>EVENTO</b><span>STORY / FEED / PAINEL</span>')+'<div class="vx-flyer-back">LINE-UP<br>ARTES DIGITAIS</div></div></section>';
  case "designFormats":return '<section class="vx-section vx-dark vx-design-formats"><div class="vx-wrap">'+title(s)+'<div class="vx-formats">'+["Stories","Feed","Flyers","Line-ups","Cartazes","Banners","Outdoors","Ingressos"].map((x,j)=>'<div><small>'+String(j+1).padStart(2,"0")+'</small><b>'+x+'</b></div>').join("")+'</div></div></section>';
  case "designGallery":return work("design","vx-light vx-gallery-design");
- case "motionHero":return '<section class="vx-motion-hero"><div class="vx-wrap"><small>MOTION DESIGN / VÍDEO</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=motion","Solicitar vídeo")+'</div>'+media(s,"vx-motion-image",'<strong>▶</strong><span>VÍDEOS E ANIMAÇÕES</span>')+'</section>';
+ case "motionHero":return '<section class="vx-motion-hero"><div class="vx-wrap"><small>MOTION DESIGN / VÍDEO</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=motion","Solicitar vídeo",s)+'</div>'+media(s,"vx-motion-image",'<strong>▶</strong><span>VÍDEOS E ANIMAÇÕES</span>')+'</section>';
  case "motionFormats":return '<section class="vx-motion-formats"><div class="vx-wrap">'+title(s)+'<div><span>REELS</span><span>STORIES</span><span>TELÕES</span><span>PAINÉIS DE LED</span></div></div></section>';
  case "motionGallery":return work("motion","vx-dark vx-motion-gallery");
- case "systemsHero":return '<section class="vx-system-hero"><div class="vx-wrap"><div><small>DESENVOLVIMENTO DE SISTEMAS</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=sistemas","Solicitar sistema")+'</div>'+media(s,"vx-system-image",'<span>noBRon. / SISTEMAS</span><strong>GESTÃO</strong><div class="vx-ui-row"><b>Eventos</b><b>Portaria</b><b>Estoque</b></div>')+'</div></section>';
+ case "systemsHero":return '<section class="vx-system-hero"><div class="vx-wrap"><div><small>DESENVOLVIMENTO DE SISTEMAS</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+btn("/contato?servico=sistemas","Solicitar sistema",s)+'</div>'+media(s,"vx-system-image",'<span>noBRon. / SISTEMAS</span><strong>GESTÃO</strong><div class="vx-ui-row"><b>Eventos</b><b>Portaria</b><b>Estoque</b></div>')+'</div></section>';
  case "systemsOperations":return '<section class="vx-system-ops"><div class="vx-wrap">'+title(s)+'<div class="vx-ops">'+["Portaria","Vendas","Cortesias","Estoque"].map((x,j)=>'<div><small>0'+(j+1)+'</small><strong>'+x+'</strong></div>').join("")+'</div></div></section>';
  case "systemsDigital":return '<section class="vx-system-digital"><div class="vx-wrap">'+title(s)+media(s,"vx-browser",'<span>WEBSITES</span><strong>SITES PARA EVENTOS<br>E ARTISTAS</strong>')+'</div></section>';
  case "systemsGallery":return work("sistemas","vx-light vx-systems-gallery");
@@ -65,7 +71,7 @@ function pageBody(s,i){
  case "contactHero":return '<section class="vx-contact-hero"><div class="vx-wrap"><small>CONTATO</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p></div>'+media(s,"vx-contact-image","")+'</section>';
  case "contactForm":return '<section class="vx-contact-form"><div class="vx-wrap"><div>'+title(s)+'</div><form id="vx-form"><label>Nome *<input name="nome" required></label><label>E-mail ou WhatsApp *<input name="contato" required></label><label>Serviço *<select name="servico" required><option value="">Selecione</option><option value="design">Design Digital</option><option value="motion">Motion Design</option><option value="sistemas">Sistemas</option></select></label><label>Contratação<select><option>Serviço avulso</option><option>Plano personalizado</option></select></label><label>Data do evento<input type="date"></label><label>Descrição *<textarea required rows="5"></textarea></label><button type="submit">Enviar solicitação ↗</button><p id="vx-form-status" aria-live="polite"></p></form></div></section>';
  case "contactLinks":return '<section class="vx-section vx-light"><div class="vx-wrap">'+title(s)+'</div></section>';
- case "contactBand":return '<section class="vx-cta">'+media(s,"vx-cta-image","")+'<div class="vx-wrap"><small>NO BRON / CONTATO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+btn(pkey()==="about"?"/projetos":"/contato",pkey()==="about"?"Ver projetos":"Solicitar orçamento")+'</div></section>';
+ case "contactBand":return '<section class="vx-cta">'+media(s,"vx-cta-image","")+'<div class="vx-wrap"><small>NO BRON / CONTATO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+btn(pkey()==="about"?"/projetos":"/contato",pkey()==="about"?"Ver projetos":"Solicitar orçamento",s)+'</div></section>';
  default:return "";
  }
 }
