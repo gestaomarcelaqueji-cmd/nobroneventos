@@ -138,7 +138,7 @@ window.addEventListener("message",evt=>{
 });
 function editSection(id){
  const section=st.doc?.sections.find(s=>s.id===id);if(!section)return;
- st.section=copy(section);st.selected=id;st.tab="media";st.view="edit";render();
+ st.section=copy(section);st.selected=id;st.tab="media";st.view="edit";renderNav();renderLayer();
 }
 function updatePreview(){if(st.view==="edit")sendDraft()}
 function render(){
@@ -146,7 +146,7 @@ function render(){
  $("#v2-layer").innerHTML="";
  if(st.view==="pages")pagesView();
  else if(st.view==="page")pageView();
- else if(st.view==="edit"){st.view="page";pageView();st.view="edit";renderLayer();}
+ else if(st.view==="edit"){if(!$("#v2-live-frame")){st.view="page";pageView();st.view="edit"}renderLayer();}
  else if(st.view==="reorder")reorderView();
  else if(st.view==="pick")pickerView();
  else if(st.view==="media")mediaView();
@@ -200,10 +200,10 @@ function applySection(){
  const index=st.doc?.sections.findIndex(s=>s.id===st.selected);
  if(index<0)return;
  st.doc.sections[index]=copy(st.section);st.dirty=true;
- st.section=null;st.selected=null;st.view="page";render();
+ st.section=null;st.selected=null;st.view="page";$("#v2-layer").innerHTML="";renderNav();sendDraft();
  toast("Seção atualizada. Salve o rascunho para guardar.");
 }
-function cancelEdit(){st.section=null;st.selected=null;st.view="page";render();}
+function cancelEdit(){st.section=null;st.selected=null;st.view="page";$("#v2-layer").innerHTML="";renderNav();sendDraft();}
 function reorderView(){
  $("#v2-stage").innerHTML=topline("Seções",label(st.page)+" / ORGANIZAÇÃO",true)+'<p class="v2-tip">Altere a ordem, visibilidade ou escolha uma seção para editar.</p><div class="v2-stack">'+st.doc.sections.map((s,i)=>'<div class="v2-stack-item"><div class="v2-stack-num">'+String(i+1).padStart(2,"0")+'</div><button class="v2-stack-name" data-open-section="'+html(s.id)+'"><b>'+html(s.title)+'</b><small>'+html(s.type)+(s.visible===false?" · Oculta":"")+'</small></button><div class="v2-stack-moves"><button data-move="'+i+':-1" aria-label="Subir">↑</button><button data-move="'+i+':1" aria-label="Descer">↓</button></div><button data-toggle="'+html(s.id)+'" class="v2-visibility" aria-label="Mostrar ou ocultar">'+(s.visible===false?"◌":"◉")+'</button></div>').join("")+'</div><div class="v2-fixed-actions"><button id="v2-reorder-back">Voltar à página</button><button id="v2-reorder-save" class="v2-primary" data-busy>Salvar rascunho</button></div>';
  wireBack(()=>{st.view="page";render()});$("#v2-reorder-back").onclick=()=>{st.view="page";render()};
@@ -305,7 +305,7 @@ function pickerView(){
  const root=$("#v2-layer");
  const parentPage=st.previousView==="edit";
  if(parentPage){
-  st.view="page";pageView();st.view="pick";
+  if(!$("#v2-live-frame")){st.view="page";pageView();}st.view="pick";
  }else if(st.previousView==="projectEdit"){
   // Render background without destroying the project being edited.
   $("#v2-stage").innerHTML=topline("Projeto","Selecionar mídia");
@@ -327,7 +327,7 @@ function chooseMedia(asset){
 }
 function closePicker(){
  st.view=st.previousView||"page";st.previousView=null;st.assetTarget=null;
- render();
+ if(st.view==="edit"&&$("#v2-live-frame")){renderNav();renderLayer();sendDraft();}else if(st.view==="page"&&$("#v2-live-frame")){renderNav();sendDraft();}else render();
 }
 function projectsView(){
  $("#v2-stage").innerHTML=topline("Projetos","PORTFÓLIO")+step("Trabalhos realizados","Gerencie capas, imagens, vídeos e destaques.")+'<div class="v2-project-actions"><button id="v2-new-project" class="v2-primary">＋ Novo projeto</button></div><div class="v2-project-list">'+[...st.projects].map(([id,p])=>'<button data-project="'+html(id)+'"><div class="v2-project-thumb">▦</div><div><b>'+html(p.title)+'</b><small>'+html(p.category||"")+' · '+html(p.status||"")+'</small></div><span>↗</span></button>').join("")+'</div>';
