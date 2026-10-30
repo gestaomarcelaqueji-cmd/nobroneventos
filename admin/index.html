@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://fsaqzbwxhjpnfgqxdvnz.supabase.co; img-src 'self' data:; font-src 'self'; object-src 'none'; upgrade-insecure-requests">
+<meta name="theme-color" content="#0b0b0d">
+<title>Acesso administrativo · noBRon</title>
+<link rel="stylesheet" href="/admin/auth.css">
+<script src="/admin/auth.js" defer></script>
+</head>
+<body>
+<main class="shell">
+<header class="top"><a href="/" class="logo" aria-label="noBRon, página inicial">noBRon.</a><span class="label">ÁREA ADMINISTRATIVA</span></header>
+<div class="center">
+<section id="loading" class="panel" aria-live="polite"><div class="spinner" aria-hidden="true"></div><p>Verificando acesso...</p></section>
+<section id="setup" class="panel" hidden>
+ <div class="kicker"><span class="dot"></span> CONFIGURAÇÃO INICIAL</div>
+ <h1>Crie seu acesso.</h1>
+ <p class="desc">Este cadastro é feito uma única vez. Nas próximas entradas, basta sua senha.</p>
+ <form id="setup-form" autocomplete="off">
+  <label for="setup-code">Código de ativação</label>
+  <input id="setup-code" name="code" type="password" inputmode="text" required minlength="64" maxlength="64" autocomplete="off" spellcheck="false" placeholder="Cole o código de ativação">
+  <label for="setup-email">E-mail administrativo</label>
+  <input id="setup-email" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="Seu melhor e-mail">
+  <label for="setup-pass">Crie sua senha</label>
+  <input id="setup-pass" name="password" type="password" minlength="14" maxlength="128" autocomplete="new-password" required placeholder="Pelo menos 14 caracteres">
+  <label for="setup-confirm">Confirme a senha</label>
+  <input id="setup-confirm" name="confirm" type="password" minlength="14" maxlength="128" autocomplete="new-password" required placeholder="Repita a senha">
+  <p class="hint">Use uma senha única e longa. O e-mail ficará vinculado à recuperação de acesso.</p>
+  <button id="setup-submit" type="submit">Ativar painel <span aria-hidden="true">↗</span></button>
+  <p class="message" id="setup-message" role="status" aria-live="polite"></p>
+ </form>
+</section>
+<section id="login" class="panel" hidden>
+ <div class="kicker"><span class="dot"></span> ACESSO RESTRITO</div>
+ <h1>Bem-vindo de volta.</h1>
+ <p class="desc">Digite sua senha para acessar o painel.</p>
+ <form id="login-form">
+  <label for="login-pass">Senha de acesso</label>
+  <input id="login-pass" name="password" type="password" minlength="1" maxlength="128" autocomplete="current-password" required placeholder="Sua senha">
+  <button id="login-submit" type="submit">Entrar no painel <span aria-hidden="true">↗</span></button>
+  <p class="message" id="login-message" role="status" aria-live="polite"></p>
+ </form>
+</section>
+<section id="inside" class="panel" hidden>
+ <div class="kicker"><span class="dot"></span> SESSÃO AUTORIZADA</div>
+ <h1>Painel protegido.</h1>
+ <p class="desc">Seu acesso administrativo está ativo. O editor de páginas e mídias será conectado a esta autenticação.</p>
+ <div class="summary"><span>Autenticação</span><strong>Ativa</strong></div>
+ <div class="summary"><span>Cadastro de administradores</span><strong>Fechado</strong></div>
+ <button id="logout" type="button" class="outline">Sair do painel</button>
+</section>
+</div>
+<footer>noBRon. <span>Design · Motion · Sistemas</span></footer>
+</main>
+</body>
+</html>
