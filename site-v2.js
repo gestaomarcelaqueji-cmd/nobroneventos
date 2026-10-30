@@ -78,8 +78,36 @@ function render(){
  if(theme)theme.onclick=()=>{const v=document.body.dataset.theme==="light"?"dark":"light";document.body.dataset.theme=v;localStorage.setItem("nobron-theme",v)};
   document.querySelectorAll(".vx-photo").forEach(el=>{el.onclick=()=>{document.querySelectorAll(".vx-photo.active").forEach(x=>{if(x!==el)x.classList.remove("active")});el.classList.toggle("active")};el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}});
  document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{S.filter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("vx-gallery").innerHTML=works(S.filter);bindProjects()});
+ activateCarousels();
  const f=document.getElementById("vx-form");if(f){const pre=new URLSearchParams(location.search).get("servico");if(["design","motion","sistemas"].includes(pre))f.elements.servico.value=pre;f.onsubmit=e=>{e.preventDefault();document.getElementById("vx-form-status").textContent="Formulário em preparação. O envio será habilitado após a configuração do atendimento."}};
  bindProjects();
+}
+let carouselTimer=null;
+function activateCarousels(){
+ if(carouselTimer){clearInterval(carouselTimer);carouselTimer=null}
+ if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ const tracks=[...document.querySelectorAll(".vx-gallery-design .vx-project-grid,.vx-motion-gallery .vx-project-grid,.vx-systems-gallery .vx-project-grid")];
+ if(!tracks.length)return;
+ for(const track of tracks){
+   track._moveDir=1;
+   track._pauseUntil=0;
+   track.addEventListener("pointerdown",()=>track._pauseUntil=Date.now()+6500,{passive:true});
+   track.addEventListener("pointerenter",()=>track._pauseUntil=Infinity);
+   track.addEventListener("pointerleave",()=>track._pauseUntil=Date.now()+2000);
+   track.addEventListener("focusin",()=>track._pauseUntil=Infinity);
+   track.addEventListener("focusout",()=>track._pauseUntil=Date.now()+2000);
+ }
+ carouselTimer=setInterval(()=>{
+   for(const t of tracks){
+     if(!t.isConnected||t.scrollWidth<=t.clientWidth+10||Date.now()<t._pauseUntil)continue;
+     const rect=t.getBoundingClientRect();
+     if(rect.bottom<0||rect.top>innerHeight)continue;
+     const max=t.scrollWidth-t.clientWidth;
+     if(t.scrollLeft>=max-2)t._moveDir=-1;
+     if(t.scrollLeft<=2)t._moveDir=1;
+     t.scrollLeft+=t._moveDir*.8;
+   }
+ },45)
 }
 function bindProjects(){document.querySelectorAll("[data-project]").forEach(btn=>btn.onclick=()=>openProject(btn.dataset.project))}
 function openProject(id){
