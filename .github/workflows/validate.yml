@@ -1,0 +1,21 @@
+name: Validar codigo
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar app JavaScript
+        run: node --check app.js
+      - name: Validar servidor de desenvolvimento
+        run: python -m py_compile dev_server.py
+      - name: Conferir arquivos essenciais
+        run: test -s index.html && test -s styles.css && test -s vercel.json && test -s data/projects.json
