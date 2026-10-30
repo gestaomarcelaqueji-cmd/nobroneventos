@@ -120,6 +120,7 @@ function openProject(id){
  function paint(){let u=files[at];overlay.innerHTML='<div class="vx-viewer" role="dialog" aria-modal="true"><button id="vx-close" aria-label="Fechar">×</button>'+( /\.(mp4|webm)(\?|$)/i.test(u)?'<video controls playsinline src="'+esc(u)+'"></video>':'<img src="'+esc(u)+'" alt="'+esc(p.title)+'">')+'<div class="vx-viewer-bottom"><b>'+esc(p.title)+'</b><span>'+esc(p.category)+' · '+(at+1)+'/'+files.length+'</span><button id="vx-prev">←</button><button id="vx-next">→</button></div></div>';document.getElementById("vx-close").onclick=close;document.getElementById("vx-prev").onclick=()=>{at=(at+files.length-1)%files.length;paint()};document.getElementById("vx-next").onclick=()=>{at=(at+1)%files.length;paint()}}
  paint();overlay.onclick=e=>{if(e.target===overlay)close()}
 }
+let previewDraftApplied=false;
 async function load(){
  try{
  const q=new URLSearchParams({select:"kind,key,payload",limit:"300"});
@@ -127,12 +128,12 @@ async function load(){
  if(resp.ok){
   const records=await resp.json();
   for(const row of records){
-   if(row.kind==="page"&&pages[row.key]&&Array.isArray(row.payload?.sections))S.page[row.key]=row.payload;
+   if(row.kind==="page"&&pages[row.key]&&Array.isArray(row.payload?.sections)&&!previewDraftApplied)S.page[row.key]=row.payload;
    if(row.kind==="project"&&row.payload?.title)S.projects.push({...row.payload,id:row.key});
   }
  }
  }catch(e){console.warn("Conteúdo CMS indisponível",e)}
- render()
+ if(!previewDraftApplied)render()
 }
 document.addEventListener("click",e=>{const a=e.target.closest("a[href]");if(!a||e.metaKey||e.ctrlKey||e.altKey||e.shiftKey||e.button!==0)return;const u=new URL(a.href,location.href);if(u.origin!==location.origin||!R[u.pathname])return;e.preventDefault();history.pushState(null,"",u.pathname+u.search+u.hash);S.filter="todos";render();window.scrollTo(0,0)});
 window.addEventListener("popstate",()=>{S.filter="todos";render();window.scrollTo(0,0)});
@@ -148,6 +149,7 @@ if(PREVIEW_MODE){
   if(evt.origin!==location.origin||evt.source!==window.parent||evt.data?.source!=="nobron-editor")return;
   const m=evt.data;
   if(m.kind==="draft"&&m.key===pkey()&&m.doc&&Array.isArray(m.doc.sections)){
+   previewDraftApplied=true;
    S.page[m.key]=structuredClone(m.doc);
    render();
    if(Number.isInteger(m.selected)){
