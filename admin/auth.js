@@ -4,9 +4,10 @@ const SUPABASE_URL='https://fsaqzbwxhjpnfgqxdvnz.supabase.co';
 const PUBLIC_KEY='sb_publishable_fq9iLhiCu0i579uBDl4rBg_WGOw7N2n';
 const FN=SUPABASE_URL+'/functions/v1/nobron-owner-auth';
 const STORAGE='nobron-admin-session';
-const sections=['loading','setup','login','inside'];
+const sections=['loading','setup','login','forgot','reset','inside'];
 const el=id=>document.getElementById(id);
 const state={session:null};
+let recoveryToken=null;
 function show(id){
  for(const s of sections)el(s).hidden=s!==id;
  if(id==='inside' && state.session?.access_token)window.nobronCms?.mount(state.session);
@@ -60,15 +61,38 @@ async function restore(){
  }catch{}
  clear();return false;
 }
+function consumeRecoveryLink(){
+ const params=new URLSearchParams(location.hash.slice(1));
+ const token=params.get('access_token');
+ const error=params.get('error');
+ const isRecovery=params.get('type')==='recovery';
+ if(!isRecovery&&!error)return {found:false};
+ // Fragments carry credentials; remove them from visible URL immediately.
+ history.replaceState(null,'',location.pathname+location.search);
+ if(error)return {found:true,error:true};
+ if(!token||!/^[A-Za-z0-9._-]{20,4096}$/.test(token))return {found:true,error:true};
+ return {found:true,token};
+}
 async function init(){
  show('loading');
+ const recovery=consumeRecoveryLink();
  try{
    const status=await call('status');
    if(!status.configured){clear();show('setup');return;}
+   if(recovery.found){
+     clear();
+     if(recovery.token){
+       const check=await call('verify',{},recovery.token).catch(()=>null);
+       if(check?.authorized){recoveryToken=recovery.token;show('reset');return;}
+     }
+     show('login');
+     message('login-message','O link de recuperação expirou ou não é válido. Solicite outro.',false);
+     return;
+   }
    if(await restore()){show('inside');return;}
    show('login');
  }catch{
-   el('loading').innerHTML='<p>Não foi possível verificar o acesso. Atualize a página.</p>';
+   el('loading').textContent='Não foi possível verificar o acesso. Atualize a página.';
  }
 }
 el('setup-form').addEventListener('submit',async(e)=>{
@@ -88,6 +112,60 @@ el('setup-form').addEventListener('submit',async(e)=>{
   if(data.session){store(data.session);show('inside');}
   else{show('login');message('login-message','Acesso criado. Digite sua senha.',true);}
  }catch(error){message('setup-message',error.message||'Não foi possível ativar.');}
+ finally{button.disabled=false;}
+});
+
+el('forgot-trigger').addEventListener('click',()=>{message('forgot-message','');show('forgot')});
+el('forgot-back').addEventListener('click',()=>show('login'));
+el('reset-back').addEventListener('click',()=>{recoveryToken=null;show('login')});
+el('forgot-form').addEventListener('submit',async(e)=>{
+ e.preventDefault();
+ if(!e.currentTarget.reportValidity())return;
+ const email=el('forgot-email').value.trim().toLowerCase();
+ const button=el('forgot-submit');
+ button.disabled=true;
+ message('forgot-message','');
+ try{
+   const redirectTo='https://nobroneventos.vercel.app/admin';
+   const response=await fetch(SUPABASE_URL+'/auth/v1/recover?redirect_to='+encodeURIComponent(redirectTo),{
+     method:'POST',cache:'no-store',
+     headers:{apikey:PUBLIC_KEY,'Content-Type':'application/json'},
+     body:JSON.stringify({email})
+   });
+   if(response.status===429)throw new Error('Muitas solicitações. Tente novamente mais tarde.');
+   if(!response.ok)throw new Error('Não foi possível enviar o link. Confira o e-mail e tente novamente.');
+   // Same response for any address; no disclosure of account ownership.
+   message('forgot-message','Se este for o e-mail cadastrado, você receberá um link para redefinir sua senha.',true);
+   el('forgot-email').value='';
+ }catch(error){message('forgot-message',error.message||'Falha ao solicitar recuperação.')}
+ finally{button.disabled=false;}
+});
+el('reset-form').addEventListener('submit',async(e)=>{
+ e.preventDefault();
+ if(!recoveryToken)return message('reset-message','O link expirou. Solicite outro.');
+ if(!e.currentTarget.reportValidity())return;
+ const password=el('reset-password').value;
+ if(password!==el('reset-confirm').value)return message('reset-message','As senhas não coincidem.');
+ const button=el('reset-submit');button.disabled=true;message('reset-message','');
+ try{
+   const verified=await call('verify',{},recoveryToken);
+   if(!verified.authorized)throw new Error('Link de recuperação inválido.');
+   const response=await fetch(SUPABASE_URL+'/auth/v1/user',{
+     method:'PUT',cache:'no-store',
+     headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+recoveryToken,'Content-Type':'application/json'},
+     body:JSON.stringify({password})
+   });
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data.msg||data.message||'Não foi possível atualizar a senha.');
+   const oldToken=recoveryToken;
+   recoveryToken=null;
+   e.currentTarget.reset();
+   try{await fetch(SUPABASE_URL+'/auth/v1/logout?scope=global',{
+     method:'POST',headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+oldToken}
+   })}catch{}
+   clear();show('login');
+   message('login-message','Senha redefinida. Entre com sua nova senha.',true);
+ }catch(error){message('reset-message',error.message||'Não foi possível atualizar. Solicite outro link.')}
  finally{button.disabled=false;}
 });
 el('login-form').addEventListener('submit',async(e)=>{
