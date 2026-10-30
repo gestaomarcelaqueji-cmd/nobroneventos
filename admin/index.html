@@ -47,6 +47,33 @@
   <button id="login-submit" type="submit">Entrar no painel <span aria-hidden="true">↗</span></button>
   <p class="message" id="login-message" role="status" aria-live="polite"></p>
  </form>
+ <button id="forgot-trigger" type="button" class="text-link">Esqueci minha senha</button>
+</section>
+<section id="forgot" class="panel" hidden>
+ <div class="kicker"><span class="dot"></span> RECUPERAÇÃO DE ACESSO</div>
+ <h1>Redefinir senha.</h1>
+ <p class="desc">Informe o e-mail administrativo cadastrado para receber o link de recuperação.</p>
+ <form id="forgot-form">
+  <label for="forgot-email">E-mail administrativo</label>
+  <input id="forgot-email" type="email" maxlength="254" required autocomplete="email" placeholder="Seu e-mail cadastrado">
+  <button id="forgot-submit" type="submit">Enviar link de recuperação <span aria-hidden="true">↗</span></button>
+  <p class="message" id="forgot-message" role="status" aria-live="polite"></p>
+ </form>
+ <button id="forgot-back" type="button" class="text-link">Voltar ao login</button>
+</section>
+<section id="reset" class="panel" hidden>
+ <div class="kicker"><span class="dot"></span> ALTERAÇÃO DE SENHA</div>
+ <h1>Nova senha.</h1>
+ <p class="desc">Defina uma senha única para seu acesso administrativo.</p>
+ <form id="reset-form">
+  <label for="reset-password">Nova senha</label>
+  <input id="reset-password" type="password" minlength="14" maxlength="128" required autocomplete="new-password" placeholder="Pelo menos 14 caracteres">
+  <label for="reset-confirm">Confirmar nova senha</label>
+  <input id="reset-confirm" type="password" minlength="14" maxlength="128" required autocomplete="new-password" placeholder="Repita a senha">
+  <button id="reset-submit" type="submit">Salvar nova senha <span aria-hidden="true">↗</span></button>
+  <p class="message" id="reset-message" role="status" aria-live="polite"></p>
+ </form>
+ <button id="reset-back" type="button" class="text-link">Voltar ao login</button>
 </section>
 <section id="inside" class="panel" hidden>
  <div class="kicker"><span class="dot"></span> SESSÃO AUTORIZADA</div>
