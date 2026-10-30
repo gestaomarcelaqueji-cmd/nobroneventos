@@ -45,3 +45,14 @@ body[data-theme="light"] .vx-bottom{background:rgba(35,35,39,.89)}
 body[data-theme="light"] .vx-feature:nth-of-type(even) .vx-btn{background:#111;color:white}
 body[data-theme="light"] .vx-formats>div{background:#242427;color:white}
 body[data-theme="light"] .vx-contact-form input,body[data-theme="light"] .vx-contact-form textarea,body[data-theme="light"] .vx-contact-form select{background:#fafafa;color:#111}
+
+.vx-divider.vx-d-curve:before{clip-path:ellipse(82% 95% at 20% 100%)}
+.vx-divider.vx-d-diagonal:before{clip-path:polygon(0 65%,100% 0,100% 100%,0 100%)}
+.vx-divider.vx-d-fold:before{clip-path:polygon(0 100%,0 55%,22% 35%,52% 70%,76% 25%,100% 62%,100% 100%)}
+.vx-divider.vx-d-notch:before{clip-path:polygon(0 100%,0 32%,45% 78%,100% 16%,100% 100%)}
+@media(max-width:800px){
+.vx-divider.vx-m-curve:before{clip-path:ellipse(82% 95% at 20% 100%)}
+.vx-divider.vx-m-diagonal:before{clip-path:polygon(0 65%,100% 0,100% 100%,0 100%)}
+.vx-divider.vx-m-fold:before{clip-path:polygon(0 100%,0 55%,22% 35%,52% 70%,76% 25%,100% 62%,100% 100%)}
+.vx-divider.vx-m-notch:before{clip-path:polygon(0 100%,0 32%,45% 78%,100% 16%,100% 100%)}
+}
