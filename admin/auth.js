@@ -142,8 +142,9 @@ el('forgot-form').addEventListener('submit',async(e)=>{
 });
 el('reset-form').addEventListener('submit',async(e)=>{
  e.preventDefault();
+ const form=el('reset-form');
  if(!recoveryToken)return message('reset-message','O link expirou. Solicite outro.');
- if(!e.currentTarget.reportValidity())return;
+ if(!form.reportValidity())return;
  const password=el('reset-password').value;
  if(password!==el('reset-confirm').value)return message('reset-message','As senhas não coincidem.');
  const button=el('reset-submit');button.disabled=true;message('reset-message','');
@@ -159,7 +160,7 @@ el('reset-form').addEventListener('submit',async(e)=>{
    if(!response.ok)throw new Error(data.msg||data.message||'Não foi possível atualizar a senha.');
    const oldToken=recoveryToken;
    recoveryToken=null;
-   e.currentTarget.reset();
+   form.reset();
    try{await fetch(SUPABASE_URL+'/auth/v1/logout?scope=global',{
      method:'POST',headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+oldToken}
    })}catch{}
