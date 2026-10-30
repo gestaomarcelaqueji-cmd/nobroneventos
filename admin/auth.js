@@ -101,7 +101,7 @@ el('login-form').addEventListener('submit',async(e)=>{
  }catch(error){message('login-message',error.message||'Falha no login.');}
  finally{button.disabled=false;}
 });
-el('logout').addEventListener('click',async()=>{
+async function logoutAdmin(){
  const session=state.session;
  clear();show('login');
  if(session?.access_token){
@@ -109,5 +109,7 @@ el('logout').addEventListener('click',async()=>{
   try{await fetch(SUPABASE_URL+'/auth/v1/logout',{method:'POST',
    headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+session.access_token}});}catch{}
  }
-});
+}
+window.nobronAdminLogout=logoutAdmin;
+el('logout').addEventListener('click',logoutAdmin);
 init();
