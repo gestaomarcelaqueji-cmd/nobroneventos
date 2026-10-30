@@ -230,7 +230,7 @@ function applySection(){
 }
 function cancelEdit(){st.section=null;st.selected=null;st.view="page";$("#v2-layer").innerHTML="";renderNav();sendDraft();}
 function reorderView(){
- $("#v2-stage").innerHTML=topline("Seções",label(st.page)+" / ORGANIZAÇÃO",true)+'<p class="v2-tip">Altere a ordem, visibilidade ou escolha uma seção para editar.</p><div class="v2-stack">'+st.doc.sections.map((s,i)=>'<div class="v2-stack-item"><div class="v2-stack-num">'+String(i+1).padStart(2,"0")+'</div><button class="v2-stack-name" data-open-section="'+html(s.id)+'"><b>'+html(s.title)+'</b><small>'+html(s.type)+(s.visible===false?" · Oculta":"")+'</small></button><div class="v2-stack-moves"><button data-move="'+i+':-1" aria-label="Subir">↑</button><button data-move="'+i+':1" aria-label="Descer">↓</button></div><button data-toggle="'+html(s.id)+'" class="v2-visibility" aria-label="Mostrar ou ocultar">'+(s.visible===false?"◌":"◉")+'</button></div>').join("")+'</div><div class="v2-fixed-actions"><button id="v2-reorder-back">Voltar à página</button><button id="v2-reorder-save" class="v2-primary" data-busy>Salvar rascunho</button></div>';
+ $("#v2-stage").innerHTML=topline("Seções",label(st.page)+" / ORGANIZAÇÃO",true)+'<p class="v2-tip">Altere a ordem, visibilidade ou escolha uma seção para editar.</p><div class="v2-stack">'+st.doc.sections.map((s,i)=>'<div class="v2-stack-item"><div class="v2-stack-num">'+String(i+1).padStart(2,"0")+'</div><button class="v2-stack-name" data-open-section="'+html(s.id)+'"><b>'+html(s.title)+'</b><small>'+html(s.type)+(s.visible===false?" · Oculta":"")+'</small></button><div class="v2-stack-moves"><button data-move="'+i+':-1" aria-label="Subir">↑</button><button data-move="'+i+':1" aria-label="Descer">↓</button></div><button data-toggle="'+html(s.id)+'" class="v2-visibility" aria-label="Mostrar ou ocultar">'+(s.visible===false?"◌":"◉")+'</button>'+(["serviceFeature","contactBand"].includes(s.type)?'<button class="v2-duplicate" data-duplicate="'+html(s.id)+'" aria-label="Duplicar seção">⧉</button>':"")+(s.duplicated?'<button data-remove-section="'+html(s.id)+'" class="v2-duplicate" aria-label="Excluir cópia">×</button>':"")+'</div>').join("")+'</div><div class="v2-fixed-actions"><button id="v2-reorder-back">Voltar à página</button><button id="v2-reorder-save" class="v2-primary" data-busy>Salvar rascunho</button></div>';
  wireBack(()=>{st.view="page";render()});$("#v2-reorder-back").onclick=()=>{st.view="page";render()};
  $("#v2-reorder-save").onclick=savePage;
  $$("[data-open-section]").forEach(b=>b.onclick=()=>editSection(b.dataset.openSection));
@@ -238,7 +238,21 @@ function reorderView(){
  const [from,change]=b.dataset.move.split(":").map(Number),to=from+change;if(to<0||to>=st.doc.sections.length)return;
  const [section]=st.doc.sections.splice(from,1);st.doc.sections.splice(to,0,section);st.dirty=true;render();
  });
- $$("[data-toggle]").forEach(b=>b.onclick=()=>{const sec=st.doc.sections.find(s=>s.id===b.dataset.toggle);if(sec){sec.visible=sec.visible===false;st.dirty=true;render()}});
+ $("[data-toggle]").forEach(b=>b.onclick=()=>{const sec=st.doc.sections.find(s=>s.id===b.dataset.toggle);if(sec){sec.visible=sec.visible===false;st.dirty=true;render()}});
+ $("[data-duplicate]").forEach(b=>b.onclick=()=>{
+  const index=st.doc.sections.findIndex(s=>s.id===b.dataset.duplicate);
+  if(index<0)return;
+  const duplicate=copy(st.doc.sections[index]);
+  duplicate.id=duplicate.id+"-copia-"+crypto.randomUUID().slice(0,8);
+  duplicate.title=duplicate.title+" (cópia)";duplicate.duplicated=true;
+  st.doc.sections.splice(index+1,0,duplicate);st.dirty=true;render();
+ });
+ $("[data-remove-section]").forEach(b=>b.onclick=()=>{
+  const index=st.doc.sections.findIndex(s=>s.id===b.dataset.removeSection);
+  if(index<0||!st.doc.sections[index].duplicated)return;
+  if(!confirm("Excluir esta seção duplicada?"))return;
+  st.doc.sections.splice(index,1);st.dirty=true;render();
+ });
 }
 async function sessionId(){
  const r=await fetch(baseUrl+"/auth/v1/user",{headers:apiSession()});if(!r.ok)throw Error("Sessão expirada. Entre novamente.");
