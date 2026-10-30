@@ -77,3 +77,7 @@ body[data-theme="light"] .vx-contact-form input,body[data-theme="light"] .vx-con
  .vx-gallery-design .vx-project-grid,.vx-motion-gallery .vx-project-grid,.vx-systems-gallery .vx-project-grid{margin-right:calc(-1*var(--vx-gap));padding-right:var(--vx-gap)}
 }
 @media(prefers-reduced-motion:reduce){.vx-home-image.vx-demo strong,.vx-design-image.vx-demo b,.vx-system-image.vx-demo strong{animation:none}}
+
+
+.skip-link{position:fixed;top:-140px;left:18px;z-index:200;background:#fff;color:#111;padding:12px 18px;border-radius:4px}
+.skip-link:focus{top:12px}
