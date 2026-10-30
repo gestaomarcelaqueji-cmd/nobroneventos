@@ -58,3 +58,15 @@ RLS é obrigatório em tabelas expostas. A função `nobron-cms-publish` valida 
 O projeto utiliza HTML, CSS e JavaScript puro; não usa Next.js. Execute um servidor HTTP que sirva a raiz do repositório, por exemplo `python dev_server.py`, e abra `http://localhost:3000`.
 
 A regra de comunicação da noBRon é copy curta, clara e específica. A criatividade deve aparecer nos layouts e nos trabalhos reais, não em slogans.
+
+
+## Recuperação e troca de senha administrativa
+
+- Na rota `/admin`, **Esqueci minha senha** solicita o e-mail cadastrado e aciona `Supabase Auth /recover`. O endereço administrativo não é exibido.
+- O Supabase envia o link; o navegador retorna para `https://nobroneventos.vercel.app/admin` e mostra **Nova senha** ao reconhecer um token de recuperação do proprietário.
+- A tela não persiste o token de recuperação em `sessionStorage` e remove os parâmetros sensíveis da barra de endereço.
+- Na área **Segurança**, o proprietário pode atualizar a senha após digitar a senha atual. O login continua exigindo apenas a senha.
+- Após atualização, a sessão atual é encerrada e o proprietário entra novamente com a nova senha.
+- **Requisito operacional:** em [Supabase → Authentication → URL Configuration](https://supabase.com/dashboard/project/fsaqzbwxhjpnfgqxdvnz/auth/url-configuration), definir o Site URL como `https://nobroneventos.vercel.app` e autorizar `https://nobroneventos.vercel.app/admin` como Redirect URL.
+- Verificar entrega de e-mails no provedor SMTP configurado pelo projeto. Sem uma configuração de envio compatível, o formulário pode aceitar o pedido, mas a mensagem não ser entregue.
+- Testes de código foram executados sem enviar e-mails reais ou utilizar a senha administrativa da usuária. O fluxo final deve ser testado pela proprietária.
