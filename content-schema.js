@@ -56,5 +56,11 @@ const services=[
  {id:"motion",name:"Motion Design",path:"/solucoes/motion",description:"Flyers animados, teasers e vídeos de divulgação."},
  {id:"sistemas",name:"Sistemas",path:"/solucoes/sistemas",description:"Sites, sistemas de portaria e ferramentas de gestão."}
 ];
+for(const page of Object.values(pages)){
+ page.sections.forEach((section,i)=>{
+  section.device.desktop.divider=["curve","diagonal","fold","notch"][i%4];
+  section.device.mobile.divider=["fold","curve","diagonal","notch"][i%4];
+ });
+}
 window.NOBRON_SCHEMA={pages,services,baseUrl:"https://fsaqzbwxhjpnfgqxdvnz.supabase.co",publishable:"sb_publishable_fq9iLhiCu0i579uBDl4rBg_WGOw7N2n"};
 })();
