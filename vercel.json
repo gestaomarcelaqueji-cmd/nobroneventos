@@ -1,1 +1,68 @@
-{"version":2,"rewrites":[{"source":"/solucoes","destination":"/index.html"},{"source":"/solucoes/design","destination":"/index.html"},{"source":"/solucoes/motion","destination":"/index.html"},{"source":"/solucoes/sistemas","destination":"/index.html"},{"source":"/projetos","destination":"/index.html"},{"source":"/sobre","destination":"/index.html"},{"source":"/contato","destination":"/index.html"}]}
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/solucoes",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/solucoes/design",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/solucoes/motion",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/solucoes/sistemas",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/projetos",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sobre",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/contato",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/admin/:path*",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
+}
