@@ -90,7 +90,7 @@ function navigateFromPage(){
  st.dirty=false;st.doc=null;st.view="pages";render();
 }
 function wireDevices(){
- $$("[data-device]").forEach(b=>b.onclick=()=>{st.device=b.dataset.device;$$("[data-device]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));const shell=$(".v2-canvas-shell");if(shell){shell.classList.toggle("is-mobile",st.device==="mobile");shell.classList.toggle("is-desktop",st.device==="desktop");}resizePreview();if(st.view==="edit"){renderLayer()}});
+ $$("[data-device]").forEach(b=>b.onclick=()=>{st.device=b.dataset.device;$$("[data-device]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));const shell=$(".v2-canvas-shell");if(shell){shell.classList.toggle("is-mobile",st.device==="mobile");shell.classList.toggle("is-desktop",st.device==="desktop");}resizePreview();if(st.view==="edit")renderLayer();if(st.view==="projectEdit")drawProjectForm();});
 }
 function wireBack(fn){const b=$("[data-action=back]");if(b)b.onclick=fn;}
 function resizePreview(){
