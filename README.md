@@ -1,76 +1,60 @@
 # noBRon V2
 
-Site institucional mobile-first para Design Digital, Motion Design e Sistemas.
+Site institucional de Design Digital, Motion Design e Sistemas para eventos, baladas, pubs e artistas.
 
-## Páginas
-- Início `/`
-- Soluções `/solucoes`
-- Design Digital `/solucoes/design`
-- Motion Design `/solucoes/motion`
-- Sistemas `/solucoes/sistemas`
-- Projetos `/projetos`
-- Sobre `/sobre`
-- Contato `/contato`
+## Estrutura atual
 
-## Executar localmente
+- Oito rotas independentes: `/`, `/solucoes`, `/solucoes/design`, `/solucoes/motion`, `/solucoes/sistemas`, `/projetos`, `/sobre`, `/contato`.
+- `content-schema.js`: definições iniciais da copy e das seções de cada página.
+- `site-v2.js` e `site-v2.css`: site público com layouts distintos, navegação glass no mobile, dividers, galerias e visualização ampliada de projetos.
+- `admin/index.html`, `admin/auth.js`, `admin/dashboard.js` e seus CSS: acesso protegido e painel de conteúdo.
+- `supabase/functions/nobron-owner-auth/index.ts`: código-fonte da função de autenticação. A função de publicação também está implantada no projeto Supabase.
+- `vercel.json`: rotas e cabeçalhos de segurança.
 
-```bash
-python dev_server.py
-```
+O site atual e o novo projeto `nobroneventos` permanecem separados.
 
-Abra `http://localhost:3000`.
+## Editor administrativo
 
-O projeto usa HTML, CSS e JavaScript sem dependências de framework. `vercel.json` contém o encaminhamento das rotas para a aplicação.
+URL: `/admin`.
 
-## Portfólio real
+A primeira ativação requer o código de instalação de uso único, e-mail e senha. Depois, somente a senha é solicitada; a identidade de proprietário continua sendo verificada no servidor.
 
-Cadastre os trabalhos em `data/projects.json` como uma lista de objetos:
+O editor permite:
+- Selecionar as oito páginas e cada seção individual.
+- Editar título, descrição e visibilidade de seções.
+- Reordenar seções.
+- Enviar e selecionar arquivos de mídia na biblioteca privada.
+- Atribuir mídias independentes para desktop e mobile, além de posição, zoom e section divider para cada versão.
+- Cadastrar e editar projetos, categoria, estágio, descrição, capas desktop/mobile, arquivos da galeria e destaque na Home.
+- Salvar rascunhos sem alterar conteúdo publicado.
+- Publicar páginas/projetos com validação da sessão e permissões no servidor.
+- Consultar histórico básico de versões.
 
-```json
-[
-  {
-    "id": "id-do-projeto",
-    "title": "Nome do trabalho",
-    "category": "design",
-    "cover": "/assets/capa.webp",
-    "description": "Material produzido para o evento",
-    "status": "concluído",
-    "media": [
-      {"type": "image", "src": "/assets/capa.webp"},
-      {"type": "video", "src": "/assets/video.mp4"}
-    ]
-  }
-]
-```
+## Persistência / segurança
 
-Categorias válidas: `design`, `motion`, `sistemas`.
-Coloque somente arquivos reais e autorizados na pasta `assets`. Sem dados publicados, as galerias exibem uma área neutra de espera.
+O Supabase do projeto é `fsaqzbwxhjpnfgqxdvnz`. Nunca inserir service-role keys, código de ativação, senha ou tokens no repositório.
 
-## Situação e pendências
+- `cms_admins`: conta autorizada.
+- `cms_drafts`: conteúdo privado em preparação.
+- `cms_published`: conteúdo público.
+- `cms_media`: índice de mídias.
+- `cms_versions`: snapshots de publicações anteriores.
+- `nobron-drafts`: bucket privado para uploads.
+- `nobron-public`: bucket de mídias publicadas.
 
-- O site tem oito páginas, navegação inferior glass no mobile, divisores assimétricos, transições, galerias e visualização fullscreen de projetos.
-- As fotografias externas usadas na primeira versão servem apenas como referências visuais de layout, não como trabalhos realizados.
-- O formulário ainda é uma prévia: **não envia dados**. Conectar a um recebimento seguro e proteção antispam antes da publicação.
-- O Supabase permanece sem modificações.
-- O arquivo `robots.txt` bloqueia indexação durante a homologação. Revisar ao lançar.
-- Testar rotas, telas mobile/desktop, mídia, acessibilidade e performance no ambiente publicado.
-- O site atual da noBRon permanece separado e não foi alterado.
+RLS é obrigatório em tabelas expostas. A função `nobron-cms-publish` valida o token no servidor, verifica proprietário e promove arquivos do bucket privado antes de publicar a versão. Arquivos não utilizados não devem ser excluídos sem conferir referências.
 
-## Segurança
+## Pendências conhecidas
 
-Nunca colocar chaves secretas ou credenciais de administrador em arquivos do frontend. A chave publicável do Supabase deve ser usada apenas com as políticas RLS apropriadas, quando a integração for criada.
+- O acervo de projetos reais ainda precisa ser cadastrado pelo painel. Não preencher com portfólio fictício.
+- O formulário de contato público ainda está em prévia e **não envia solicitações**.
+- A prévia interna do editor é uma representação da seção, não um preview 100% idêntico ao site público.
+- Restauração de versões, remoção segura em lote, otimização/transcodificação de vídeos e editor da identidade global precisam de trabalho adicional.
+- Falta executar testes ponta a ponta de upload, gravação, publicação, logout e restauração com uma sessão real autorizada. Testes de sintaxe, rendering sem navegador e inspeção de deploy foram realizados, mas não substituem testes reais.
+- O Supabase alerta que **Leaked Password Protection** está desabilitado em Auth. Revisar em Settings / Authentication para melhorar a proteção da conta.
 
-## Painel administrativo — acesso único
+## Desenvolvimento local
 
-- Rota após implantação: `/admin` (arquivos em `admin/`).
-- Na primeira visita, o painel consulta `nobron-owner-auth` para saber se existe um proprietário.
-- Configuração inicial exige um **código de ativação de uso único**, um e-mail administrativo e senha de pelo menos 14 caracteres.
-- Depois da ativação, o formulário de cadastro deixa de aparecer; os logins seguintes exigem **somente a senha**.
-- O código é gerado no Supabase e apenas seu SHA-256 é armazenado no esquema privado `nobron_private`. Nunca adicionar o código ao GitHub.
-- O e-mail administrativo fica no banco privado e não é solicitado novamente na tela de login.
-- Sessões temporárias ficam em `sessionStorage`; não utilizar credenciais em `localStorage`.
-- A Edge Function valida a senha com Supabase Auth, limita tentativas e não envia chaves administrativas ao navegador.
-- As tabelas privadas são protegidas com RLS; publicações privilegiadas exigirão uma futura ação autenticada no servidor.
-- O painel de edição visual e upload de mídias **ainda não está implementado**. O login abre uma tela de acesso confirmado; não confundir com o editor final.
-- Configurar hospedagem separada para a V2 e testar a ativação antes de considerar a etapa concluída.
-- Em caso de perda da senha, a recuperação deverá ser tratada de forma segura pela administração do Supabase, nunca criando uma segunda conta pública.
+O projeto utiliza HTML, CSS e JavaScript puro; não usa Next.js. Execute um servidor HTTP que sirva a raiz do repositório, por exemplo `python dev_server.py`, e abra `http://localhost:3000`.
+
+A regra de comunicação da noBRon é copy curta, clara e específica. A criatividade deve aparecer nos layouts e nos trabalhos reais, não em slogans.
