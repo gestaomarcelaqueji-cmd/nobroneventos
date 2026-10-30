@@ -30,3 +30,18 @@
 }
 @media(max-width:390px){.vx-bottom a small{font-size:9px}.vx-home-hero h1{font-size:53px}.vx-project-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition:none!important;scroll-behavior:auto!important}}
+
+
+.vx-device-empty{position:absolute;inset:0;background:linear-gradient(145deg,#242429,#111114);display:flex;align-items:center;justify-content:center;padding:25px;color:#a5a5ab;text-align:center;letter-spacing:.05em;font-size:11px}
+.vx-photo .vx-device-empty small{font-size:11px;max-width:150px}
+body[data-theme="light"] .vx-home-hero,body[data-theme="light"] .vx-sol-hero,body[data-theme="light"] .vx-motion-hero,body[data-theme="light"] .vx-system-hero,body[data-theme="light"] .vx-projects-hero,body[data-theme="light"] .vx-about-hero,body[data-theme="light"] .vx-cta,body[data-theme="light"] .vx-dark,body[data-theme="light"] .vx-motion-gallery,body[data-theme="light"] .vx-feature:nth-of-type(even),body[data-theme="light"] .vx-contact-form,body[data-theme="light"] .vx-system-digital,body[data-theme="light"] .vx-footer{background:#e9e9e6;color:#121215}
+body[data-theme="light"] .vx-home-hero p,body[data-theme="light"] .vx-sol-hero>p,body[data-theme="light"] .vx-motion-hero p,body[data-theme="light"] .vx-system-hero p,body[data-theme="light"] .vx-projects-hero p,body[data-theme="light"] .vx-about-hero p,body[data-theme="light"] .vx-cta p,body[data-theme="light"] .vx-contact-form p,body[data-theme="light"] .vx-dark .vx-heading p{color:#4b4b52}
+body[data-theme="light"] .vx-header{color:#151517}
+body[data-theme="light"] .vx-header .vx-theme{border-color:#222;color:#151517}
+body[data-theme="light"] .vx-footer .vx-logo{color:#151517}
+body[data-theme="light"] .vx-btn{background:#171719;color:#fff;border-color:#171719}
+body[data-theme="light"] .vx-media{color:#fff}
+body[data-theme="light"] .vx-bottom{background:rgba(35,35,39,.89)}
+body[data-theme="light"] .vx-feature:nth-of-type(even) .vx-btn{background:#111;color:white}
+body[data-theme="light"] .vx-formats>div{background:#242427;color:white}
+body[data-theme="light"] .vx-contact-form input,body[data-theme="light"] .vx-contact-form textarea,body[data-theme="light"] .vx-contact-form select{background:#fafafa;color:#111}
