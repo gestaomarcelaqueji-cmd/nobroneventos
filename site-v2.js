@@ -27,7 +27,7 @@ function division(s,i){
  const opts=["curve","diagonal","fold","notch"],d=s.device?.desktop?.divider,m=s.device?.mobile?.divider;
  return '<div aria-hidden="true" class="vx-divider vx-d-'+(opts.includes(d)?d:opts[i%4])+' vx-m-'+(opts.includes(m)?m:opts[(i+1)%4])+'"></div>'
 }
-const visibleWorks=(cat="todos",limit=99)=>S.projects.filter(x=>x.visible!==false&&(cat==="todos"||x.category===cat)).slice(0,limit);
+const visibleWorks=(cat="todos",limit=99)=>{const a=S.projects.filter(x=>x.visible!==false&&(cat==="todos"||x.category===cat));if(pkey()==="home")a.sort((x,y)=>Number(y.featured===true)-Number(x.featured===true));return a.slice(0,limit)};
 function works(cat="todos",limit=99){
  const a=visibleWorks(cat,limit);
  if(!a.length)return '<div class="vx-empty"><b>Portfólio em atualização.</b><p>Os trabalhos realizados serão publicados aqui.</p></div>';
