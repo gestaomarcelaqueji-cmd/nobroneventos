@@ -178,3 +178,17 @@ body[data-theme="light"] .vx-contact-form input,body[data-theme="light"] .vx-con
 @media(prefers-reduced-motion:reduce){
  .vx-service-card,.vx-motion-ring{transition:none!important}
 }
+
+
+/* Consistent vector navigation and visible reading space on small screens. */
+.vx-bottom .vx-nav-icon{display:grid;place-items:center;width:24px;height:24px;flex-shrink:0}
+.vx-bottom .vx-nav-icon svg{display:block;width:22px;height:22px}
+@media(max-width:800px){
+  .vx-home-services-section>.vx-wrap>.vx-heading{margin-bottom:25px}
+  .vx-home-services-section .vx-heading h2{font-size:clamp(38px,10.5vw,58px);line-height:1.02;overflow-wrap:normal}
+  .vx-home-services-section .vx-heading p{font-size:14px;line-height:1.55}
+  .vx-bottom a{min-height:48px}
+  .vx-bottom .vx-nav-icon{width:22px;height:22px}
+  .vx-bottom .vx-nav-icon svg{width:20px;height:20px}
+  .vx-home-services-section+.vx-cms-section{margin-top:0}
+}
