@@ -25,3 +25,15 @@ body.cms-open .center{padding:0}.cms-layout{display:block;padding-bottom:95px}.c
 .cms-section-order button{flex:1;padding:10px 7px;border:1px solid #585860;background:#26262c;color:#ddd;font-size:11px;font-weight:600}
 .cms-section-order button:hover{background:#35353b}
 @media(max-width:750px){.cms-section-order{margin-top:15px}.cms-section-order button{padding:10px 12px}}
+
+
+/* Owner password management */
+.cms-security-page{width:min(100%,620px);border:1px solid #3e3e43;background:#18181c;border-radius:16px;padding:clamp(18px,3vw,32px)}
+.cms-security-page .cms-project-header{margin-bottom:24px}
+.cms-security-page form{display:flex;flex-direction:column;gap:17px}
+.cms-security-page .cms-field input{width:100%;max-width:none}
+.cms-security-page form button{min-height:49px;border-radius:9px;padding:14px 18px;background:#f6f6f6;color:#111;border:1px solid #fff;font-weight:750;font-size:14px}
+.cms-security-page form button:disabled{opacity:.5}
+#cms-security-message{font-size:13px;line-height:1.5;min-height:0;color:#f4b4bd}
+#cms-security-message:empty{display:none}
+@media(max-width:750px){.cms-mobile-nav{gap:0}.cms-mobile-nav button{font-size:10px;padding:9px 1px}.cms-mobile-nav button b{font-size:10px}.cms-security-page{padding:18px}}
