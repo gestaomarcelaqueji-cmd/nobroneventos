@@ -81,3 +81,100 @@ body[data-theme="light"] .vx-contact-form input,body[data-theme="light"] .vx-con
 
 .skip-link{position:fixed;top:-140px;left:18px;z-index:200;background:#fff;color:#111;padding:12px 18px;border-radius:4px}
 .skip-link:focus{top:12px}
+
+
+/* noBRon responsive content audit, 2026-10-30
+   Fix class mismatch: site emitted vx-home-services but rules targeted vx-home-links.
+   Restore actual layout with explicit media, copy and action zones. */
+.vx-home-services-section{padding:clamp(76px,8vw,122px) 0;background:#f5f5f2}
+.vx-home-services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:18px;padding:0!important;max-width:100%;margin:0}
+.vx-home-services .vx-service-card{
+  position:relative;display:flex;flex-direction:column;align-items:stretch;min-width:0;
+  border:1px solid #d6d6d4;background:#ecece9;color:#111115;
+  padding:18px 18px 21px;gap:12px;overflow:hidden;isolation:isolate;
+  transition:background .3s,transform .35s,border-color .3s
+}
+.vx-home-services .vx-service-card:hover,.vx-home-services .vx-service-card:focus-visible{
+  transform:translateY(-5px);border-color:#777;background:#e4e4e2
+}
+.vx-service-number{font-size:10px;font-weight:800;letter-spacing:.17em;color:#555560}
+.vx-service-art{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  position:relative;overflow:hidden;width:100%;height:clamp(170px,20vw,255px);
+  background:#151518;color:#fff;text-align:center;isolation:isolate
+}
+.vx-service-art:before{
+  content:"";position:absolute;width:170%;height:110%;left:-36%;top:0;
+  background:linear-gradient(125deg,transparent 21%,#ffffff1c 22%,transparent 25%,transparent 59%,#ffffff0d 60%,transparent 64%);
+  transform:skewX(-13deg);pointer-events:none
+}
+.vx-service-design .vx-service-art{background:linear-gradient(130deg,#4b4b50 0%,#121215 68%)}
+.vx-service-design .vx-service-art strong{font-size:clamp(32px,4.2vw,65px);font-weight:950;letter-spacing:-.09em;line-height:.85;transform:rotate(-7deg)}
+.vx-service-art i{font-style:normal;font-size:10px;letter-spacing:.14em;position:absolute;bottom:15px;left:0;right:0;color:#e4e4e7}
+.vx-service-motion .vx-service-art{background:radial-gradient(circle at center,#62626b 0%,#17171a 68%)}
+.vx-motion-ring{width:115px;height:115px;display:grid;place-items:center;border-radius:100%;border:2px solid #d7d7d9;font-size:45px;box-shadow:0 0 0 18px #ffffff0f,0 0 0 37px #ffffff08;transition:transform .7s ease}
+.vx-service-motion:hover .vx-motion-ring{transform:rotate(45deg) scale(1.08)}
+.vx-service-sistemas .vx-service-art{background:linear-gradient(120deg,#27272c,#101014)}
+.vx-ui-mock{width:76%;height:65%;background:#1d1d21;border:1px solid #84848a;transform:perspective(650px) rotateY(-13deg) rotateX(4deg);padding:15px;display:flex;flex-direction:column;gap:9px;box-shadow:16px 19px 0 #ffffff08}
+.vx-ui-mock b{font-size:11px;letter-spacing:.05em;text-align:left;align-self:start}
+.vx-ui-mock em{display:block;background:#777780;height:12px;width:92%;opacity:.65}
+.vx-ui-mock em:nth-child(3){width:66%}.vx-ui-mock em:nth-child(4){width:78%}
+.vx-service-copy{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:9px 36px 5px 0;min-height:108px}
+.vx-service-copy b{font-size:clamp(23px,2.4vw,34px);font-weight:850;letter-spacing:-.06em;line-height:1}
+.vx-service-copy>span{font-size:13px;line-height:1.45;color:#4d4d53}
+.vx-service-arrow{position:absolute;right:17px;bottom:22px;font-size:20px;font-weight:500}
+.vx-feature-motion{background:#111114;color:#f5f5f6}
+.vx-feature-motion .vx-feature-copy .vx-btn{border-color:#eee;background:#f3f3f3;color:#111}
+.vx-feature-art{width:100%;min-height:430px;clip-path:polygon(0 0,100% 12%,95% 100%,0 92%)}
+.vx-feature-art strong,.vx-feature-art>span{
+  font-size:clamp(37px,5vw,81px);font-weight:900;line-height:.94;
+  letter-spacing:-.07em;max-width:7ch;transform:rotate(-8deg)
+}
+.vx-feature-motion .vx-feature-art{clip-path:polygon(9% 0,100% 0,100% 100%,0 84%);background:radial-gradient(circle,#6b6b70,#101014 68%)}
+.vx-feature-sistemas .vx-feature-art{clip-path:polygon(0 11%,100% 0,100% 90%,8% 100%);background:linear-gradient(140deg,#44444c,#101014)}
+.vx-feature-sistemas .vx-feature-art span{max-width:8ch}
+@media(max-width:1050px) and (min-width:801px){
+ .vx-home-services{gap:11px}
+ .vx-service-copy{padding-right:14px}
+ .vx-service-art{height:195px}
+ .vx-service-copy b{font-size:25px}
+}
+@media(max-width:800px){
+ /* Two-level padding previously made 300px of dead space */
+ .vx-home-services-section{padding:64px 0 70px}
+ .vx-home-services{grid-template-columns:1fr;gap:12px;padding:0!important}
+ .vx-home-services .vx-service-card{
+   display:grid;grid-template-columns:minmax(0,1fr) 102px;
+   grid-template-areas:"number number" "copy media";align-items:center;
+   min-height:165px;gap:10px 13px;padding:15px;border-radius:2px
+ }
+ .vx-home-services .vx-service-number{grid-area:number}
+ .vx-home-services .vx-service-art{grid-area:media;height:112px;width:102px;align-self:stretch}
+ .vx-home-services .vx-service-copy{grid-area:copy;min-height:0;gap:9px;padding:0 0 4px 0}
+ .vx-service-copy b{font-size:clamp(23px,6vw,30px);line-height:1.02}
+ .vx-service-copy>span{font-size:12px;line-height:1.45}
+ .vx-service-arrow{top:14px;bottom:auto;right:15px;font-size:18px}
+ .vx-service-art i{font-size:6px;bottom:8px}
+ .vx-service-design .vx-service-art strong{font-size:23px}
+ .vx-motion-ring{width:53px;height:53px;font-size:22px;box-shadow:0 0 0 8px #ffffff11,0 0 0 16px #ffffff08}
+ .vx-ui-mock{padding:7px;gap:5px}
+ .vx-ui-mock b{font-size:6px}.vx-ui-mock em{height:5px}
+ .vx-feature-art{min-height:315px;max-height:400px}
+ .vx-feature-art strong,.vx-feature-art>span{font-size:clamp(35px,11vw,65px)}
+ .vx-divider{height:clamp(27px,7vw,43px)}
+ .vx-bottom{min-height:60px;bottom:calc(9px + env(safe-area-inset-bottom));left:12px;right:12px;border-radius:20px;padding:6px 3px}
+ .vx-bottom a{gap:2px;font-size:19px}
+ .vx-bottom a small{font-size:10px;line-height:1.2}
+ .vx-footer{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+ /* Prevent the last content from sitting behind mobile navigation */
+ #main{padding-bottom:0}
+ .vx-cta{padding-bottom:110px}
+}
+@media(max-width:390px){
+ .vx-home-services .vx-service-card{grid-template-columns:minmax(0,1fr) 90px;padding:13px}
+ .vx-home-services .vx-service-art{width:90px}
+ .vx-service-copy b{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+ .vx-service-card,.vx-motion-ring{transition:none!important}
+}
