@@ -59,3 +59,18 @@ Coloque somente arquivos reais e autorizados na pasta `assets`. Sem dados public
 ## Segurança
 
 Nunca colocar chaves secretas ou credenciais de administrador em arquivos do frontend. A chave publicável do Supabase deve ser usada apenas com as políticas RLS apropriadas, quando a integração for criada.
+
+## Painel administrativo — acesso único
+
+- Rota após implantação: `/admin` (arquivos em `admin/`).
+- Na primeira visita, o painel consulta `nobron-owner-auth` para saber se existe um proprietário.
+- Configuração inicial exige um **código de ativação de uso único**, um e-mail administrativo e senha de pelo menos 14 caracteres.
+- Depois da ativação, o formulário de cadastro deixa de aparecer; os logins seguintes exigem **somente a senha**.
+- O código é gerado no Supabase e apenas seu SHA-256 é armazenado no esquema privado `nobron_private`. Nunca adicionar o código ao GitHub.
+- O e-mail administrativo fica no banco privado e não é solicitado novamente na tela de login.
+- Sessões temporárias ficam em `sessionStorage`; não utilizar credenciais em `localStorage`.
+- A Edge Function valida a senha com Supabase Auth, limita tentativas e não envia chaves administrativas ao navegador.
+- As tabelas privadas são protegidas com RLS; publicações privilegiadas exigirão uma futura ação autenticada no servidor.
+- O painel de edição visual e upload de mídias **ainda não está implementado**. O login abre uma tela de acesso confirmado; não confundir com o editor final.
+- Configurar hospedagem separada para a V2 e testar a ativação antes de considerar a etapa concluída.
+- Em caso de perda da senha, a recuperação deverá ser tratada de forma segura pela administração do Supabase, nunca criando uma segunda conta pública.
