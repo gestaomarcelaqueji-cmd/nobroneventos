@@ -239,3 +239,8 @@ body.cms-v2-open button{margin:0;transform:none;min-height:0;border-radius:0;fon
 
 .v2-divider-line{height:1px;background:#44444c;margin:7px 0}
 .v2-small-heading{font-size:15px!important;letter-spacing:-.03em!important;margin:0!important}
+
+
+.v2-duplicate{height:38px;min-width:35px;border:1px solid #46464d!important;border-radius:9px!important;font-size:19px}
+.v2-duplicate:hover{background:#333339}
+@media(max-width:760px){.v2-stack-item{gap:5px}.v2-duplicate{min-width:30px}.v2-stack-item .v2-stack-name{font-size:12px}}
