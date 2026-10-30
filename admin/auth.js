@@ -7,7 +7,11 @@ const STORAGE='nobron-admin-session';
 const sections=['loading','setup','login','inside'];
 const el=id=>document.getElementById(id);
 const state={session:null};
-function show(id){for(const s of sections)el(s).hidden=s!==id;}
+function show(id){
+ for(const s of sections)el(s).hidden=s!==id;
+ if(id==='inside' && state.session?.access_token)window.nobronCms?.mount(state.session);
+ else window.nobronCms?.unmount();
+}
 function message(id,value,ok=false){const node=el(id);node.textContent=value;node.classList.toggle('ok',ok);}
 function store(session){
  state.session=session;
