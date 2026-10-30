@@ -15,7 +15,7 @@ function shell(){
  $("#cms-exit").onclick=$("#cms-logout").onclick=()=>window.nobronAdminLogout?.();
  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{STATE.tab=b.dataset.tab;STATE.dirty=false;render()});
 }
-const menu=()=>[["pages","Páginas","▤"],["projects","Projetos","▦"],["library","Biblioteca","▧"],["publish","Publicação","⇧"]].map(([id,label,icon])=>'<button type="button" data-tab="'+id+'" class="'+(STATE.tab===id?"selected":"")+'"><span>'+icon+'</span><b>'+label+'</b></button>').join("");
+const menu=()=>[["pages","Páginas","▤"],["projects","Projetos","▦"],["library","Biblioteca","▧"],["publish","Publicação","⇧"],["security","Segurança","♢"]].map(([id,label,icon])=>'<button type="button" data-tab="'+id+'" class="'+(STATE.tab===id?"selected":"")+'"><span>'+icon+'</span><b>'+label+'</b></button>').join("");
 const notify=(message,error=false)=>{const t=$("#cms-toast");t.textContent=message;t.className=error?"error":"ok";setTimeout(()=>{if(t.textContent===message)t.textContent=""},5500)};
 function activePage(){
  const key=STATE.page;
@@ -204,14 +204,60 @@ function renderPublish(){
  $("#cms-content").innerHTML='<div class="cms-project-header"><div><h2>Publicação</h2><p>Revise os rascunhos antes de alterar o conteúdo público.</p></div></div><div class="cms-publication-list">'+entries.map(([id,p])=>'<div><div><b>'+E(p.label)+'</b><small>'+ (STATE.drafts["page:"+id]?"Rascunho salvo":"Sem rascunho") +' · '+ (STATE.published["page:"+id]?"Publicado":"Conteúdo padrão") +'</small></div><button data-publish-page="'+id+'" '+(!STATE.drafts["page:"+id]?"disabled":"")+'>Publicar</button></div>').join("")+'</div><h2 class="cms-subtitle">Histórico de versões</h2><div class="cms-publication-list">'+(STATE.versions.length?STATE.versions.map(v=>'<div><div><b>'+E(v.kind)+" · "+E(v.key)+'</b><small>'+E(new Date(v.created_at).toLocaleString("pt-BR"))+'</small></div><span>Versão '+v.id+'</span></div>').join(""):'<p>O histórico aparecerá após a primeira atualização de conteúdo publicado.</p>')+'</div>';
  document.querySelectorAll("[data-publish-page]").forEach(btn=>btn.onclick=()=>publish("page",btn.dataset.publishPage))
 }
+function renderSecurity(){
+ $("#cms-content").innerHTML='<div class="cms-security-page"><div class="cms-project-header"><div><h2>Alterar senha</h2><p>Atualize sua senha de acesso administrativo.</p></div></div><form id="cms-password-form" autocomplete="off"><label class="cms-field"><span>Senha atual</span><input type="password" id="cms-current-password" autocomplete="current-password" maxlength="128" required></label><label class="cms-field"><span>Nova senha</span><input type="password" id="cms-new-password" autocomplete="new-password" minlength="14" maxlength="128" required></label><label class="cms-field"><span>Confirmar nova senha</span><input type="password" id="cms-confirm-password" autocomplete="new-password" minlength="14" maxlength="128" required></label><p class="cms-help">Use pelo menos 14 caracteres. A nova senha substitui a senha atual do painel.</p><button id="cms-password-submit" type="submit">Salvar nova senha</button><p id="cms-security-message" role="status" aria-live="polite"></p></form></div>';
+ $("#cms-password-form").onsubmit=async e=>{
+   e.preventDefault();
+   const form=e.currentTarget;
+   if(!form.reportValidity())return;
+   const current=$("#cms-current-password").value;
+   const password=$("#cms-new-password").value;
+   const confirmed=$("#cms-confirm-password").value;
+   const notice=$("#cms-security-message");
+   notice.textContent="";
+   if(password!==confirmed){notice.textContent="As senhas não coincidem.";return}
+   if(current===password){notice.textContent="Escolha uma senha diferente da atual.";return}
+   const button=$("#cms-password-submit");button.disabled=true;
+   try{
+     // Reauthenticate the owner, without revealing their stored email.
+     const login=await fetch(baseUrl+"/functions/v1/nobron-owner-auth",{
+       method:"POST",cache:"no-store",
+       headers:{apikey:publishable,"Content-Type":"application/json"},
+       body:JSON.stringify({action:"login",password:current})
+     });
+     const loginData=await login.json().catch(()=>({}));
+     if(!login.ok||!loginData.session?.access_token)
+       throw new Error(login.status===429?"Muitas tentativas. Tente novamente mais tarde.":"Senha atual incorreta.");
+     const access=loginData.session.access_token;
+     const updated=await fetch(baseUrl+"/auth/v1/user",{
+       method:"PUT",cache:"no-store",
+       headers:{apikey:publishable,Authorization:"Bearer "+access,"Content-Type":"application/json"},
+       body:JSON.stringify({password})
+     });
+     const result=await updated.json().catch(()=>({}));
+     if(!updated.ok)throw new Error(result.msg||result.message||"Não foi possível atualizar a senha.");
+     try{
+       await fetch(baseUrl+"/auth/v1/logout?scope=global",{
+         method:"POST",headers:{apikey:publishable,Authorization:"Bearer "+access}
+       });
+     }catch{}
+     form.reset();
+     await window.nobronAdminLogout?.();
+     const loginMessage=document.getElementById("login-message");
+     if(loginMessage){loginMessage.textContent="Senha alterada. Entre com sua nova senha.";loginMessage.classList.add("ok");}
+   }catch(err){notice.textContent=err.message||"Não foi possível alterar a senha.";notify(notice.textContent,true);}
+   finally{button.disabled=false;}
+ };
+}
 function render(){
  if(!$("#cms-content"))return;
  document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("selected",b.dataset.tab===STATE.tab));
- $("#cms-title").textContent=({pages:"Páginas",projects:"Projetos",library:"Biblioteca",publish:"Publicação"})[STATE.tab];
+ $("#cms-title").textContent=({pages:"Páginas",projects:"Projetos",library:"Biblioteca",publish:"Publicação",security:"Segurança"})[STATE.tab];
  if(STATE.tab==="pages")renderPages();
  if(STATE.tab==="projects")renderProjects();
  if(STATE.tab==="library")renderLibrary();
  if(STATE.tab==="publish")renderPublish();
+ if(STATE.tab==="security")renderSecurity();
 }
 async function mount(session){
  if(!session?.access_token)return;
