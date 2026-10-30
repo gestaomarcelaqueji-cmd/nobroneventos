@@ -73,7 +73,7 @@ function render(){
  const v=current(),route=v.route;
  document.title=v.label+" | noBRon.";
  document.body.dataset.theme=localStorage.getItem("nobron-theme")||"dark";
- document.getElementById("app").innerHTML='<header class="vx-header"><a class="vx-logo" href="/">noBRon.</a><nav>'+nav.map(([n,u])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'>'+n+'</a>').join("")+'</nav><button class="vx-theme" title="Alternar tema">◐</button></header><main id="main">'+v.sections.filter(s=>s.visible!==false).map((s,i)=>pageBody(s,i)+'<div class="vx-divider vx-d-'+(s.device?.desktop?.divider||"curve")+' vx-m-'+(s.device?.mobile?.divider||"curve")+'" aria-hidden="true"></div>').join("")+'</main><footer class="vx-footer"><a class="vx-logo" href="/">noBRon.</a><span>Design · Motion · Sistemas</span></footer><nav class="vx-bottom">'+nav.map(([n,u,ico])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'><span>'+ico+'</span><small>'+n+'</small></a>').join("")+'</nav><div id="vx-overlay" hidden></div>';
+ document.getElementById("app").innerHTML='<header class="vx-header"><a class="vx-logo" href="/">noBRon.</a><nav>'+nav.map(([n,u])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'>'+n+'</a>').join("")+'</nav><button class="vx-theme" title="Alternar tema">◐</button></header><main id="main">'+v.sections.filter(s=>s.visible!==false).map((s,i)=>'<div class="vx-cms-section" data-cms-index="'+i+'" data-cms-id="'+esc(s.id)+'">'+pageBody(s,i)+'<div class="vx-divider vx-d-'+(s.device?.desktop?.divider||"curve")+' vx-m-'+(s.device?.mobile?.divider||"curve")+'" aria-hidden="true"></div></div>').join("")+'</main><footer class="vx-footer"><a class="vx-logo" href="/">noBRon.</a><span>Design · Motion · Sistemas</span></footer><nav class="vx-bottom">'+nav.map(([n,u,ico])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'><span>'+ico+'</span><small>'+n+'</small></a>').join("")+'</nav><div id="vx-overlay" hidden></div>';
  const theme=document.querySelector(".vx-theme");
  if(theme)theme.onclick=()=>{const v=document.body.dataset.theme==="light"?"dark":"light";document.body.dataset.theme=v;localStorage.setItem("nobron-theme",v)};
   document.querySelectorAll(".vx-photo").forEach(el=>{el.onclick=()=>{document.querySelectorAll(".vx-photo.active").forEach(x=>{if(x!==el)x.classList.remove("active")});el.classList.toggle("active")};el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}});
@@ -136,5 +136,38 @@ async function load(){
 }
 document.addEventListener("click",e=>{const a=e.target.closest("a[href]");if(!a||e.metaKey||e.ctrlKey||e.altKey||e.shiftKey||e.button!==0)return;const u=new URL(a.href,location.href);if(u.origin!==location.origin||!R[u.pathname])return;e.preventDefault();history.pushState(null,"",u.pathname+u.search+u.hash);S.filter="todos";render();window.scrollTo(0,0)});
 window.addEventListener("popstate",()=>{S.filter="todos";render();window.scrollTo(0,0)});
+// Visual editor: only same-origin parent can control a preview iframe.
+const PREVIEW_MODE=new URLSearchParams(location.search).get("cms_preview")==="1"&&window.parent!==window;
+if(PREVIEW_MODE){
+ document.documentElement.classList.add("vx-cms-preview");
+ const sheet=document.createElement("style");
+ sheet.textContent=".vx-cms-preview .vx-cms-section{position:relative;cursor:pointer;outline:2px solid transparent;outline-offset:-2px}.vx-cms-preview .vx-cms-section:hover{outline-color:#d3d3d3}.vx-cms-preview .vx-cms-section[data-active='true']{outline:3px solid #fff}.vx-cms-preview .vx-cms-section[data-active='true']:after{content:'EDITANDO';position:absolute;top:7px;right:7px;z-index:80;padding:8px;background:#fff;color:#111;font:700 10px system-ui;letter-spacing:.1em}.vx-cms-preview a,.vx-cms-preview button{cursor:pointer}";
+ document.head.appendChild(sheet);
+ const report=(kind,extra={})=>window.parent.postMessage({source:"nobron-preview",kind,key:pkey(),...extra},location.origin);
+ window.addEventListener("message",evt=>{
+  if(evt.origin!==location.origin||evt.source!==window.parent||evt.data?.source!=="nobron-editor")return;
+  const m=evt.data;
+  if(m.kind==="draft"&&m.key===pkey()&&m.doc&&Array.isArray(m.doc.sections)){
+   S.page[m.key]=structuredClone(m.doc);
+   render();
+   if(Number.isInteger(m.selected)){
+    const sections=document.querySelectorAll(".vx-cms-section");
+    // Section index refers to the ordered, visible sequence.
+    sections.forEach(el=>{el.dataset.active=String(el.dataset.cmsId===m.selectedId)});
+   }
+  }
+  if(m.kind==="highlight"){document.querySelectorAll(".vx-cms-section").forEach(el=>el.dataset.active=String(el.dataset.cmsId===m.id));}
+  if(m.kind==="scroll"){const target=[...document.querySelectorAll(".vx-cms-section")].find(el=>el.dataset.cmsId===m.id);target?.scrollIntoView({block:"start",behavior:"smooth"});}
+ });
+ document.addEventListener("click",e=>{
+  const section=e.target.closest(".vx-cms-section");
+  if(!section)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  report("select",{id:section.dataset.cmsId});
+ },true);
+ document.addEventListener("submit",e=>{e.preventDefault();e.stopImmediatePropagation()},true);
+ report("ready");
+}
+// Public site is unchanged when not running inside the editor.
 render();load();
 })();
