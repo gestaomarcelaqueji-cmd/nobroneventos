@@ -185,10 +185,20 @@ function renderEditContent(){
  $$("[data-edit-tab]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.editTab===st.tab)));
  const s=st.section;
  if(st.tab==="content"){
- root.innerHTML='<label class="v2-field"><span>Título</span><input id="v2-title" maxlength="150" value="'+html(s.title)+'"></label><label class="v2-field"><span>Descrição</span><textarea id="v2-description" rows="4" maxlength="1200">'+html(s.description||"")+'</textarea></label><label class="v2-checkbox"><input id="v2-visible" type="checkbox" '+(s.visible===false?"":"checked")+'> Mostrar esta seção no site</label>';
+ const canCta=["homeHero","serviceFeature","designHero","motionHero","systemsHero","contactBand"].includes(s.type);
+ root.innerHTML='<label class="v2-field"><span>Título</span><input id="v2-title" maxlength="150" value="'+html(s.title)+'"></label><label class="v2-field"><span>Descrição</span><textarea id="v2-description" rows="4" maxlength="1200">'+html(s.description||"")+'</textarea></label>'+(canCta?'<div class="v2-divider-line"></div><h3 class="v2-small-heading">Botão da seção</h3><label class="v2-field"><span>Texto do botão</span><input id="v2-cta-label" maxlength="80" value="'+html(s.cta?.label||"")+'" placeholder="Usar texto padrão"></label><label class="v2-field"><span>Destino (URL)</span><input id="v2-cta-href" maxlength="400" value="'+html(s.cta?.href||"")+'" placeholder="/contato"></label><label class="v2-checkbox"><input id="v2-cta-visible" type="checkbox" '+(s.cta?.visible===false?"":"checked")+'> Mostrar botão</label>':"")+'<div class="v2-divider-line"></div><label class="v2-checkbox"><input id="v2-visible" type="checkbox" '+(s.visible===false?"":"checked")+'> Mostrar esta seção no site</label>';
  $("#v2-title").oninput=e=>{st.section.title=e.target.value;sendDraft()};
  $("#v2-description").oninput=e=>{st.section.description=e.target.value;sendDraft()};
  $("#v2-visible").onchange=e=>{st.section.visible=e.target.checked;sendDraft()};
+ if(canCta){
+  ["label","href"].forEach(key=>$("#v2-cta-"+key).oninput=e=>{
+   st.section.cta??={};
+   st.section.cta[key]=e.target.value;
+   sendDraft();
+  });
+  $("#v2-cta-visible").onchange=e=>{st.section.cta??={};st.section.cta.visible=e.target.checked;sendDraft()};
+ }
+
  }
  if(st.tab==="media"){
  const a=s.media?.[st.device],assetName=a?.name||"Nenhuma mídia cadastrada";
