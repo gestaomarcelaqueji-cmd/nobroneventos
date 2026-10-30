@@ -3,6 +3,17 @@
 const C=window.NOBRON_SCHEMA, {pages,services,baseUrl,publishable}=C;
 const nav=[["Início","/","⌂"],["Soluções","/solucoes","▤"],["Projetos","/projetos","▦"],["Sobre","/sobre","◯"],["Contato","/contato","✉"]];
 const R=Object.fromEntries(Object.entries(pages).map(([k,v])=>[v.route,k]));
+function bottomIcon(path){
+ const paths={
+  "/":'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
+  "/solucoes":'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h7"/>',
+  "/projetos":'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  "/sobre":'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 16-5 16 0"/>',
+  "/contato":'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>'
+ };
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths[path]+'</svg>';
+}
+
 const S={page:{},projects:[],filter:"todos"};
 const esc=t=>String(t??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
 const pkey=()=>R[location.pathname.replace(/\/+$/,"")||"/"]||"home";
@@ -77,9 +88,10 @@ function pageBody(s,i){
 }
 function render(){
  const v=current(),route=v.route;
+ const activeNav=route.startsWith("/solucoes/")?"/solucoes":route;
  document.title=v.label+" | noBRon.";
  document.body.dataset.theme=localStorage.getItem("nobron-theme")||"dark";
- document.getElementById("app").innerHTML='<header class="vx-header"><a class="vx-logo" href="/">noBRon.</a><nav>'+nav.map(([n,u])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'>'+n+'</a>').join("")+'</nav><button class="vx-theme" title="Alternar tema">◐</button></header><main id="main">'+v.sections.filter(s=>s.visible!==false).map((s,i)=>'<div class="vx-cms-section" data-cms-index="'+i+'" data-cms-id="'+esc(s.id)+'">'+pageBody(s,i)+'<div class="vx-divider vx-d-'+(s.device?.desktop?.divider||"curve")+' vx-m-'+(s.device?.mobile?.divider||"curve")+'" aria-hidden="true"></div></div>').join("")+'</main><footer class="vx-footer"><a class="vx-logo" href="/">noBRon.</a><span>Design · Motion · Sistemas</span></footer><nav class="vx-bottom">'+nav.map(([n,u,ico])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'><span>'+ico+'</span><small>'+n+'</small></a>').join("")+'</nav><div id="vx-overlay" hidden></div>';
+ document.getElementById("app").innerHTML='<header class="vx-header"><a class="vx-logo" href="/">noBRon.</a><nav>'+nav.map(([n,u])=>'<a href="'+u+'" '+(u===activeNav?'aria-current="page"':'')+'>'+n+'</a>').join("")+'</nav><button class="vx-theme" title="Alternar tema">◐</button></header><main id="main">'+v.sections.filter(s=>s.visible!==false).map((s,i)=>'<div class="vx-cms-section" data-cms-index="'+i+'" data-cms-id="'+esc(s.id)+'">'+pageBody(s,i)+'<div class="vx-divider vx-d-'+(s.device?.desktop?.divider||"curve")+' vx-m-'+(s.device?.mobile?.divider||"curve")+'" aria-hidden="true"></div></div>').join("")+'</main><footer class="vx-footer"><a class="vx-logo" href="/">noBRon.</a><span>Design · Motion · Sistemas</span></footer><nav class="vx-bottom">'+nav.map(([n,u,ico])=>'<a href="'+u+'" '+(u===activeNav?'aria-current="page"':'')+'><span class="vx-nav-icon">'+bottomIcon(u)+'</span><small>'+n+'</small></a>').join("")+'</nav><div id="vx-overlay" hidden></div>';
  const theme=document.querySelector(".vx-theme");
  if(theme)theme.onclick=()=>{const v=document.body.dataset.theme==="light"?"dark":"light";document.body.dataset.theme=v;localStorage.setItem("nobron-theme",v)};
   document.querySelectorAll(".vx-photo").forEach(el=>{el.onclick=()=>{document.querySelectorAll(".vx-photo.active").forEach(x=>{if(x!==el)x.classList.remove("active")});el.classList.toggle("active")};el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}});
