@@ -20,7 +20,8 @@ function media(s,cls,placeholder){
  if(a.type==="video"||/\.(mp4|webm)(\?|$)/i.test(u))return '<video src="'+esc(u)+'" controls playsinline preload="metadata"></video>';
  return '<img src="'+esc(u)+'" loading="lazy" alt="Mídia de '+esc(pages[pkey()].label)+'" style="'+style(s,device)+'">';
  };
- return '<div class="vx-media vx-photo '+cls+'" tabindex="0" aria-label="Revelar cores da imagem">'+(d&&m?'<div class="vx-desktop-only">'+item(desktop,"desktop")+'</div><div class="vx-mobile-only">'+item(mobile,"mobile")+'</div>':item(desktop||mobile,desktop?"desktop":"mobile"))+'</div>'
+ const missing='<div class="vx-device-empty"><small>Mídia não cadastrada para este dispositivo</small></div>';
+ return '<div class="vx-media vx-photo '+cls+'" tabindex="0" aria-label="Revelar cores da imagem"><div class="vx-desktop-only">'+(d?item(desktop,"desktop"):missing)+'</div><div class="vx-mobile-only">'+(m?item(mobile,"mobile"):missing)+'</div></div>'
 }
 function division(s,i){
  const opts=["curve","diagonal","fold","notch"],d=s.device?.desktop?.divider,m=s.device?.mobile?.divider;
@@ -31,7 +32,7 @@ function works(cat="todos",limit=99){
  const a=visibleWorks(cat,limit);
  if(!a.length)return '<div class="vx-empty"><b>Portfólio em atualização.</b><p>Os trabalhos realizados serão publicados aqui.</p></div>';
  return '<div class="vx-project-grid">'+a.map(p=>{
- const img=url(p.cover?.mobile)||url(p.cover?.desktop)||url(p.cover)||url(p.media?.[0]);
+ const img=url(p.cover?.[innerWidth<=800?"mobile":"desktop"])||url(p.cover);
  return '<button type="button" class="vx-project" data-project="'+esc(p.id)+'"><span class="vx-project-image">'+(img?'<img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.title)+'">':'<span>'+esc(p.category)+'</span>')+'</span><strong>'+esc(p.title)+'</strong><small>'+esc(p.category)+'</small></button>'
  }).join("")+'</div>'
 }
@@ -71,8 +72,11 @@ function pageBody(s,i){
 function render(){
  const v=current(),route=v.route;
  document.title=v.label+" | noBRon.";
+ document.body.dataset.theme=localStorage.getItem("nobron-theme")||"dark";
  document.getElementById("app").innerHTML='<header class="vx-header"><a class="vx-logo" href="/">noBRon.</a><nav>'+nav.map(([n,u])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'>'+n+'</a>').join("")+'</nav><button class="vx-theme" title="Alternar tema">◐</button></header><main id="main">'+v.sections.filter(s=>s.visible!==false).map((s,i)=>pageBody(s,i)+'<div class="vx-divider vx-divider-'+i%4+'" aria-hidden="true"></div>').join("")+'</main><footer class="vx-footer"><a class="vx-logo" href="/">noBRon.</a><span>Design · Motion · Sistemas</span></footer><nav class="vx-bottom">'+nav.map(([n,u,ico])=>'<a href="'+u+'" '+(u===route?'aria-current="page"':'')+'><span>'+ico+'</span><small>'+n+'</small></a>').join("")+'</nav><div id="vx-overlay" hidden></div>';
- document.querySelectorAll(".vx-photo").forEach(el=>{el.onclick=()=>{document.querySelectorAll(".vx-photo.active").forEach(x=>{if(x!==el)x.classList.remove("active")});el.classList.toggle("active")};el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}});
+ const theme=document.querySelector(".vx-theme");
+ if(theme)theme.onclick=()=>{const v=document.body.dataset.theme==="light"?"dark":"light";document.body.dataset.theme=v;localStorage.setItem("nobron-theme",v)};
+  document.querySelectorAll(".vx-photo").forEach(el=>{el.onclick=()=>{document.querySelectorAll(".vx-photo.active").forEach(x=>{if(x!==el)x.classList.remove("active")});el.classList.toggle("active")};el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}});
  document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{S.filter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("vx-gallery").innerHTML=works(S.filter);bindProjects()});
  const f=document.getElementById("vx-form");if(f){const pre=new URLSearchParams(location.search).get("servico");if(["design","motion","sistemas"].includes(pre))f.elements.servico.value=pre;f.onsubmit=e=>{e.preventDefault();document.getElementById("vx-form-status").textContent="Formulário em preparação. O envio será habilitado após a configuração do atendimento."}};
  bindProjects();
