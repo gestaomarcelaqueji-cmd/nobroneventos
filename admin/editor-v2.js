@@ -153,6 +153,8 @@ window.addEventListener("message",evt=>{
 });
 function editSection(id){
  const section=st.doc?.sections.find(s=>s.id===id);if(!section)return;
+ // Opening an item from "Todas as seções" must restore the actual page preview.
+ if(!$("#v2-live-frame")){st.view="page";pageView();}
  st.section=copy(section);st.selected=id;st.tab=MEDIA_TYPES.has(section.type)?"media":"content";st.view="edit";renderNav();renderLayer();
 }
 function updatePreview(){if(st.view==="edit")sendDraft()}
