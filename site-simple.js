@@ -22,7 +22,7 @@ function mediaNode(m,s,device,opts={}){
  const pos=Math.min(100,Math.max(0,Number(s?.device?.[device]?.position??50)));
  const zoom=Math.min(1.8,Math.max(1,Number(s?.device?.[device]?.zoom??100)/100));
  const attr='style="object-position:'+pos+'% 50%;transform:scale('+zoom+')"';
- if(video(m))return '<video src="'+esc(src)+'" playsinline muted loop '+(opts.controls?'controls':'')+' preload="metadata" class="ns-media-content"></video>';
+ if(video(m))return '<video src="'+esc(src)+'" playsinline muted loop autoplay '+(opts.controls?'controls':'')+' preload="metadata" class="ns-media-content"></video>';
  return '<img src="'+esc(src)+'" alt="'+esc(opts.alt||s.title||"Mídia da noBRon")+'" '+attr+' loading="'+(opts.eager?"eager":"lazy")+'" class="ns-media-content">';
 }
 function slot(section,className,placeholder){
@@ -68,7 +68,7 @@ function galleryItem(m,i,s){
  const u=mediaUrl(m);if(!u)return "";
  return '<button class="ns-gallery-item" data-lightbox="'+esc(u)+'" data-video="'+(video(m)?"1":"0")+'" aria-label="Ampliar mídia '+(i+1)+'">'+(video(m)?'<video src="'+esc(u)+'" muted playsinline preload="metadata"></video><span class="ns-play-icon">▶</span>':'<img loading="lazy" src="'+esc(u)+'" alt="Trabalho '+(i+1)+' de '+esc(page.label)+'">')+'</button>'
 }
-function cta(s){return '<section class="ns-cta"><div class="ns-wrap"><small>ORÇAMENTO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+action("/contato","Entrar em contato")+'</div></section>'}
+function cta(s){return '<section class="ns-cta">'+slot(s,"ns-cta-media","")+'<div class="ns-wrap"><small>ORÇAMENTO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+action("/contato","Entrar em contato")+'</div></section>'}
 function contact(s){
  let channels=[];
  const email=String(s.email||"").trim();
@@ -91,6 +91,7 @@ function render(){
  const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
  const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
  const body=sections.filter(s=>s.visible!==false).map((s,i)=>{
+ if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
  return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'
  }).join("");
