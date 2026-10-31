@@ -26,14 +26,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/projetos",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/sobre",
-      "destination": "/index.html"
-    },
-    {
       "source": "/contato",
       "destination": "/index.html"
     }
@@ -63,6 +55,18 @@
           "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/projetos",
+      "destination": "/solucoes",
+      "permanent": true
+    },
+    {
+      "source": "/sobre",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
