@@ -1,72 +1,50 @@
 # noBRon V2
 
-Site institucional de Design Digital, Motion Design e Sistemas para eventos, baladas, pubs e artistas.
+Site digital com **seis páginas** e administração direta de imagens e vídeos.
 
-## Estrutura atual
+## Páginas públicas
 
-- Oito rotas independentes: `/`, `/solucoes`, `/solucoes/design`, `/solucoes/motion`, `/solucoes/sistemas`, `/projetos`, `/sobre`, `/contato`.
-- `content-schema.js`: definições iniciais da copy e das seções de cada página.
-- `site-v2.js` e `site-v2.css`: site público com layouts distintos, navegação glass no mobile, dividers, galerias e visualização ampliada de projetos.
-- `admin/index.html`, `admin/auth.js`, `admin/dashboard.js` e seus CSS: acesso protegido e painel de conteúdo.
-- `supabase/functions/nobron-owner-auth/index.ts`: código-fonte da função de autenticação. A função de publicação também está implantada no projeto Supabase.
-- `vercel.json`: rotas e cabeçalhos de segurança.
+| Página | Caminho |
+| --- | --- |
+| Home | `/` |
+| Soluções | `/solucoes` |
+| Design Digital | `/solucoes/design` |
+| Motion Design | `/solucoes/motion` |
+| Sistemas | `/solucoes/sistemas` |
+| Contato | `/contato` |
 
-O site atual e o novo projeto `nobroneventos` permanecem separados.
+Rotas antigas `/sobre` e `/projetos` redirecionam para outras páginas.
 
-## Editor administrativo
+## Painel /admin
 
-URL: `/admin`.
+A senha administrativa original é preservada. Depois de entrar:
 
-A primeira ativação requer o código de instalação de uso único, e-mail e senha. Depois, somente a senha é solicitada; a identidade de proprietário continua sendo verificada no servidor.
+1. Selecione uma das seis páginas.
+2. Escolha **Mobile** ou **Desktop**.
+3. Em **Abertura** ou **Seção do serviço**, toque em **Escolher da biblioteca** para atribuir uma imagem ou vídeo já enviado.
+4. Em **Galeria / Carrossel**, selecione vários arquivos; reorganize ou remova os escolhidos.
+5. Toque em **Salvar rascunho** e, quando estiver pronto, em **Publicar página**.
 
-O editor permite:
-- Selecionar as oito páginas e cada seção individual.
-- Editar título, descrição e visibilidade de seções.
-- Reordenar seções.
-- Enviar e selecionar arquivos de mídia na biblioteca privada.
-- Atribuir mídias independentes para desktop e mobile, além de posição, zoom e section divider para cada versão.
-- Cadastrar e editar projetos, categoria, estágio, descrição, capas desktop/mobile, arquivos da galeria e destaque na Home.
-- Salvar rascunhos sem alterar conteúdo publicado.
-- Publicar páginas/projetos com validação da sessão e permissões no servidor.
-- Consultar histórico básico de versões.
+Uploads existentes continuam no bucket privado `nobron-drafts`. Apenas mídias efetivamente publicadas são copiadas para `nobron-public`. O painel não depende mais do cadastro de projetos para mostrar uma imagem.
 
-## Persistência / segurança
+Campos de texto e canais de contato estão acessíveis em **Editar texto**.
 
-O Supabase do projeto é `fsaqzbwxhjpnfgqxdvnz`. Nunca inserir service-role keys, código de ativação, senha ou tokens no repositório.
+Se não houver uma mídia específica para determinado dispositivo, a página utiliza a versão atribuída ao outro dispositivo como reserva, sem alterar a atribuição original.
 
-- `cms_admins`: conta autorizada.
-- `cms_drafts`: conteúdo privado em preparação.
-- `cms_published`: conteúdo público.
-- `cms_media`: índice de mídias.
-- `cms_versions`: snapshots de publicações anteriores.
-- `nobron-drafts`: bucket privado para uploads.
-- `nobron-public`: bucket de mídias publicadas.
+## Estrutura do código
 
-RLS é obrigatório em tabelas expostas. A função `nobron-cms-publish` valida o token no servidor, verifica proprietário e promove arquivos do bucket privado antes de publicar a versão. Arquivos não utilizados não devem ser excluídos sem conferir referências.
+- `content-schema.js`: seis páginas e suas posições editáveis.
+- `site-simple.js` e `site-simple.css`: site público e suas galerias.
+- `admin/media-pages.js` e `admin/media-pages.css`: interface de atribuição de mídias.
+- `admin/auth.js`: autenticação, recuperação e alteração de senha.
+- `supabase/functions/nobron-cms-publish/index.ts`: publicação autenticada com conversão de referências de mídias privadas em públicas.
 
-## Pendências conhecidas
+## Atenção
 
-- O acervo de projetos reais ainda precisa ser cadastrado pelo painel. Não preencher com portfólio fictício.
-- O formulário de contato público ainda está em prévia e **não envia solicitações**.
-- A prévia interna do editor é uma representação da seção, não um preview 100% idêntico ao site público.
-- Restauração de versões, remoção segura em lote, otimização/transcodificação de vídeos e editor da identidade global precisam de trabalho adicional.
-- Falta executar testes ponta a ponta de upload, gravação, publicação, logout e restauração com uma sessão real autorizada. Testes de sintaxe, rendering sem navegador e inspeção de deploy foram realizados, mas não substituem testes reais.
-- O Supabase alerta que **Leaked Password Protection** está desabilitado em Auth. Revisar em Settings / Authentication para melhorar a proteção da conta.
+- Os arquivos da biblioteca são privados até serem publicados em alguma página.
+- A publicação requer uma sessão administrativa válida no Supabase.
+- Não apagar as mídias do Storage sem conferir onde são usadas.
+- A versão atual ainda deve passar por teste real de escolha, salvamento e publicação com a sessão da proprietária; inspeção estática e simulações não substituem esse teste.
+- A proteção contra senhas vazadas do Supabase Auth continua com um aviso de configuração independente deste fluxo.
 
-## Desenvolvimento local
-
-O projeto utiliza HTML, CSS e JavaScript puro; não usa Next.js. Execute um servidor HTTP que sirva a raiz do repositório, por exemplo `python dev_server.py`, e abra `http://localhost:3000`.
-
-A regra de comunicação da noBRon é copy curta, clara e específica. A criatividade deve aparecer nos layouts e nos trabalhos reais, não em slogans.
-
-
-## Recuperação e troca de senha administrativa
-
-- Na rota `/admin`, **Esqueci minha senha** solicita o e-mail cadastrado e aciona `Supabase Auth /recover`. O endereço administrativo não é exibido.
-- O Supabase envia o link; o navegador retorna para `https://nobroneventos.vercel.app/admin` e mostra **Nova senha** ao reconhecer um token de recuperação do proprietário.
-- A tela não persiste o token de recuperação em `sessionStorage` e remove os parâmetros sensíveis da barra de endereço.
-- Na área **Segurança**, o proprietário pode atualizar a senha após digitar a senha atual. O login continua exigindo apenas a senha.
-- Após atualização, a sessão atual é encerrada e o proprietário entra novamente com a nova senha.
-- **Requisito operacional:** em [Supabase → Authentication → URL Configuration](https://supabase.com/dashboard/project/fsaqzbwxhjpnfgqxdvnz/auth/url-configuration), definir o Site URL como `https://nobroneventos.vercel.app` e autorizar `https://nobroneventos.vercel.app/admin` como Redirect URL.
-- Verificar entrega de e-mails no provedor SMTP configurado pelo projeto. Sem uma configuração de envio compatível, o formulário pode aceitar o pedido, mas a mensagem não ser entregue.
-- Testes de código foram executados sem enviar e-mails reais ou utilizar a senha administrativa da usuária. O fluxo final deve ser testado pela proprietária.
+Este projeto está separado do site antigo da noBRon.
