@@ -66,7 +66,7 @@ function documentFor(key){const record=st.drafts.get(key)||st.published.get(key)
  const current=record.sections;
  const result=defaults.map(s=>{
   const old=current.find(x=>x.id===s.id);if(!old)return s;
-  return {...s,...old,media:{...s.media,...old.media},gallery:{...s.gallery,...old.gallery}};
+  return {...s,...old,type:s.type,service:s.service,items:s.items,media:{...s.media,...old.media},gallery:{...s.gallery,...old.gallery}};
  });
  return {sections:result};
 }
