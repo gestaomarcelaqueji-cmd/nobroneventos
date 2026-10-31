@@ -180,3 +180,33 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}h1,h2,h3
 .ns-cta-media.ns-graphic{display:none}
 .ns-cta-media img,.ns-cta-media video{width:100%;height:100%;object-fit:cover}
 @media(max-width:800px){.ns-cta-media{opacity:.18}}
+
+
+/* Each service has a genuinely different portfolio treatment. */
+.ns-page-design .ns-gallery-track{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+ overflow:visible;scroll-snap-type:none
+}
+.ns-page-design .ns-gallery-item{flex:auto;min-width:0;aspect-ratio:3/4;scroll-snap-align:none}
+.ns-page-design .ns-gallery-item:nth-child(5n+2){aspect-ratio:4/5}
+.ns-page-design .ns-gallery-item:nth-child(5n+3){aspect-ratio:1/1}
+.ns-page-design .ns-gallery-tools button{display:none}
+.ns-page-motion .ns-gallery-track{gap:18px}
+.ns-page-motion .ns-gallery-item{aspect-ratio:9/16;max-height:540px;flex-basis:clamp(250px,29vw,380px);border-radius:3px}
+.ns-page-motion .ns-gallery-item>video{filter:grayscale(1);object-position:center}
+.ns-page-motion .ns-play-icon{width:70px;height:70px}
+.ns-page-sistemas .ns-gallery-track{padding:34px 14px 44px;gap:38px;perspective:1400px}
+.ns-page-sistemas .ns-gallery-item{flex-basis:clamp(370px,47vw,640px);aspect-ratio:16/10;border:8px solid #2b2b31;border-top-width:24px;box-shadow:20px 22px 0 #a7a7a7,24px 28px 42px #0002;transform:perspective(950px) rotateY(-6deg);transition:transform .65s,box-shadow .65s}
+.ns-page-sistemas .ns-gallery-item:hover{transform:perspective(950px) rotateY(0deg) translateY(-5px);box-shadow:10px 14px 0 #a7a7a7,15px 22px 38px #0003}
+.ns-page-home .ns-gallery-item{flex-basis:clamp(320px,38vw,520px);aspect-ratio:4/3}
+@media(max-width:800px){
+ .ns-page-design .ns-gallery-track{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding-right:0;margin-right:0}
+ .ns-page-design .ns-gallery-item{width:100%;aspect-ratio:3/4}
+ .ns-page-design .ns-gallery-item:nth-child(5n+2){aspect-ratio:4/5}
+ .ns-page-design .ns-gallery-item:nth-child(5n+3){aspect-ratio:1/1}
+ .ns-page-motion .ns-gallery-item{flex-basis:min(72vw,330px);aspect-ratio:9/16}
+ .ns-page-sistemas .ns-gallery-track{padding:18px 12px 28px 4px;gap:25px}
+ .ns-page-sistemas .ns-gallery-item{flex-basis:min(84vw,370px);aspect-ratio:4/3;border-width:5px;border-top-width:19px;box-shadow:9px 12px 0 #b3b3b3;transform:perspective(750px) rotateY(-4deg)}
+ .ns-page-home .ns-gallery-item{flex-basis:min(84vw,350px);aspect-ratio:4/3}
+}
+@media(prefers-reduced-motion:reduce){.ns-page-sistemas .ns-gallery-item{transition:none;transform:none}}
