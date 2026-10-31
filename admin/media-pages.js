@@ -73,7 +73,7 @@ function documentFor(key){const record=st.drafts.get(key)||st.published.get(key)
 function root(){
  document.body.classList.add("mm-open");
  $("#inside").innerHTML='<div class="mm-app"><header class="mm-head"><strong>noBRon.</strong><span>ADMIN / MÍDIAS</span><button id="mm-logout">Sair</button></header><main id="mm-main"></main><div id="mm-layer"></div><div id="mm-toast" role="status" aria-live="polite"></div></div>';
- $("#mm-logout").onclick=()=>window.nobronAdminLogout?.();
+ $("#mm-logout").onclick=()=>{if(st.dirty&&!confirm("Há alterações sem salvar. Sair mesmo assim?"))return;window.nobronAdminLogout?.()};
  window.onbeforeunload=e=>{if(st.dirty){e.preventDefault();e.returnValue=""}};
 }
 function intro(title,subtitle,back=false){
@@ -89,11 +89,13 @@ function openPage(k){
 }
 function rowActions(s){
  const a=s.media?.[st.device]||null;
- return '<div class="mm-target"><div class="mm-target-title"><span>Imagem ou vídeo · <b>'+st.device.toUpperCase()+'</b></span><small>'+(a?esc(a.name||"Selecionada"):"Não selecionada")+'</small></div>'+preview(a)+'<div class="mm-target-actions"><button data-pick="'+esc(s.id)+'" class="mm-pick-btn">'+(a?"Trocar mídia":"Escolher da biblioteca")+'</button>'+(a?'<button class="mm-link" data-clear="'+esc(s.id)+'">Remover</button>':"")+'</div></div>';
+ const other=s.media?.[st.device==="mobile"?"desktop":"mobile"]||null;
+ return '<div class="mm-target"><div class="mm-target-title"><span>Imagem ou vídeo · <b>'+st.device.toUpperCase()+'</b></span><small>'+(a?esc(a.name||"Selecionada"):"Não selecionada")+'</small></div>'+preview(a)+(a?"":other?'<p class="mm-fallback-note">Sem arquivo nesta versão. O site usará a mídia do outro dispositivo enquanto você não escolher uma.</p>':"")+'<div class="mm-target-actions"><button data-pick="'+esc(s.id)+'" class="mm-pick-btn">'+(a?"Trocar mídia":"Escolher da biblioteca")+'</button>'+(a?'<button class="mm-link" data-clear="'+esc(s.id)+'">Remover</button>':"")+'</div></div>';
 }
 function galleryRow(s){
  const arr=s.gallery?.[st.device]||[];
- return '<div class="mm-target"><div class="mm-target-title"><span>Carrossel · <b>'+st.device.toUpperCase()+'</b></span><small>'+arr.length+' arquivos</small></div>'+(arr.length?'<div class="mm-picked-media">'+arr.map((m,i)=>'<div class="mm-picked-item">'+preview(m,"mm-small-preview")+'<span>'+esc(m.name||"Mídia")+'</span><div><button data-move="'+esc(s.id)+':'+i+':-1" title="Mover para trás">←</button><button data-move="'+esc(s.id)+':'+i+':1" title="Mover para frente">→</button><button data-remove="'+esc(s.id)+':'+i+'" title="Remover">×</button></div></div>').join("")+'</div>':'<div class="mm-gallery-empty">Nenhuma imagem ou vídeo nesta galeria.</div>')+'<button class="mm-pick-btn" data-pick="'+esc(s.id)+'">Escolher imagens e vídeos <span>＋</span></button></div>';
+ const alternate=s.gallery?.[st.device==="mobile"?"desktop":"mobile"]||[];
+ return '<div class="mm-target"><div class="mm-target-title"><span>Carrossel · <b>'+st.device.toUpperCase()+'</b></span><small>'+arr.length+' arquivos</small></div>'+(arr.length?'<div class="mm-picked-media">'+arr.map((m,i)=>'<div class="mm-picked-item">'+preview(m,"mm-small-preview")+'<span>'+esc(m.name||"Mídia")+'</span><div><button data-move="'+esc(s.id)+':'+i+':-1" title="Mover para trás">←</button><button data-move="'+esc(s.id)+':'+i+':1" title="Mover para frente">→</button><button data-remove="'+esc(s.id)+':'+i+'" title="Remover">×</button></div></div>').join("")+'</div>':'<div class="mm-gallery-empty">Nenhuma mídia selecionada.'+(alternate.length?' O site mostrará as mídias do outro dispositivo como reserva.':'')+'</div>')+'<button class="mm-pick-btn" data-pick="'+esc(s.id)+'">Escolher imagens e vídeos <span>＋</span></button></div>';
 }
 function pageView(){
  const p=pages[st.key];
@@ -193,8 +195,19 @@ async function saveDoc(){
  }catch(e){toast("Não foi possível salvar: "+e.message,true);return false}
  finally{setBusy(false)}
 }
+function countDraftMedia(doc){
+ const names=new Set();
+ for(const section of doc?.sections||[]){
+  for(const device of ["mobile","desktop"]){
+   const assets=[section.media?.[device],...(section.gallery?.[device]||[])];
+   for(const asset of assets)if(asset?.bucket==="nobron-drafts"&&asset.path)names.add(asset.path);
+  }
+ }
+ return names.size;
+}
 async function publish(){
  if(st.busy)return;
+ if(countDraftMedia(st.doc)>40)return toast("Esta página tem mais de 40 arquivos diferentes. Reduza as mídias antes de publicar.",true);
  if(!confirm("Publicar as mídias de "+pages[st.key].label+" no site?"))return;
  const saved=await saveDoc();if(!saved)return;
  setBusy(true);
