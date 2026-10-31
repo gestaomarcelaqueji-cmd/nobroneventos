@@ -129,3 +129,5 @@ body.mm-open{background:#0d0d10;color:#f2f2f4;overflow-x:hidden}body.mm-open .sh
 }
 @media(max-width:380px){.mm-device button{padding:10px 8px}.mm-preview{height:190px}.mm-asset-preview{height:125px}}
 @media(prefers-reduced-motion:reduce){.mm-app *{transition:none!important;animation:none!important}}
+
+.mm-fallback-note{font-size:12px;line-height:1.5;color:#b9b9c2;border-left:2px solid #84848e;padding-left:11px;margin:0}
