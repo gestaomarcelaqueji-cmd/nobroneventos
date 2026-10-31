@@ -101,7 +101,7 @@ function render(){
   el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}
  });
  setupAutoscroll();
- $(".ns-gallery").forEach(section=>{
+ $$(".ns-gallery").forEach(section=>{
   $$("[data-direction]",section).forEach(btn=>btn.onclick=()=>{
    const track=$(".ns-gallery-track"+(innerWidth<=800?".ns-gallery-m":".ns-gallery-d"),section);
    track?.scrollBy({left:Number(btn.dataset.direction)*(track.clientWidth*.8),behavior:"smooth"});
