@@ -61,7 +61,6 @@ function gallery(s){
  const d=galleryItems(s,"desktop"),m=galleryItems(s,"mobile");
  const combined=d.length||m.length;
  if(!combined)return inPreview?'<section class="ns-empty-gallery"><div class="ns-wrap">'+title(s)+'<p>Escolha as mídias desta galeria no painel.</p></div></section>':"";
- const set=target();
  return '<section class="ns-gallery" data-gallery="'+esc(s.id)+'"><div class="ns-wrap">'+title(s)+'<div class="ns-gallery-tools"><span>'+combined+' mídias</span><div><button aria-label="Voltar no carrossel" data-direction="-1">←</button><button aria-label="Avançar no carrossel" data-direction="1">→</button></div></div><div class="ns-gallery-track ns-gallery-d">'+(d.length?d:m).map((asset,i)=>galleryItem(asset,i,s)).join("")+'</div><div class="ns-gallery-track ns-gallery-m">'+(m.length?m:d).map((asset,i)=>galleryItem(asset,i,s)).join("")+'</div></div></section>';
 }
 function galleryItem(m,i,s){
@@ -72,7 +71,7 @@ function cta(s){return '<section class="ns-cta">'+slot(s,"ns-cta-media","")+'<di
 function contact(s){
  let channels=[];
  const email=String(s.email||"").trim();
- if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))channels.push({name:"E-mail",href:"mailto:"+encodeURIComponent(email),desc:email});
+ if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))channels.push({name:"E-mail",href:"mailto:"+email,desc:email});
  const tel=String(s.whatsapp||"").replace(/\D/g,"");
  if(tel.length>=10&&tel.length<=15)channels.push({name:"WhatsApp",href:"https://wa.me/"+tel,desc:"Enviar mensagem"});
  const insta=String(s.instagram||"").trim().replace(/^@/,"");
