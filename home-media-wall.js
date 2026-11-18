@@ -100,8 +100,20 @@ const make=m=>{
 function build(media){
  if(!media.length){wall.style.background='radial-gradient(ellipse at center,#28282e,#09090b 80%)';return}
  const grid=document.createElement('div');grid.className='ns-wall-grid';
- if(mobile){
-  // Preserve the existing mobile composition and distribution.
+ if(mobile&&home.classList.contains('ns-page-design')){
+  // Same image-only, unique three-column treatment as desktop, adapted to narrow screens.
+  const seen=new Set();
+  const images=media.filter(m=>{
+   if(m.type!=='image')return false;
+   const key=m.url.split('?')[0];
+   if(seen.has(key))return false;
+   seen.add(key);return true;
+  });
+  const cols=Array.from({length:3},()=>{const col=document.createElement('div');col.className='ns-wall-column';grid.append(col);return col});
+  images.forEach((m,i)=>cols[i%3].append(make(m)));
+  grid.classList.add('ns-wall-design-mobile');
+ }else if(mobile){
+  // Preserve the existing mobile composition for other pages.
   for(let i=0;i<n;i++){const col=document.createElement('div');col.className='ns-wall-column';const count=Math.max(5,Math.ceil(14/n));for(let repeat=0;repeat<2;repeat++)for(let j=0;j<count;j++)col.append(make(media[(i*count+j)%media.length]));grid.append(col)}
  }else{
   // Desktop: unique source files, alternated by media type and assigned once.
