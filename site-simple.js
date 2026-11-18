@@ -328,7 +328,7 @@ function render(){
  });
  setupAutoscroll();
  setupSolutionsAccordion();
- setupDesign();
+ setupDesign();setupInfiniteServices();
  setupDesignCards();
  setupMotion();
  $$(".ns-gallery").forEach(section=>{
