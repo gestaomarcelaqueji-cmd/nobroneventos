@@ -81,6 +81,32 @@ function contact(s){
  if(/^[a-zA-Z0-9._]{1,30}$/.test(insta))channels.push({name:"Instagram",href:"https://www.instagram.com/"+insta+"/",desc:"@"+insta});
  return '<section class="ns-contact"><div class="ns-wrap">'+title(s)+(channels.length?'<div class="ns-contact-list">'+channels.map(x=>'<a href="'+esc(x.href)+'" target="_blank" rel="noopener"><strong>'+x.name+'</strong><span>'+esc(x.desc)+'</span><b>↗</b></a>').join("")+'</div>':'<p class="ns-contact-pending">Os canais de atendimento serão disponibilizados aqui.</p>')+'</div></section>';
 }
+
+function designPage(doc){
+ const heroSection=doc.find(s=>s.id==="hero")||{};
+ const gallerySection=doc.find(s=>s.id==="galeria"&&s.visible!==false);
+ const heading=heroSection.title&&heroSection.title!=="Material de divulgação para eventos."?heroSection.title:"Artes para divulgar o que você precisa.";
+ const description=heroSection.description&&heroSection.description!=="Artes para festas, shows, baladas, pubs e artistas."?heroSection.description:"Criamos flyers e materiais gráficos para eventos, atrações, produtos, serviços, preços, promoções e comunicados. Cada peça é desenvolvida a partir das informações do projeto e entregue no formato combinado para publicação digital ou impressão.";
+ const g=gallerySection?gallery(gallerySection):"";
+ return '<div class="nd-design-shell"><section class="nd-design-hero"><div class="nd-design-intro"><small>DESIGN DIGITAL</small><h1>'+esc(heading)+'</h1><p>'+esc(description)+'</p><a class="nd-design-action" href="#nd-orcamento">Simular meu pacote <span aria-hidden="true">↗</span></a></div><div class="nd-design-visual" aria-hidden="true"><div class="nd-design-flyer nd-design-flyer-a"><span>DIVULGAÇÃO</span><strong>SEU<br>EVENTO.</strong></div><div class="nd-design-flyer nd-design-flyer-b"><span>DESIGN DIGITAL</span><strong>FLYERS<br>& ARTES.</strong></div><div class="nd-design-flyer nd-design-flyer-c"><span>COMUNICAÇÃO</span><strong>SUA<br>MARCA.</strong></div></div></section><section class="nd-design-budget" id="nd-orcamento" aria-label="Simular orçamento mensal de artes"><div class="nd-budget-top"><h2>Quantas artes você precisa por mês?</h2><p>Arraste a barra para simular seu pacote mensal.</p></div><div class="nd-budget-grid"><div class="nd-budget-control"><div class="nd-budget-quantity"><output id="nd-qty" for="nd-slider">8</output><span>artes por mês</span></div><input type="range" id="nd-slider" min="1" max="16" step="1" value="8" aria-label="Quantidade de artes por mês"><div class="nd-budget-marks"><span>1</span><span>8</span><span>16</span></div></div><div class="nd-budget-values"><div class="nd-budget-total"><small>VALOR DO PACOTE</small><output id="nd-total">R$ 250,00</output></div><div class="nd-budget-saving"><output id="nd-saving">R$ 150,00</output><span>ECONOMIZADOS</span></div></div></div><a class="nd-design-action nd-budget-whatsapp" id="nd-whatsapp" href="https://wa.me/?text=Ol%C3%A1" target="_blank" rel="noopener">Solicitar pacote pelo WhatsApp <span aria-hidden="true">↗</span></a></section><section class="nd-design-motion" aria-label="Aplicações do design digital"><div class="nd-motion-fixed">ARTE PARA</div><div class="nd-motion-viewport" aria-live="off"><span id="nd-motion-word">SEU EVENTO.</span></div></section>'+(g?'<div class="nd-design-portfolio">'+g+'</div>':"")+'</div>';
+}
+function setupDesign(){
+ if(current!=="design"||inPreview)return;
+ const slider=$("#nd-slider"),qty=$("#nd-qty"),total=$("#nd-total"),saving=$("#nd-saving"),link=$("#nd-whatsapp"),word=$("#nd-motion-word");
+ if(!slider||!qty||!total||!saving||!link||!word)return;
+ const packs=[{q:16,v:400},{q:8,v:250},{q:3,v:100},{q:2,v:60},{q:1,v:50}];
+ const cost=n=>{let sum=0;for(const p of packs){const k=Math.floor(n/p.q);sum+=k*p.v;n-=k*p.q}return sum};
+ const brl=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+ const contact=pages.contact?.sections?.find(s=>s.type==="contact");
+ const phone=String(contact?.whatsapp||"").replace(/\D/g,"");
+ function update(){const n=Number(slider.value),value=cost(n),saved=n*50-value;qty.textContent=String(n);total.textContent=brl(value);saving.textContent=brl(saved);slider.style.setProperty("--progress",((n-1)/15*100)+"%");const msg="Olá! Gostaria de contratar "+n+" "+(n===1?"arte":"artes")+" por mês. Valor estimado do pacote: "+brl(value)+".";link.href="https://wa.me/"+(phone.length>=10&&phone.length<=15?phone:"")+"?text="+encodeURIComponent(msg)}
+ slider.addEventListener("input",update);update();
+ const phrases=["SEU EVENTO.","ATRAÇÕES.","INGRESSOS.","SEU BAR.","PROMOÇÕES.","CARDÁPIOS.","PRODUTOS.","NOVIDADES.","SUA IDEIA."];
+ if(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)return;
+ let idx=0;const animate=()=>{if(!word.isConnected)return;word.classList.add("nd-motion-out");setTimeout(()=>{if(!word.isConnected)return;idx=(idx+1)%phrases.length;word.textContent=phrases[idx];word.classList.remove("nd-motion-out");word.classList.add("nd-motion-in");requestAnimationFrame(()=>requestAnimationFrame(()=>word.classList.remove("nd-motion-in")))},520)};
+ setInterval(()=>{if(!document.hidden)animate()},3200);
+}
+
 function render(){
  document.title=page.label+" · noBRon";
  const menu=[["Início","/","home"],["Soluções","/solucoes","services"],["Contato","/contato","contact"]];
@@ -92,7 +118,7 @@ function render(){
  const active=["solutions","design","motion","sistemas"].includes(current)?"services":current;
  const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
  const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
- const body=sections.filter(s=>s.visible!==false).map((s,i)=>{
+ const body=current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
  if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
  return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'
@@ -103,6 +129,7 @@ function render(){
   el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}
  });
  setupAutoscroll();
+ setupDesign();
  $$(".ns-gallery").forEach(section=>{
   $$("[data-direction]",section).forEach(btn=>btn.onclick=()=>{
    const track=$(".ns-gallery-track"+(innerWidth<=800?".ns-gallery-m":".ns-gallery-d"),section);
