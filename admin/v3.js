@@ -40,12 +40,12 @@ $('motion-upload-form').onsubmit=async e=>{
  function err(e){const s=String(e?.message||e||'Falha desconhecida');if(/Failed to fetch|NetworkError|Load failed|fetch failed/i.test(s))return 'Falha de conexão com o servidor. Confira a internet e tente novamente. Se o vídeo for grande, tente uma versão mais leve.';if(/413|too large|tamanho|30 MB/i.test(s))return 'Arquivo acima do limite de 30 MB. Comprima o vídeo e tente novamente.';if(/415|formato|mime/i.test(s))return 'Formato não aceito. Utilize MP4 ou WebM.';return s}
  function result(root,name,ok,msg){const p=document.createElement('p');p.className=ok?'upload-success':'upload-failure';p.textContent=(ok?'✓ ':'✕ ')+name+' — '+msg;root.append(p)}
  const motionForm=$('motion-upload-form');motionForm.onsubmit=async e=>{
- e.preventDefault();const files=[...$('motion-file').files],title=$('motion-title').value.trim(),btn=$('motion-upload'),list=$('motion-upload-results');if(!files.length||!title)return;
+ e.preventDefault();const files=[...$('motion-file').files],btn=$('motion-upload'),list=$('motion-upload-results');if(!files.length)return;
  list.replaceChildren();btn.disabled=true;let ok=0;
  for(let i=0;i<files.length;i++){const f=files[i];note('motion-upload-status','Enviando '+(i+1)+' de '+files.length+': '+f.name);
  if(!['video/mp4','video/webm'].includes(f.type)){result(list,f.name,false,'Use MP4 ou WebM');continue}
  if(f.size>30*1024*1024){result(list,f.name,false,'Excede 30 MB');continue}
- try{await call(MOTION_API+'?title='+encodeURIComponent(files.length===1?title:title+' · '+f.name.replace(/\.[^.]+$/,'')),{method:'POST',headers:{'Content-Type':f.type},body:f});ok++;result(list,f.name,true,'Cadastrado como rascunho')}catch(x){result(list,f.name,false,err(x))}
+ try{await call(MOTION_API+'?title='+encodeURIComponent(f.name.replace(/\.[^.]+$/,'').slice(0,120)),{method:'POST',headers:{'Content-Type':f.type},body:f});ok++;result(list,f.name,true,'Cadastrado como rascunho')}catch(x){result(list,f.name,false,err(x))}
  }
  note('motion-upload-status',ok+' de '+files.length+' vídeos cadastrados. '+(ok?'Use Publicar para exibi-los no site.':'Nenhum arquivo foi cadastrado.'));
  if(ok===files.length)motionForm.reset();
