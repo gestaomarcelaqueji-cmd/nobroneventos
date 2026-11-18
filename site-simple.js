@@ -4,23 +4,49 @@ const {pages,services,baseUrl,publishable}=window.NOBRON_SCHEMA;
 (function initGlassIntro(){
  const overlay=document.getElementById('ns-intro');
  if(!overlay)return;
- const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const preview=new URLSearchParams(location.search).get('cms_preview')==='1'&&window.parent!==window;
  if(reduced||preview){overlay.remove();return}
- let finished=false;
- const start=performance.now();
- function dismiss(){
-  if(finished)return;
-  finished=true;
-  overlay.classList.add('is-leaving');
-  overlay.addEventListener('transitionend',e=>{if(e.target===overlay)overlay.remove()},{once:true});
-  setTimeout(()=>overlay.remove(),850);
+ const route=location.pathname.replace(/\\/+$/,'')||'/';
+ const destination=route==='/'?'home':route==='/contato'?'contato':route.endsWith('/design')?'design':route.endsWith('/motion')?'motion':route.endsWith('/sistemas')?'sistemas':'home';
+ overlay.dataset.destination=destination;
+ const icons=[...overlay.querySelectorAll('[data-intro-icon]')];
+ const center=overlay.querySelector('.ns-intro-center');
+ const homeLogo=overlay.querySelector('.ns-intro-home-logo');
+ let ended=false;const timers=[];
+ const later=(fn,ms)=>timers.push(setTimeout(()=>{if(!ended)fn()},ms));
+ const show=name=>{
+  icons.forEach(el=>el.classList.toggle('is-active',el.dataset.introIcon===name));
+  homeLogo.classList.toggle('is-active',name==='home');
+ };
+ const mountLogo=()=>{
+  const source=document.querySelector('.ns-top .ns-logo');
+  if(!source)return false;
+  homeLogo.replaceChildren(source.cloneNode(true));
+  const link=homeLogo.querySelector('a');if(link){link.removeAttribute('href');link.removeAttribute('aria-label');link.tabIndex=-1}
+  return true;
+ };
+ // Use the brand element already rendered by the site; no independently typed wordmark.
+ if(destination==='home'){
+  if(!mountLogo())requestAnimationFrame(mountLogo);
  }
- function schedule(){setTimeout(dismiss,Math.max(0,2250-(performance.now()-start)))}
- // Never hold the UI for a full media gallery or for slow videos.
- if(document.readyState==='complete')schedule();
- else window.addEventListener('load',schedule,{once:true});
- setTimeout(dismiss,3200);
+ function finish(){
+  if(ended)return;ended=true;timers.forEach(clearTimeout);
+  overlay.classList.add('is-revealing');
+  const cleanup=()=>overlay.remove();
+  overlay.addEventListener('transitionend',e=>{if(e.target===overlay)cleanup()},{once:true});
+  setTimeout(cleanup,850);
+ }
+ const sequence=['design','motion','sistemas'].filter(name=>name!==destination);
+ if(destination==='home')sequence.push('contato');
+ else if(destination==='contato')sequence.push('design');
+ const first=sequence.slice(0,2);
+ first.forEach((name,i)=>later(()=>show(name),i*330));
+ later(()=>{if(destination==='home')mountLogo();show(destination);overlay.classList.add('is-featured')},690);
+ // The destination remains visible before the central reveal.
+ later(finish,1640);
+ // A failed media request must never trap the visitor behind the overlay.
+ setTimeout(finish,2900);
 })();
 const $=(q,root=document)=>root.querySelector(q), $$=(q,root=document)=>[...root.querySelectorAll(q)];
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
