@@ -16,9 +16,9 @@ const pages={
  ]},
  solutions:{label:"Soluções",route:"/solucoes",sections:[
   S("hero","hero","Divulgação e tecnologia para eventos.","Do material de divulgação aos sistemas de gestão."),
-  S("design","feature","Design Digital","Artes para story, feed, flyers, line-up, outdoors e painéis digitais.",{service:"design"}),
-  S("motion","feature","Motion Design","Flyers animados, teasers e vídeos para redes sociais e telões.",{service:"motion"}),
-  S("sistemas","feature","Sistemas","Sites e sistemas para portaria, estoque e operação de eventos.",{service:"sistemas"})
+  S("design","feature","Design Digital","Criação de flyers e materiais gráficos para divulgação de eventos, festas, atrações, produtos, serviços, cardápios, preços, promoções e comunicados. As artes são desenvolvidas de acordo com a identidade visual de cada projeto e entregues nos formatos e dimensões necessários para publicação em redes sociais, compartilhamento digital ou impressão.",{service:"design"}),
+  S("motion","feature","Motion Design","Criação de flyers animados, teasers, vídeos promocionais e conteúdos em movimento para divulgação de eventos, atrações, produtos, serviços, ofertas e campanhas. Os materiais são produzidos e entregues nos formatos e proporções adequados para stories, reels, feeds, telões e outras plataformas de exibição.",{service:"motion"}),
+  S("sistemas","feature","Sistemas","Desenvolvimento de sites, páginas institucionais e sistemas personalizados para empresas, estabelecimentos e organizadores de eventos. Soluções para apresentação de serviços, cadastros, controle de estoque, portaria, gerenciamento de informações e processos administrativos, conforme as necessidades de cada projeto.",{service:"sistemas"})
  ]},
  design:{label:"Design Digital",route:"/solucoes/design",sections:[
   S("hero","hero","Material de divulgação para eventos.","Artes para festas, shows, baladas, pubs e artistas."),

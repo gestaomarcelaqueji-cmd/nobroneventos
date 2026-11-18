@@ -50,3 +50,11 @@ body:has(.ns-page-solutions) .ns-footer{background:rgba(9,9,11,.9);border-top:1p
 .ns-page-solutions .ns-feature .ns-button{max-width:100%;white-space:normal}
 }
 @media(prefers-reduced-motion:reduce){.ns-page-solutions .ns-wall-column{animation:none!important}.ns-page-solutions .ns-wall-tile{transition:none!important}}
+
+/* Service cards contain only title, description and action. */
+.ns-page-solutions .ns-feature-grid{display:block;max-width:100%}
+.ns-page-solutions .ns-feature-copy{max-width:940px}
+.ns-page-solutions .ns-feature-copy h2{max-width:none}
+.ns-page-solutions .ns-feature-copy p{max-width:830px;line-height:1.65;margin-bottom:26px}
+.ns-page-solutions .ns-feature-image{display:none!important}
+@media(max-width:800px){.ns-page-solutions .ns-feature-grid{display:block}.ns-page-solutions .ns-feature-copy p{max-width:100%;line-height:1.65;margin-bottom:24px}}

@@ -50,9 +50,12 @@ function hero(s){
 function servicesSection(s){
  return '<section class="ns-services"><div class="ns-wrap">'+title(s)+'<div class="ns-service-list">'+services.map((v,i)=>'<a href="'+v.path+'" class="ns-service-link"><span>0'+(i+1)+'</span><div><strong>'+esc(v.name)+'</strong><p>'+esc(v.description)+'</p></div><b>↗</b></a>').join("")+'</div></div></section>';
 }
+const solutionDescriptions={"design":"Criação de flyers e materiais gráficos para divulgação de eventos, festas, atrações, produtos, serviços, cardápios, preços, promoções e comunicados. As artes são desenvolvidas de acordo com a identidade visual de cada projeto e entregues nos formatos e dimensões necessários para publicação em redes sociais, compartilhamento digital ou impressão.","motion":"Criação de flyers animados, teasers, vídeos promocionais e conteúdos em movimento para divulgação de eventos, atrações, produtos, serviços, ofertas e campanhas. Os materiais são produzidos e entregues nos formatos e proporções adequados para stories, reels, feeds, telões e outras plataformas de exibição.","sistemas":"Desenvolvimento de sites, páginas institucionais e sistemas personalizados para empresas, estabelecimentos e organizadores de eventos. Soluções para apresentação de serviços, cadastros, controle de estoque, portaria, gerenciamento de informações e processos administrativos, conforme as necessidades de cada projeto."};
 function feature(s,i){
  const url=services.find(v=>v.id===s.service)?.path||"/solucoes";
- return '<section class="ns-feature ns-feature-'+esc(s.service)+'"><div class="ns-wrap ns-feature-grid"><div class="ns-feature-copy"><small>0'+(i+1)+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(s.description)+'</p>'+action(url,"Ver serviço")+'</div>'+slot(s,"ns-feature-image",'<strong>'+esc(s.title)+'</strong>')+'</div></section>';
+ const description=current==="solutions"?(solutionDescriptions[s.service]||s.description):s.description;
+ const number=current==="solutions"?Math.max(1,services.findIndex(v=>v.id===s.service)+1):i+1;
+ return '<section class="ns-feature ns-feature-'+esc(s.service)+'"><div class="ns-wrap ns-feature-grid"><div class="ns-feature-copy"><small>0'+number+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(description)+'</p>'+action(url,"Ver serviço")+'</div>'+(current==="solutions"?"":slot(s,"ns-feature-image",'<strong>'+esc(s.title)+'</strong>'))+'</div></section>';
 }
 function formats(s){
  return '<section class="ns-formats"><div class="ns-wrap">'+title(s)+'<div class="ns-formats-list">'+(s.items||[]).map((item,i)=>'<div><small>0'+(i+1)+'</small><strong>'+esc(item)+'</strong></div>').join("")+'</div></div></section>';
