@@ -1,39 +1,34 @@
-/* Motion Design — four spaced editorial video surfaces; no cloned columns. */
+/* Motion Design: compact cinematic hero with an in-frame editorial mosaic. */
 .ns-page-motion{background:#09090b;color:#f6f6f7;min-height:0}
-.nm-shell{width:100%;margin:0;padding:0;overflow:hidden}
-.nm-stage{position:relative;isolation:isolate;display:flex;align-items:center;min-height:clamp(570px,calc(100svh - 180px),850px);padding:clamp(50px,6vw,90px) clamp(25px,7vw,110px);overflow:hidden}
-.nm-reel{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;background:#09090b}
-.nm-reel:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,#09090b 0%,rgba(9,9,11,.96) 25%,rgba(9,9,11,.78) 48%,rgba(9,9,11,.2) 85%,rgba(9,9,11,.12) 100%)}
-.nm-feature{position:absolute;width:clamp(230px,22vw,360px);aspect-ratio:9/16;border-radius:17px;overflow:hidden;background:linear-gradient(135deg,#17171c,#101014);border:1px solid rgba(255,255,255,.09);opacity:0;transition:opacity .8s ease;box-shadow:0 20px 60px rgba(0,0,0,.24)}
-.nm-feature.nm-ready{opacity:1}
-.nm-feature-a{right:26%;top:-12%;transform:perspective(1100px) rotateY(-8deg)}
-.nm-feature-b{right:-2%;top:5%;transform:perspective(1100px) rotateY(-8deg)}
-.nm-feature-c{right:28%;top:59%;width:clamp(190px,17vw,270px);transform:perspective(1100px) rotateY(-5deg)}
-.nm-feature-d{right:-1%;top:73%;width:clamp(190px,17vw,270px);transform:perspective(1100px) rotateY(-5deg)}
-.nm-feature video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#101014;pointer-events:none;-webkit-user-select:none;user-select:none}
-.nm-feature video.nm-incoming{opacity:0;filter:blur(12px);transform:translateY(20px);transition:opacity .7s ease,filter .7s ease,transform .7s ease}
-.nm-feature video.nm-incoming.nm-visible{opacity:1;filter:blur(0);transform:translateY(0)}
-.nm-copy{position:relative;z-index:4;width:min(580px,58%);max-width:580px}
+.nm-shell{width:100%;overflow:hidden}
+.nm-stage{position:relative;isolation:isolate;display:flex;align-items:center;min-height:clamp(580px,calc(100svh - 130px),850px);padding:clamp(55px,7vw,100px) clamp(24px,7vw,112px);overflow:hidden;background:#09090b}
+.nm-reel{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#09090b}
+.nm-mosaic{position:absolute;inset:-5% -1% -5% 37%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:clamp(9px,1.5vw,22px);transform:perspective(1800px) rotateY(-5deg);transform-origin:right center}
+.nm-tile{position:relative;min-width:0;min-height:0;overflow:hidden;border-radius:clamp(9px,1.2vw,18px);background:linear-gradient(135deg,#1a1a1e,#111114);border:1px solid rgba(255,255,255,.07);box-shadow:0 14px 35px rgba(0,0,0,.28)}
+.nm-tile:nth-child(3n+2){transform:translateY(-5%)}
+.nm-tile:nth-child(3n+3){transform:translateY(5%)}
+.nm-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1}
+.nm-video.nm-incoming{opacity:0;filter:blur(7px);transition:opacity .8s ease,filter .8s ease}
+.nm-video.nm-incoming.nm-shown{opacity:1;filter:blur(0)}
+.nm-reel:after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#09090b 0%,rgba(9,9,11,.99) 20%,rgba(9,9,11,.91) 37%,rgba(9,9,11,.6) 55%,rgba(9,9,11,.18) 82%,rgba(9,9,11,.08) 100%),linear-gradient(0deg,#09090b 0%,transparent 19%,transparent 82%,rgba(9,9,11,.4) 100%);pointer-events:none}
+.nm-copy{position:relative;z-index:3;width:min(610px,55%);max-width:610px}
 .nm-copy small{font-size:12px;letter-spacing:.2em;color:#b7b7be;font-weight:750}
-.nm-copy h1{font-size:clamp(55px,6.5vw,95px);letter-spacing:-.07em;line-height:1.02;margin:23px 0 30px;font-weight:800}
-.nm-copy p{font-size:clamp(16px,1.35vw,19px);line-height:1.65;color:#bcbcc3;margin:0 0 18px}
+.nm-copy h1{font-size:clamp(52px,6.4vw,96px);letter-spacing:-.07em;line-height:1.02;margin:22px 0 30px;font-weight:800}
+.nm-copy p{font-size:clamp(15px,1.3vw,19px);line-height:1.65;color:#bcbcc3;margin:0 0 17px}
 .nm-copy p strong{color:#f4f4f6}
-.nm-button{display:inline-flex;align-items:center;justify-content:space-between;gap:34px;max-width:100%;margin-top:25px;padding:17px 24px;background:#f0f0f3;border-radius:999px;color:#111114;text-decoration:none;font-weight:750}
-.nm-button span{font-size:23px}
-.nm-reel.nm-empty .nm-feature{display:none}
+.nm-button{display:inline-flex;align-items:center;justify-content:space-between;gap:30px;max-width:100%;margin-top:24px;padding:17px 25px;background:#f0f0f3;border-radius:999px;color:#111114;text-decoration:none;font-weight:750}
+.nm-button span{font-size:22px}
+.nm-reel.nm-empty .nm-mosaic{opacity:.12}
 @media(max-width:800px){
- .nm-stage{min-height:clamp(570px,calc(100svh - 180px),780px);padding:42px 20px}
- .nm-feature{width:clamp(185px,48vw,300px);border-radius:13px}
- .nm-feature-a{right:28%;top:-9%;transform:perspective(800px) rotateY(-7deg)}
- .nm-feature-b{right:-23%;top:8%;transform:perspective(800px) rotateY(-7deg)}
- .nm-feature-c{right:-8%;top:67%;width:clamp(165px,43vw,260px);transform:perspective(800px) rotateY(-5deg)}
- .nm-feature-d{display:none}
- .nm-reel:after{background:linear-gradient(90deg,#09090b 0%,rgba(9,9,11,.95) 31%,rgba(9,9,11,.77) 56%,rgba(9,9,11,.26) 100%)}
- .nm-copy{width:min(84%,390px);max-width:none}
+ .nm-stage{min-height:clamp(570px,calc(100svh - 170px),760px);padding:45px 22px}
+ .nm-mosaic{inset:-2% -8% -2% 17%;gap:10px;transform:none;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .nm-tile{border-radius:10px}
+ .nm-reel:after{background:linear-gradient(90deg,rgba(9,9,11,.98) 0%,rgba(9,9,11,.91) 30%,rgba(9,9,11,.73) 58%,rgba(9,9,11,.34) 100%),linear-gradient(0deg,#09090b 0%,transparent 20%,transparent 80%,rgba(9,9,11,.45) 100%)}
+ .nm-copy{width:min(95%,410px);max-width:none}
  .nm-copy small{font-size:10px}
- .nm-copy h1{font-size:clamp(43px,10.2vw,64px);margin:17px 0 23px}
- .nm-copy p{font-size:clamp(14px,3.5vw,16px);line-height:1.55;margin-bottom:14px}
- .nm-button{font-size:13px;min-height:52px;margin-top:16px;padding:14px 19px;gap:18px}
+ .nm-copy h1{font-size:clamp(43px,10.3vw,66px);margin:17px 0 24px}
+ .nm-copy p{font-size:clamp(14px,3.6vw,17px);line-height:1.55;margin-bottom:14px}
+ .nm-button{font-size:13px;min-height:52px;margin-top:18px;padding:14px 19px;gap:17px}
  .nm-button span{font-size:19px}
 }
-@media(prefers-reduced-motion:reduce){.nm-feature,.nm-feature video{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.nm-video{transition:none!important}.nm-mosaic{transform:none!important}}

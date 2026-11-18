@@ -82,21 +82,21 @@ function contact(s){
  return '<section class="ns-contact"><div class="ns-wrap">'+title(s)+(channels.length?'<div class="ns-contact-list">'+channels.map(x=>'<a href="'+esc(x.href)+'" target="_blank" rel="noopener"><strong>'+x.name+'</strong><span>'+esc(x.desc)+'</span><b>↗</b></a>').join("")+'</div>':'<p class="ns-contact-pending">Os canais de atendimento serão disponibilizados aqui.</p>')+'</div></section>';
 }
 
+
 function motionPage(){
- return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-hidden="true"><div class="nm-feature nm-feature-a"></div><div class="nm-feature nm-feature-b"></div><div class="nm-feature nm-feature-c"></div><div class="nm-feature nm-feature-d"></div></div><div class="nm-copy"><small>SOLUÇÕES</small><h1>Motion Design.</h1><p>Produzimos <strong>flyers animados, teasers e vídeos promocionais</strong> para festas, shows, baladas, pubs, casas noturnas e artistas.</p><p>Com animações de fotografias, textos e elementos gráficos, destacamos atrações, datas, ingressos e programações em conteúdos para Reels, Stories, telões e painéis de LED.</p><a class="nm-button" href="/contato">Solicitar orçamento <span aria-hidden="true">↗</span></a></div></section></div>';
+ const tiles=Array.from({length:9},(_,i)=>'<div class="nm-tile nm-tile-'+(i+1)+'" data-motion-tile="'+i+'"></div>').join("");
+ return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-hidden="true"><div class="nm-mosaic">'+tiles+'</div></div><div class="nm-copy"><small>SOLUÇÕES / 02</small><h1>Motion Design.</h1><p>Produzimos <strong>flyers animados, teasers e vídeos promocionais</strong> para festas, shows, baladas, pubs, casas noturnas e artistas.</p><p>Animamos fotografias, textos e elementos gráficos para apresentar atrações, anunciar datas, divulgar ingressos, programações e promoções em Reels, Stories, telões e painéis de LED.</p><a class="nm-button" href="/contato">Solicitar orçamento <span aria-hidden="true">↗</span></a></div></section></div>';
 }
 async function setupMotion(){
  if(current!=="motion"||inPreview)return;
  const root=$("#nm-reel");if(!root)return;
- const slots=["a","b","c","d"].slice(0,matchMedia("(max-width:800px)").matches?3:4).map(k=>$(".nm-feature-"+k,root));
+ const tiles=[...root.querySelectorAll("[data-motion-tile]")];
  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
- let disposed=false,active=true,timer=null;const assigned=new Map();const busy=new Set();
- const pauseAll=()=>slots.forEach(s=>s.querySelector("video")?.pause());
- const visibility=()=>{active=!document.hidden&&!!root.getClientRects().length;if(!active)pauseAll();else slots.forEach(s=>s.querySelector("video")?.play().catch(()=>{}))};
- document.addEventListener("visibilitychange",visibility);
- const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting){active=!document.hidden;slots.forEach(s=>s.querySelector("video")?.play().catch(()=>{}))}else{active=false;pauseAll()}},{threshold:.05});observer.observe(root);
+ let visible=true,disposed=false;
+ const observer=new IntersectionObserver(entries=>{visible=!!entries[0]?.isIntersecting&&!document.hidden;if(!visible)root.querySelectorAll("video").forEach(v=>v.pause())},{threshold:.02});
+ observer.observe(root);
  try{
-  const response=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1");
+  const response=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1",{cache:"no-store"});
   if(!response.ok)throw Error("motion");
   const payload=await response.json();
   let items=(payload.videos||[]).filter(v=>typeof v.url==="string"&&/^https:\/\//.test(v.url));
@@ -106,48 +106,48 @@ async function setupMotion(){
   }
   const seen=new Set();items=items.filter(v=>{const key=v.id||v.url;if(seen.has(key))return false;seen.add(key);return true});
   if(!items.length){root.classList.add("nm-empty");return}
-  const makeVideo=v=>new Promise(resolve=>{
-   const video=document.createElement("video");
-   video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=false;video.preload="metadata";video.controls=false;video.disablePictureInPicture=true;video.draggable=false;video.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");video.setAttribute("aria-hidden","true");
-   let settled=false;const done=ok=>{if(settled)return;settled=true;clearTimeout(timeout);resolve(ok?video:null)};
-   const timeout=setTimeout(()=>done(false),11000);
-   video.addEventListener("loadeddata",()=>done(true),{once:true});
-   video.addEventListener("error",()=>done(false),{once:true});
-   video.src=v.url;video.load();
-  });
-  const place=async(slot,item,initial=false)=>{
-   
-   const video=await makeVideo(item);
-   if(!video||disposed||!slot.isConnected){busy.delete(slot);return false;}
-   // Never replace a working video until the next video's first frame is ready.
-   const previous=slot.querySelector("video");
-   video.className="nm-incoming";slot.append(video);
-   requestAnimationFrame(()=>{video.classList.add("nm-visible");slot.classList.add("nm-ready")});
-   if(active&&!reduced)video.play().catch(()=>{});
-   assigned.set(slot,item.url);
-   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}busy.delete(slot)},750);
+  const count=Math.min(items.length,tiles.length);
+  const assigned=new Map();
+  let cursor=count,rotating=false;
+  function prepare(item){
+   return new Promise(resolve=>{
+    const v=document.createElement("video");v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.preload="metadata";v.disablePictureInPicture=true;v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");
+    let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timeout);resolve(ok?v:null)};
+    const timeout=setTimeout(()=>finish(false),12000);
+    v.addEventListener("loadeddata",()=>finish(true),{once:true});v.addEventListener("error",()=>finish(false),{once:true});
+    v.src=item.url;v.load();
+   });
+  }
+  async function show(tile,item,play=false){
+   const next=await prepare(item);
+   if(!next||!tile.isConnected)return false;
+   next.className="nm-video nm-incoming";tile.append(next);
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{next.classList.add("nm-shown");tile.classList.add("nm-ready")}));
+   const previous=[...tile.querySelectorAll("video")].filter(v=>v!==next);
+   setTimeout(()=>{previous.forEach(v=>{v.pause();v.remove()});next.classList.remove("nm-incoming")},850);
+   assigned.set(tile,item.url);
+   if(play&&visible&&!document.hidden&&!reduced)next.play().catch(()=>{});
    return true;
-  };
-  // Start with unique videos in every visible card.
-  await Promise.all(slots.map((slot,i)=>items[i]?place(slot,items[i]):Promise.resolve(false)));
-  if(reduced||items.length<=slots.length)return;
-  let cursor=slots.length,side=0;
-  const rotate=async()=>{
-   if(!root.isConnected){disposed=true;observer.disconnect();return}
-   if(active){
-    const slot=slots[side%slots.length];
-    const displayed=new Set(assigned.values());
-    let chosen=null;
-    for(let tries=0;tries<items.length;tries++){
-     const candidate=items[cursor%items.length];cursor++;
-     if(!displayed.has(candidate.url)){chosen=candidate;break}
-    }
-    if(chosen)await place(slot,chosen);
-    side++;
-   }
-   timer=setTimeout(rotate,6500);
-  };
-  timer=setTimeout(rotate,6500);
+  }
+  // Progressive reveal; retain each first frame as a poster instead of playing nine streams.
+  await Promise.all(tiles.slice(0,Math.min(3,count)).map((tile,i)=>show(tile,items[i],false)));
+  for(let i=3;i<count;i++){
+   if(!root.isConnected){disposed=true;break}
+   await show(tiles[i],items[i],false);
+  }
+  if(disposed||reduced||items.length<=count)return;
+  let index=0;
+  async function rotate(){
+   if(rotating||!root.isConnected||document.hidden||!visible)return;
+   rotating=true;
+   try{
+    const tile=tiles[index%count];index++;
+    const used=new Set(assigned.values());let next=null;
+    for(let tries=0;tries<items.length;tries++){const candidate=items[cursor%items.length];cursor++;if(!used.has(candidate.url)){next=candidate;break}}
+    if(next)await show(tile,next,true);
+   }finally{rotating=false}
+  }
+  const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);observer.disconnect();return}rotate()},7500);
  }catch{root.classList.add("nm-empty")}
 }
 
