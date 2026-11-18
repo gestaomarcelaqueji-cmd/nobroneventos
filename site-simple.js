@@ -83,40 +83,66 @@ function contact(s){
 }
 
 function motionPage(){
- return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-label="Vídeos de Motion Design"><div class="nm-reel-empty" aria-hidden="true"></div></div><div class="nm-copy"><small>MOTION DESIGN</small><h1>Sua divulgação em movimento.</h1><p>Criamos flyers animados, teasers e vídeos promocionais para <strong>festas, shows, baladas, pubs, casas noturnas e artistas.</strong></p><p>Animamos fotografias, elementos gráficos, textos e informações para anunciar eventos, apresentar atrações e divulgar programações.</p><p>Produzimos materiais para Reels, Stories, telões, painéis de LED e outros formatos de exibição.</p><a class="nm-button" href="/contato">Solicitar orçamento <span>↗</span></a></div></section></div>';
+ return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-hidden="true"><div class="nm-feature nm-feature-a"></div><div class="nm-feature nm-feature-b"></div></div><div class="nm-copy"><small>SOLUÇÕES</small><h1>Motion Design.</h1><p>Produzimos <strong>flyers animados, teasers e vídeos promocionais</strong> para festas, shows, baladas, pubs, casas noturnas e artistas.</p><p>Com animações de fotografias, textos e elementos gráficos, destacamos atrações, datas, ingressos e programações em conteúdos para Reels, Stories, telões e painéis de LED.</p><a class="nm-button" href="/contato">Solicitar orçamento <span aria-hidden="true">↗</span></a></div></section></div>';
 }
 async function setupMotion(){
  if(current!=="motion"||inPreview)return;
  const root=$("#nm-reel");if(!root)return;
+ const slots=[$(".nm-feature-a",root),$(".nm-feature-b",root)];
+ const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ let disposed=false,active=true,timer=null,sequence=0;
+ const pauseAll=()=>slots.forEach(s=>s.querySelector("video")?.pause());
+ const visibility=()=>{active=!document.hidden&&!!root.getClientRects().length;if(!active)pauseAll();else slots.forEach(s=>s.querySelector("video")?.play().catch(()=>{}))};
+ document.addEventListener("visibilitychange",visibility);
+ const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting){active=!document.hidden;slots.forEach(s=>s.querySelector("video")?.play().catch(()=>{}))}else{active=false;pauseAll()}},{threshold:.05});observer.observe(root);
  try{
-  const r=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1");
-  if(!r.ok)throw Error("media");const data=await r.json();
-  const items=(data.videos||[]).filter(v=>v.url&&/^https:\/\//.test(v.url));
+  const response=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1");
+  if(!response.ok)throw Error("motion");
+  const payload=await response.json();
+  let items=(payload.videos||[]).filter(v=>typeof v.url==="string"&&/^https:\/\//.test(v.url));
   if(!items.length){
    const fallback=await fetch(baseUrl+"/rest/v1/nobron_v3_media?select=id,object_path,mime&published=eq.true&section=eq.hero&mime=like.video%25&order=display_order.asc",{headers:{apikey:publishable}});
-   if(fallback.ok){const rows=await fallback.json();for(const x of rows){if(x.mime?.startsWith("video/"))items.push({title:"Trabalho em vídeo",url:baseUrl+"/storage/v1/object/public/nobron-public/"+x.object_path})}}
+   if(fallback.ok){const rows=await fallback.json();items=rows.filter(v=>v.mime?.startsWith("video/")).map(v=>({id:v.id,url:baseUrl+"/storage/v1/object/public/nobron-public/"+v.object_path}))}
   }
+  const seen=new Set();items=items.filter(v=>{const key=v.id||v.url;if(seen.has(key))return false;seen.add(key);return true});
   if(!items.length){root.classList.add("nm-empty");return}
-  root.replaceChildren();
-  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  for(let c=0;c<4;c++){
-   const column=document.createElement("div");column.className="nm-column nm-column-"+c;
-   const group=document.createElement("div");group.className="nm-group";
-   const source=items.filter((_,i)=>i%4===c);
-   const selected=source.length?source:items;
-   for(const v of selected.slice(0,6)){
-    const item=document.createElement("div");item.className="nm-video-card";
-    const vid=document.createElement("video");
-    vid.src=v.url;vid.muted=true;vid.defaultMuted=true;vid.loop=true;vid.playsInline=true;vid.autoplay=!reduced;vid.preload="auto";vid.controls=false;vid.disablePictureInPicture=true;vid.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");vid.setAttribute("aria-label",v.title||"Trabalho de Motion Design");vid.draggable=false;
-    item.append(vid);group.append(item);vid.addEventListener("loadeddata",()=>{if(!reduced&&!document.hidden)vid.play().catch(()=>{})},{once:true});
+  const makeVideo=v=>new Promise(resolve=>{
+   const video=document.createElement("video");
+   video.muted=true;video.defaultMuted=true;video.loop=true;video.playsInline=true;video.autoplay=false;video.preload="metadata";video.controls=false;video.disablePictureInPicture=true;video.draggable=false;video.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");video.setAttribute("aria-hidden","true");
+   let settled=false;const done=ok=>{if(settled)return;settled=true;clearTimeout(timeout);resolve(ok?video:null)};
+   const timeout=setTimeout(()=>done(false),11000);
+   video.addEventListener("loadeddata",()=>done(true),{once:true});
+   video.addEventListener("error",()=>done(false),{once:true});
+   video.src=v.url;video.load();
+  });
+  const place=async(slot,item,initial=false)=>{
+   const ticket=++sequence;
+   const video=await makeVideo(item);
+   if(!video||disposed||!slot.isConnected)return false;
+   // Never replace a working video until the next video's first frame is ready.
+   const previous=slot.querySelector("video");
+   video.className="nm-incoming";slot.append(video);
+   requestAnimationFrame(()=>{video.classList.add("nm-visible");slot.classList.add("nm-ready")});
+   if(active&&!reduced)video.play().catch(()=>{});
+   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}},750);
+   return true;
+  };
+  await Promise.all(slots.map((slot,i)=>items[i]?place(slot,items[i],true):Promise.resolve(false)));
+  if(reduced||items.length<=2)return;
+  let cursor=2,side=0;
+  const rotate=async()=>{
+   if(!root.isConnected){disposed=true;observer.disconnect();return}
+   if(active){
+    const slot=slots[side];const other=slots[1-side];
+    const otherUrl=other.querySelector("video")?.currentSrc||other.querySelector("video")?.src;
+    let tries=0,chosen=null;
+    while(tries<items.length){const candidate=items[cursor%items.length];cursor++;tries++;if(candidate.url!==otherUrl&&candidate.url!==(slot.querySelector("video")?.src)){chosen=candidate;break}}
+    if(chosen)await place(slot,chosen);
+    side=1-side;
    }
-   column.append(group);
-   if(!reduced&&selected.length>1){const clone=group.cloneNode(true);clone.setAttribute("aria-hidden","true");column.append(clone)}
-   root.append(column);
-  }
-  const observer=new IntersectionObserver(entries=>{for(const e of entries){const v=e.target;if(e.isIntersecting&&!document.hidden&&!reduced)v.play().catch(()=>{});else v.pause()}},{rootMargin:"100px"});
-  root.querySelectorAll("video").forEach(v=>observer.observe(v));
-  document.addEventListener("visibilitychange",()=>root.querySelectorAll("video").forEach(v=>document.hidden?v.pause():(!reduced&&v.play().catch(()=>{}))));
+   timer=setTimeout(rotate,7500);
+  };
+  timer=setTimeout(rotate,7500);
  }catch{root.classList.add("nm-empty")}
 }
 
