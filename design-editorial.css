@@ -163,3 +163,66 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .nd-design-flyer.nd-design-flyer-loaded{height:auto!important;aspect-ratio:auto!important;display:block;overflow:hidden;padding:0!important;background:transparent!important;border:0;outline:0;box-shadow:0 22px 50px #0009;mask-image:linear-gradient(to bottom,#000 0%,#000 85%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 85%,transparent 100%)}
 .nd-design-flyer.nd-design-flyer-loaded img{display:block!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;object-fit:initial!important;object-position:initial!important;background:transparent!important}
 .nd-design-visual{overflow:visible}
+
+/* noBRon: curved editorial 3D perspective for the three real featured flyers.
+   Keep each uploaded image's intrinsic aspect ratio and lower-edge fade. */
+.ns-page-design .nd-design-visual{
+  perspective:1200px;
+  perspective-origin:50% 43%;
+  transform-style:preserve-3d;
+  isolation:isolate;
+}
+.ns-page-design .nd-design-flyer{
+  transform-origin:center center;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transition:transform .65s cubic-bezier(.2,.75,.25,1),filter .65s ease;
+  will-change:transform;
+}
+.ns-page-design .nd-design-flyer-a{
+  left:2%;
+  z-index:1;
+  transform:translate3d(0,16px,-65px) rotateY(23deg) rotateZ(-5deg);
+}
+.ns-page-design .nd-design-flyer-b{
+  left:27.5%;
+  z-index:3;
+  transform:translate3d(0,-12px,72px) rotateY(0deg);
+}
+.ns-page-design .nd-design-flyer-c{
+  right:2%;
+  z-index:2;
+  transform:translate3d(0,16px,-65px) rotateY(-23deg) rotateZ(5deg);
+}
+@media (min-width:801px){
+  .ns-page-design .nd-design-visual{
+    perspective:1050px;
+  }
+  .ns-page-design .nd-design-flyer-a{
+    transform:translate3d(2%,18px,-75px) rotateY(27deg) rotateZ(-4deg);
+  }
+  .ns-page-design .nd-design-flyer-c{
+    transform:translate3d(-2%,18px,-75px) rotateY(-27deg) rotateZ(4deg);
+  }
+}
+@media (max-width:800px){
+  .ns-page-design .nd-design-visual{
+    perspective:1100px;
+    perspective-origin:50% 45%;
+  }
+  .ns-page-design .nd-design-flyer-a{
+    left:0;
+    transform:translate3d(0,12px,-35px) rotateY(11deg) rotateZ(-5deg);
+  }
+  .ns-page-design .nd-design-flyer-b{
+    left:26%;
+    transform:translate3d(0,-9px,34px);
+  }
+  .ns-page-design .nd-design-flyer-c{
+    right:0;
+    transform:translate3d(0,12px,-35px) rotateY(-11deg) rotateZ(5deg);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .ns-page-design .nd-design-flyer{transition:none}
+}
