@@ -60,3 +60,39 @@ body:has(.ns-page-solutions) .ns-footer{background:rgba(9,9,11,.9);border-top:1p
 @media(max-width:800px){.ns-page-solutions .ns-feature-grid{display:block}.ns-page-solutions .ns-feature-copy p{max-width:100%;line-height:1.65;margin-bottom:24px}}
 
 .ns-page-solutions .ns-media-wall,.ns-page-solutions .ns-media-wall *{pointer-events:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+
+/* Editorial expandable services — isolated to the Soluções page */
+.ns-page-solutions{padding-top:clamp(28px,4vw,56px)}
+.ns-page-solutions .ns-edit-section:first-child>section{background:rgba(14,14,17,.66)!important}
+.ns-page-solutions .ns-hero{padding:clamp(26px,4vw,48px)}
+.ns-page-solutions .ns-hero h1{font-size:clamp(42px,5.8vw,76px);line-height:1.02;max-width:none}
+.ns-page-solutions .ns-accordion{padding:0!important}
+.ns-page-solutions .ns-accordion .ns-wrap{width:100%;max-width:none}
+.ns-page-solutions .ns-accordion-item{width:100%}
+.ns-page-solutions .ns-accordion-trigger{display:flex;flex-direction:column;align-items:stretch;gap:clamp(12px,2vw,20px);width:100%;padding:clamp(25px,4vw,48px);border:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.ns-page-solutions .ns-accordion-top{display:flex;justify-content:space-between;align-items:center;color:#b8b8be;letter-spacing:.18em;font-size:12px;font-weight:700}
+.ns-page-solutions .ns-accordion-icon{display:grid;place-items:center;width:35px;height:35px;border:1px solid #ffffff55;border-radius:50%;font-size:24px;font-weight:300;line-height:1;transition:transform .32s ease,background .32s ease}
+.ns-page-solutions .ns-accordion-heading{font-size:clamp(36px,5vw,70px);font-weight:800;line-height:1.05;letter-spacing:-.055em}
+.ns-page-solutions .ns-accordion-brief{color:#c3c3c9;font-size:clamp(15px,1.7vw,20px);line-height:1.55}
+.ns-page-solutions .ns-accordion-hint{display:flex;justify-content:space-between;border-top:1px solid #ffffff28;padding-top:17px;color:#bdbdc3;font-size:12px;letter-spacing:.03em}
+.ns-page-solutions .ns-accordion-trigger:hover .ns-accordion-icon,.ns-page-solutions .ns-accordion-trigger:focus-visible .ns-accordion-icon{background:#ffffff24}
+.ns-page-solutions .ns-accordion-trigger:focus-visible{outline:2px solid #fff;outline-offset:-5px}
+.ns-page-solutions .is-open .ns-accordion-icon{transform:rotate(45deg);background:#ffffff20}
+.ns-page-solutions .ns-accordion-panel{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .42s cubic-bezier(.2,.7,.2,1),opacity .3s,visibility .42s}
+.ns-page-solutions .is-open .ns-accordion-panel{grid-template-rows:1fr;opacity:1;visibility:visible}
+.ns-page-solutions .ns-accordion-inner{min-height:0;overflow:hidden;padding:0 clamp(25px,4vw,48px);display:flex;align-items:flex-start;gap:clamp(22px,4vw,64px);flex-wrap:wrap}
+.ns-page-solutions .is-open .ns-accordion-inner{padding-bottom:clamp(25px,4vw,48px)}
+.ns-page-solutions .ns-accordion-inner p{flex:1 1 320px;color:#d0d0d5;line-height:1.7;font-size:clamp(15px,1.6vw,19px);margin:0}
+.ns-page-solutions .ns-accordion-inner .ns-button{flex:none;border-radius:100px;background:#f4f4f4;color:#111}
+@media(max-width:800px){
+ .ns-page-solutions .ns-hero{padding:27px 24px}
+ .ns-page-solutions .ns-hero h1{font-size:clamp(40px,9vw,60px)}
+ .ns-page-solutions .ns-accordion-trigger{padding:25px 23px;gap:14px}
+ .ns-page-solutions .ns-accordion-heading{font-size:clamp(34px,9vw,54px)}
+ .ns-page-solutions .ns-accordion-brief{font-size:15px}
+ .ns-page-solutions .ns-accordion-inner{padding:0 23px;display:block}
+ .ns-page-solutions .is-open .ns-accordion-inner{padding-bottom:26px}
+ .ns-page-solutions .ns-accordion-inner p{font-size:15px;margin-bottom:22px}
+ .ns-page-solutions .ns-accordion-inner .ns-button{display:inline-flex;max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){.ns-page-solutions .ns-accordion-panel,.ns-page-solutions .ns-accordion-icon{transition:none!important}}

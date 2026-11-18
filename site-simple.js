@@ -55,7 +55,28 @@ function feature(s,i){
  const url=services.find(v=>v.id===s.service)?.path||"/solucoes";
  const description=current==="solutions"?(solutionDescriptions[s.service]||s.description):s.description;
  const number=current==="solutions"?Math.max(1,services.findIndex(v=>v.id===s.service)+1):i+1;
- return '<section class="ns-feature ns-feature-'+esc(s.service)+'"><div class="ns-wrap ns-feature-grid"><div class="ns-feature-copy"><small>0'+number+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(description)+'</p>'+action(url,"Ver serviço")+'</div>'+(current==="solutions"?"":slot(s,"ns-feature-image",'<strong>'+esc(s.title)+'</strong>'))+'</div></section>';
+ if(current==="solutions"){
+  const brief={design:"Flyers, artes promocionais e materiais gráficos.",motion:"Flyers animados, teasers e vídeos promocionais.",sistemas:"Sites, portaria, bar e ingressos online."}[s.service]||s.description;
+  const details={design:"Flyers para eventos, line-ups, ingressos, cardápios, ofertas e comunicados. Materiais preparados para os formatos de divulgação combinados.",motion:"Vídeos para apresentar atrações, anunciar datas, divulgar ingressos e programações em Reels, Stories, telões e painéis.",sistemas:"Sites completos para artistas, produtoras, baladas e pubs; sistemas para organizar portaria e bar; e soluções para venda e conferência de ingressos."}[s.service]||description;
+  return '<section class="ns-feature ns-feature-'+esc(s.service)+' ns-accordion"><div class="ns-wrap"><div class="ns-accordion-item"><button class="ns-accordion-trigger" type="button" aria-expanded="false" aria-controls="ns-service-panel-'+esc(s.service)+'"><span class="ns-accordion-top"><small>0'+number+' / SERVIÇO</small><span class="ns-accordion-icon" aria-hidden="true">+</span></span><strong class="ns-accordion-heading">'+esc(s.title)+'</strong><span class="ns-accordion-brief">'+esc(brief)+'</span><span class="ns-accordion-hint">Toque para explorar <span aria-hidden="true">↗</span></span></button><div class="ns-accordion-panel" id="ns-service-panel-'+esc(s.service)+'" inert><div class="ns-accordion-inner"><p>'+esc(details)+'</p>'+action(url,"Explorar serviço")+'</div></div></div></div></section>';
+ }
+ return '<section class="ns-feature ns-feature-'+esc(s.service)+'"><div class="ns-wrap ns-feature-grid"><div class="ns-feature-copy"><small>0'+number+' / SERVIÇO</small><h2>'+esc(s.title)+'</h2><p>'+esc(description)+'</p>'+action(url,"Ver serviço")+'</div>'+slot(s,"ns-feature-image",'<strong>'+esc(s.title)+'</strong>')+'</div></section>';
+}
+function setupSolutionsAccordion(){
+ if(current!=="solutions"||inPreview)return;
+ const items=$$(".ns-page-solutions .ns-accordion-item");
+ const toggle=(item,open)=>{
+  const trigger=$(".ns-accordion-trigger",item),panel=$(".ns-accordion-panel",item);
+  item.classList.toggle("is-open",open);trigger.setAttribute("aria-expanded",String(open));panel.inert=!open;
+ };
+ items.forEach(item=>{
+  toggle(item,false);
+  $(".ns-accordion-trigger",item).addEventListener("click",()=>{
+   const shouldOpen=!item.classList.contains("is-open");
+   items.forEach(other=>toggle(other,false));
+   if(shouldOpen)toggle(item,true);
+  });
+ });
 }
 function formats(s){
  return '<section class="ns-formats"><div class="ns-wrap">'+title(s)+'<div class="ns-formats-list">'+(s.items||[]).map((item,i)=>'<div><small>0'+(i+1)+'</small><strong>'+esc(item)+'</strong></div>').join("")+'</div></div></section>';
@@ -224,6 +245,7 @@ function render(){
   el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click()}}
  });
  setupAutoscroll();
+ setupSolutionsAccordion();
  setupDesign();
  setupDesignCards();
  setupMotion();
