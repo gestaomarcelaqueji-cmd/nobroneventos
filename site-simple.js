@@ -113,10 +113,10 @@ async function setupMotion(){
   let cursor=count,rotating=false;
   function prepare(item){
    return new Promise(resolve=>{
-    const v=document.createElement("video");v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.preload="auto";v.autoplay=false;v.disablePictureInPicture=true;v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");
+    const v=document.createElement("video");v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.preload="metadata";v.autoplay=false;v.disablePictureInPicture=true;v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");
     let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timeout);resolve(ok?v:null)};
-    const timeout=setTimeout(()=>finish(false),12000);
-    v.addEventListener("loadeddata",()=>finish(true),{once:true});v.addEventListener("error",()=>finish(false),{once:true});
+    const timeout=setTimeout(()=>finish(false),6500);
+    v.addEventListener("loadedmetadata",()=>finish(true),{once:true});v.addEventListener("error",()=>finish(false),{once:true});
     v.src=item.url;v.load();
    });
   }
@@ -133,23 +133,23 @@ async function setupMotion(){
   }
   // Autoplay three muted videos immediately; keep the other tiles as static first frames to reduce mobile load.
   await Promise.all(tiles.slice(0,Math.min(3,count)).map((tile,i)=>show(tile,items[i],true)));
-  for(let i=3;i<count;i++){
-   if(!root.isConnected){disposed=true;break}
-   await show(tiles[i],items[i],false);
-  }
-  if(disposed||reduced||items.length<=count)return;
-  let index=0;
-  async function rotate(){
-   if(rotating||!root.isConnected||document.hidden||!visible)return;
-   rotating=true;
-   try{
-    const tile=tiles[index%count];index++;
-    const used=new Set(assigned.values());let next=null;
-    for(let tries=0;tries<items.length;tries++){const candidate=items[cursor%items.length];cursor++;if(!used.has(candidate.url)){next=candidate;break}}
-    if(next)await show(tile,next,true);
-   }finally{rotating=false}
-  }
-  const timer=setInterval(()=>{if(!root.isConnected){clearInterval(timer);observer.disconnect();return}rotate()},7500);
+
+  // Do not serialize video requests: a slow file must not hold up the other cards.
+  const remaining=tiles.slice(3,count).map((tile,j)=>show(tile,items[j+3],false));
+  Promise.allSettled(remaining).catch(()=>{});
+  if(disposed||reduced)return;
+  let cursorTile=0;
+  const timer=setInterval(()=>{
+   if(!root.isConnected){clearInterval(timer);observer.disconnect();return}
+   if(document.hidden||!visible)return;
+   const ready=tiles.slice(0,count).filter(tile=>tile.querySelector("video"));
+   if(!ready.length)return;
+   const active=ready.slice(cursorTile%ready.length).concat(ready.slice(0,cursorTile%ready.length)).slice(0,Math.min(3,ready.length));
+   root.querySelectorAll("video").forEach(v=>{if(!active.some(t=>t.contains(v)))v.pause()});
+   active.forEach(tile=>{const v=tile.querySelector("video");if(v){v.muted=true;v.play().catch(()=>{})}});
+   cursorTile=(cursorTile+1)%ready.length;
+  },5500);
+
  }catch{root.classList.add("nm-empty")}
 }
 
