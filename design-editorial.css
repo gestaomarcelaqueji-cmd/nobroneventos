@@ -142,3 +142,19 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 /* Uploaded editorial art cards. Preserve the three-card geometry and natural image proportions. */
 .nd-design-flyer.nd-design-flyer-loaded{padding:0;background:#19191d}
 .nd-design-flyer-loaded img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;pointer-events:none;-webkit-user-select:none;user-select:none}
+
+/* Story format 9:16: display every complete artwork without cropping. */
+.nd-design-visual{height:clamp(380px,43vw,640px)}
+.nd-design-flyer{top:4%;height:92%;width:45%;aspect-ratio:9/16;box-sizing:border-box}
+.nd-design-flyer-a{left:3%}
+.nd-design-flyer-b{left:27.5%}
+.nd-design-flyer-c{right:3%}
+.nd-design-flyer.nd-design-flyer-loaded{background:#0d0d10}
+.nd-design-flyer-loaded img{object-fit:contain!important;object-position:center center!important;background:#0d0d10}
+@media(max-width:800px){
+.nd-design-visual{height:clamp(335px,112vw,590px)}
+.nd-design-flyer{top:5%;height:90%;width:48%;border-radius:10px}
+.nd-design-flyer-a{left:0}
+.nd-design-flyer-b{left:26%}
+.nd-design-flyer-c{right:0}
+}
