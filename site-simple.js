@@ -15,7 +15,7 @@ const galleryItems=(section,device)=>{
  return Array.isArray(list)&&list.length?list:Array.isArray(fallback)?fallback:[];
 };
 const video=m=>m?.type==="video"||/\.(mp4|webm)(\?|$)/i.test(mediaUrl(m));
-const title=s=>'<div class="ns-title"><small>'+esc(page.label)+'</small><h2>'+esc(s.title)+'</h2>'+(s.description?'<p>'+esc(s.description)+'</p>':"")+'</div>';
+const title=s=>'<div class="ns-title"><small>'+esc(current==="home"?"SOLUÇÕES":page.label)+'</small><h2>'+esc(s.title)+'</h2>'+(s.description?'<p>'+esc(s.description)+'</p>':"")+'</div>';
 function mediaNode(m,s,device,opts={}){
  const src=mediaUrl(m);
  if(!src)return "";
@@ -45,7 +45,7 @@ function hero(s){
   sistemas:'<span class="ns-browserbar">noBRon. / SISTEMAS · ● ● ●</span><strong>GESTÃO<br>DE EVENTOS.</strong><i>PORTARIA / ESTOQUE / SITES</i>',
   contact:'<strong>FALE<br>COM A GENTE.</strong>'
  }[current];
- return '<section class="ns-hero ns-hero-'+current+'"><div class="ns-hero-copy"><small>'+esc(current==="home"?"ESTÚDIO DIGITAL":page.label.toUpperCase())+'</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+(current==="home"?action("/solucoes","Conheça os serviços"):current==="contact"?"":current==="solutions"?"":action("/contato","Solicitar orçamento"))+'</div>'+slot(s,"ns-hero-art",art)+'</section>';
+ return '<section class="ns-hero ns-hero-'+current+'"><div class="ns-hero-copy"><small>'+esc(current==="home"?"ESTÚDIO DIGITAL":page.label.toUpperCase())+'</small><h1>'+esc(s.title)+'</h1><p>'+esc(s.description)+'</p>'+(current==="home"?action("#servicos","Conheça os serviços"):current==="contact"?"":current==="solutions"?"":action("/contato","Solicitar orçamento"))+'</div>'+slot(s,"ns-hero-art",art)+'</section>';
 }
 const serviceIcons=['<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg>','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z"/></svg>','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-3 20"/></svg>'];
 function servicesSection(s){
@@ -226,19 +226,20 @@ function systemsPage(){
 
 function render(){
  document.title=page.label+" · noBRon";
- const menu=[["Início","/","home"],["Soluções","/solucoes","services"],["Contato","/contato","contact"]];
+ const menu=[["Início","/","home"],["Design","/design","design"],["Motion","/motion","motion"],["Sistemas","/sistemas","sistemas"],["Contato","/contato","contact"]];
  const svg={
- home:'<path d="M3 10 12 3l9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
- services:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h7"/>',
+ home:'<path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/>',
+ design:'<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>',
+ motion:'<path d="m8 5 12 7-12 7V5Z"/>',
+ sistemas:'<path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-3 20"/>',
  contact:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>'
  };
- const active=["solutions","design","motion","sistemas"].includes(current)?"services":current;
- const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
- const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
+ const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(current===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
+ const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(current===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
  const body=current==="contact"&&!inPreview ? window.NOBRON_CONTACT_PAGE.render(sections) : current==="sistemas"&&!inPreview ? systemsPage() : current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
  if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
- return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'
+ return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'" id="'+(current==="home"&&s.id==="servicos"?"servicos":"sec-"+esc(s.id))+'">'+(block?block():"")+endDivider(s,i)+'</div>'
  }).join("");
  $("#app").innerHTML='<header class="ns-top"><a class="ns-logo" href="/">noBRon.</a><nav>'+nav+'</nav><a class="ns-top-contact" href="/contato">Orçamento ↗</a></header><main id="main" class="ns-page ns-page-'+current+'">'+body+'</main><footer class="ns-footer"><a class="ns-logo" href="/">noBRon.</a><span>Design Digital · Motion Design · Sistemas</span></footer><nav class="ns-bottom" aria-label="Menu principal">'+mobile+'</nav><div id="ns-overlay" hidden></div>';
  $$(".ns-reveal").forEach(el=>{
