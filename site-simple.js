@@ -229,10 +229,43 @@ function designPage(doc){
  const g=gallerySection?gallery(gallerySection):"";
  const cards='<div class="nd-design-visual" aria-label="Três trabalhos de Design Digital"><div class="nd-design-flyer nd-design-flyer-a" data-design-card="1"><span>DIVULGAÇÃO</span><strong>SEU<br>EVENTO.</strong></div><div class="nd-design-flyer nd-design-flyer-b" data-design-card="2"><span>DESIGN DIGITAL</span><strong>FLYERS<br>& ARTES.</strong></div><div class="nd-design-flyer nd-design-flyer-c" data-design-card="3"><span>COMUNICAÇÃO</span><strong>SUA<br>MARCA.</strong></div></div>';
  const intro='<section class="nd-design-hero"><div class="nd-design-intro"><small>DESIGN DIGITAL</small><h1>'+esc(heading)+'</h1><p>Desenvolvemos flyers e materiais gráficos para <strong>festas, shows, baladas, pubs, casas noturnas e artistas.</strong></p><p>Do anúncio de um evento à divulgação de atrações, ingressos e últimas chamadas, criamos peças para cada momento da programação.</p><a class="nd-design-action" href="#nd-orcamento">Simular meu pacote <span aria-hidden="true">↗</span></a></div>'+cards+'</section>';
- const explanation='<section class="nd-design-explainer"><div class="nd-explainer-heading"><small>DO ANÚNCIO À ÚLTIMA CHAMADA</small><h2>Uma arte para cada momento da divulgação.</h2></div><div class="nd-explainer-copy"><p>Primeiro, a data e as informações do evento. Depois, artistas confirmados, line-up, ingressos, lotes, camarotes e reservas. Mais perto da festa, entram localização, avisos e últimas chamadas.</p><p>Para bares, pubs e casas noturnas, também criamos artes para programação semanal, apresentações, cardápios, combos e promoções.</p><p class="nd-explainer-secondary">Outras aplicações: divulgação de produtos, serviços e comunicados comerciais.</p></div></section>';
+ const servicesCatalog={
+ empresas:[
+ "Criação de logotipo","Redesign de logotipo","Identidade visual","Manual da marca","Cartão de visita","Papelaria corporativa","Assinatura de e-mail","Apresentação institucional","Catálogo de produtos","Portfólio comercial",
+ "Artes para feed","Artes para stories","Carrosséis","Capas para reels","Banners digitais","Campanhas promocionais","Lançamento de produtos","Ofertas e promoções","Cardápios digitais","Tabelas de preços","Comunicados","Datas comemorativas",
+ "Flyers de eventos","Cartazes de shows","Line-up de atrações","Anúncio de artistas","Divulgação de ingressos","Mapas de setores","Programação de eventos","Artes para patrocinadores","Credenciais","Ingressos personalizados","Banners de palco","Painéis para telões",
+ "Outdoors","Fachadas comerciais","Banners e faixas","Panfletos","Folders","Adesivos","Rótulos","Embalagens","Tags de produtos","Sacolas personalizadas","Artes para camisetas","Uniformes","Displays promocionais","Totens","Sinalização",
+ "Criativos para anúncios","Campanhas de inauguração","Campanhas sazonais","Materiais para WhatsApp","Convites digitais","Certificados","Infográficos","Apresentações comerciais","Kits de divulgação"
+ ],
+ artistas:[
+ "Logotipo artístico","Identidade visual do artista","Redesign de marca","Assinatura visual","Tipografia personalizada","Capa para redes sociais","Foto de perfil personalizada","Elementos gráficos exclusivos",
+ "Agenda semanal","Agenda mensal","Flyer de apresentação","Flyer de show","Divulgação de turnê","Anúncio de novas datas","Contagem regressiva","Presença confirmada","Participação especial","Agenda disponível","Artes para stories","Destaques do Instagram",
+ "Mídia kit","Press kit","Portfólio artístico","Apresentação comercial","Rider visual","Card de contratação","Tabela visual de serviços","Cartão de contato digital","Material para contratantes","Artes de parcerias","Artes de patrocínios",
+ "Capa de single","Capa de álbum","Capa de EP","Arte de pré-save","Divulgação de lançamento","Banners para YouTube","Thumbnail de videoclipe","Capas de playlists","Artes de conquistas","Comemoração de streams","Divulgação musical",
+ "Templates para stories","Templates para feed","Artes para fã-clubes","Banners para plataformas","Pôsteres oficiais","Artes para camisetas","Adesivos e brindes","Materiais de backstage","Identificação da equipe"
+ ]};
+ const serviceLane=(items,i)=>'<div class="nd-service-lane'+(i%2?' nd-service-lane-reverse':'')+'"><div class="nd-service-track">'+[0,1].map(copy=>'<div class="nd-service-set" '+(copy?'aria-hidden="true"':'')+'>'+items.map(item=>'<button type="button" class="nd-service-pill" aria-pressed="false">'+esc(item)+'</button>').join('')+'</div>').join('')+'</div></div>';
+ const servicePanel=(key)=>{const list=servicesCatalog[key],size=Math.ceil(list.length/4);return '<div class="nd-service-panel" data-service-panel="'+key+'" '+(key==='artistas'?'hidden':'')+'>'+Array.from({length:4},(_,i)=>serviceLane(list.slice(i*size,(i+1)*size),i)).join('')+'</div>'};
+ const explanation='<section class="nd-infinite-services" aria-label="Possibilidades de Design Digital"><div class="nd-services-switch" role="group" aria-label="Escolha o público"><button type="button" class="nd-services-tab is-selected" data-service-tab="empresas" aria-pressed="true">Empresas</button><button type="button" class="nd-services-tab" data-service-tab="artistas" aria-pressed="false">Artistas</button></div><div class="nd-services-marquees">'+servicePanel('empresas')+servicePanel('artistas')+'</div><p class="nd-services-caption">Materiais gráficos para cada necessidade. Consulte formatos, escopo e disponibilidade para o seu projeto.</p></section>';
  const motion='<section class="nd-design-motion" aria-label="Exemplos de artes para divulgação"><div class="nd-motion-fixed">ARTE PARA DIVULGAR</div><div class="nd-motion-viewport" aria-live="off"><span id="nd-motion-word">A DATA DO EVENTO.</span></div></section>';
  const budget='<section class="nd-design-budget" id="nd-orcamento" aria-label="Simular orçamento mensal de artes"><div class="nd-budget-top"><small>DESIGN DIGITAL</small><h2>Monte seu pacote de artes.</h2><p>Escolha a quantidade e veja seu investimento.</p></div><div class="nd-budget-grid"><div class="nd-budget-control"><button type="button" class="nd-budget-step" id="nd-minus" aria-label="Diminuir quantidade">−</button><div class="nd-budget-quantity"><output id="nd-qty">8</output><span>artes por mês</span></div><button type="button" class="nd-budget-step" id="nd-plus" aria-label="Aumentar quantidade">+</button><input type="range" id="nd-slider" min="1" max="16" step="1" value="8" aria-label="Quantidade de artes por mês"></div><div class="nd-budget-regular"><span>SE FOSSE CONTRATAR INDIVIDUALMENTE PAGARIA</span><del id="nd-regular">R$ 400,00</del></div><div class="nd-budget-values"><div class="nd-budget-total"><small>VALOR DO PACOTE</small><output id="nd-total">R$ 250,00</output></div><div class="nd-budget-saving"><span>VOCÊ ECONOMIZA</span><output id="nd-saving">R$ 150,00</output></div></div></div><p class="nd-budget-note">Cada arte corresponde a uma peça com conteúdo próprio, em um formato combinado. Adaptações para outros tamanhos são orçadas à parte.</p><a class="nd-design-action nd-budget-whatsapp" id="nd-whatsapp" href="https://wa.me/?text=Ol%C3%A1" target="_blank" rel="noopener">Solicitar pacote pelo WhatsApp <span aria-hidden="true">↗</span></a></section>';
  return '<div class="nd-design-shell">'+intro+explanation+motion+budget+(g?'<div class="nd-design-portfolio">'+g+'</div>':"")+'</div>';
+}
+function setupInfiniteServices(){
+ const root=document.querySelector('.nd-infinite-services');if(!root)return;
+ const tabs=[...root.querySelectorAll('[data-service-tab]')];
+ const panels=[...root.querySelectorAll('[data-service-panel]')];
+ tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  const selected=tab.dataset.serviceTab;
+  tabs.forEach(t=>{const active=t===tab;t.classList.toggle('is-selected',active);t.setAttribute('aria-pressed',String(active))});
+  panels.forEach(panel=>{panel.hidden=panel.dataset.servicePanel!==selected});
+ }));
+ root.addEventListener('click',event=>{
+  const pill=event.target.closest('.nd-service-pill');if(!pill)return;
+  const active=pill.getAttribute('aria-pressed')!=='true';
+  root.querySelectorAll('.nd-service-pill[aria-pressed="true"]').forEach(el=>{el.setAttribute('aria-pressed','false')});
+  if(active)pill.setAttribute('aria-pressed','true');
+ });
 }
 function setupDesignCards(){
  if(current!=="design")return;
