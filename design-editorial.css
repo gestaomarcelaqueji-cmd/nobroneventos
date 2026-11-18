@@ -226,3 +226,61 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 @media (prefers-reduced-motion:reduce){
   .ns-page-design .nd-design-flyer{transition:none}
 }
+
+/* Full approved Design Digital page: editorial narrative, three real flyers,
+   compact two-line motion BEFORE monthly quote, and mobile-first spacing. */
+.ns-page-design .nd-design-shell{padding-bottom:clamp(90px,9vw,150px)}
+.ns-page-design .nd-design-hero{
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  align-items:center;gap:clamp(32px,4.5vw,72px);
+  padding:clamp(88px,9vw,145px) 0 clamp(105px,10vw,170px);
+}
+.ns-page-design .nd-design-intro{max-width:700px;padding:clamp(22px,3vw,42px);background:linear-gradient(115deg,#09090bf0,#09090bd2);border:1px solid #ffffff0e}
+.ns-page-design .nd-design-intro h1{font-size:clamp(50px,5.4vw,92px);line-height:1.01;max-width:12ch;margin-bottom:clamp(24px,3vw,38px)}
+.ns-page-design .nd-design-intro p{font-size:clamp(16px,1.35vw,19px);line-height:1.65;margin:0 0 18px;max-width:54ch}
+.ns-page-design .nd-design-intro p strong{font-weight:650;color:#f1f1f3}
+.ns-page-design .nd-design-intro .nd-design-action{margin-top:24px}
+.ns-page-design .nd-design-visual{width:100%;height:clamp(400px,45vw,650px);align-self:center}
+.ns-page-design .nd-design-explainer{width:min(100%,1160px);margin:0 auto clamp(105px,12vw,180px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,7vw,110px);align-items:start;padding:0 clamp(10px,2vw,25px);position:relative}
+.nd-explainer-heading{background:linear-gradient(120deg,#0b0b0ddd,#0b0b0d88);border-radius:18px;padding:clamp(15px,2vw,28px);backdrop-filter:blur(6px)}
+.nd-explainer-heading small{display:block;color:#b5b5bd;font-size:11px;letter-spacing:.2em;font-weight:750;margin-bottom:18px}
+.nd-explainer-heading h2{font-size:clamp(35px,4.5vw,67px);letter-spacing:-.065em;line-height:1.07}
+.nd-explainer-copy{padding-top:clamp(10px,2vw,35px);background:linear-gradient(90deg,#0b0b0da6,#0b0b0d40);border-radius:14px}
+.nd-explainer-copy p{font-size:clamp(16px,1.5vw,19px);line-height:1.7;color:#d1d1d7;margin:0 0 23px}
+.nd-explainer-copy .nd-explainer-secondary{color:#a6a7ae;font-size:clamp(14px,1.1vw,16px);border-top:1px solid #ffffff25;padding-top:22px;margin-top:22px}
+.ns-page-design .nd-design-motion{width:min(100%,1200px);margin:0 auto clamp(105px,11vw,165px);padding:clamp(24px,4vw,56px) 0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;white-space:normal}
+.ns-page-design .nd-motion-fixed{font-size:clamp(30px,4.2vw,62px);letter-spacing:-.075em;line-height:1.1;white-space:nowrap}
+.ns-page-design .nd-motion-viewport{width:100%;font-size:clamp(32px,5.2vw,76px);letter-spacing:-.075em;line-height:1.13;min-height:1.25em;text-align:center;overflow:visible}
+.ns-page-design .nd-motion-viewport span{white-space:nowrap}
+.ns-page-design .nd-design-budget{margin-bottom:clamp(110px,12vw,190px)}
+.ns-page-design .nd-budget-top{max-width:770px;margin-left:auto;margin-right:auto}
+.ns-page-design .nd-budget-regular del{font-size:clamp(25px,2.4vw,36px);color:#aaaab1;text-decoration-color:#c7c8cf}
+.ns-page-design .nd-budget-total output{font-size:clamp(49px,5.2vw,78px)}
+.ns-page-design .nd-budget-saving output{font-size:clamp(35px,3.7vw,56px)}
+.ns-page-design .nd-budget-note{max-width:670px;margin:35px auto 0;text-align:center;color:#a9a9b0;font-size:13px;line-height:1.6}
+@media(max-width:800px){
+ .ns-page-design .nd-design-shell{padding:0 20px 100px}
+ .ns-page-design .nd-design-hero{display:flex;flex-direction:column;align-items:stretch;gap:clamp(65px,15vw,100px);padding:clamp(65px,13vw,90px) 0 clamp(95px,16vw,140px)}
+ .ns-page-design .nd-design-intro{padding:23px 16px;background:linear-gradient(115deg,#09090bf0,#09090bd2)}
+ .ns-page-design .nd-design-intro h1{font-size:clamp(45px,10.5vw,69px);max-width:11ch}
+ .ns-page-design .nd-design-intro p{font-size:15px;line-height:1.7;margin-bottom:18px}
+ .ns-page-design .nd-design-intro .nd-design-action{margin-top:20px}
+ .ns-page-design .nd-design-visual{height:clamp(360px,112vw,620px)}
+ .ns-page-design .nd-design-explainer{display:flex;flex-direction:column;gap:26px;padding:0 3px;margin-bottom:clamp(105px,20vw,145px)}
+ .nd-explainer-heading{padding:16px 10px}
+ .nd-explainer-heading h2{font-size:clamp(36px,9vw,55px)}
+ .nd-explainer-copy{padding:5px 10px}
+ .nd-explainer-copy p{font-size:15px;line-height:1.7;margin-bottom:20px}
+ .ns-page-design .nd-design-motion{gap:10px;padding:22px 0;margin-bottom:clamp(100px,18vw,145px)}
+ .ns-page-design .nd-motion-fixed{font-size:clamp(25px,6.9vw,44px);white-space:nowrap}
+ .ns-page-design .nd-motion-viewport{font-size:clamp(25px,6.6vw,43px);line-height:1.2;min-height:1.3em}
+ .ns-page-design .nd-motion-viewport span{white-space:normal;overflow-wrap:normal}
+ .ns-page-design .nd-design-budget{padding:clamp(25px,6vw,35px) clamp(20px,5vw,28px);margin-bottom:clamp(110px,20vw,155px)}
+ .ns-page-design .nd-budget-total output{font-size:clamp(43px,9vw,65px)}
+ .ns-page-design .nd-budget-saving output{font-size:clamp(35px,8vw,55px)}
+ .ns-page-design .nd-budget-note{margin-top:30px;text-align:left}
+}
+@media(max-width:380px){
+ .ns-page-design .nd-motion-fixed{font-size:24px}
+ .ns-page-design .nd-motion-viewport{font-size:24px}
+}
