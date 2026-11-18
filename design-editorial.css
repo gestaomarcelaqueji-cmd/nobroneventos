@@ -120,3 +120,8 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .ns-page-design .nd-design-portfolio{padding:20px 13px}
 }
 @media(prefers-reduced-motion:reduce){.ns-page-design .ns-wall-column{animation:none!important}}
+
+/* Specific event-art motion copy: keep a single line on every viewport. */
+.nd-design-motion{gap:.22em}
+.nd-motion-fixed,.nd-motion-viewport{font-size:clamp(16px,2.45vw,37px);letter-spacing:-.07em}
+@media(max-width:800px){.nd-design-motion{gap:.18em;max-width:100%;padding:15px 0}.nd-motion-fixed,.nd-motion-viewport{font-size:clamp(10px,2.65vw,18px);letter-spacing:-.065em}}
