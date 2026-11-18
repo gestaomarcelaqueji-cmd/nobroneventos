@@ -7,7 +7,7 @@ const {pages,services,baseUrl,publishable}=window.NOBRON_SCHEMA;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const preview=new URLSearchParams(location.search).get('cms_preview')==='1'&&window.parent!==window;
  if(reduced||preview){overlay.remove();return}
- const route=location.pathname.replace(/\\/+$/,'')||'/';
+ const route=location.pathname.replace(/\/+$/,'')||'/';
  const destination=route==='/'?'home':route==='/contato'?'contato':route.endsWith('/design')?'design':route.endsWith('/motion')?'motion':route.endsWith('/sistemas')?'sistemas':'home';
  overlay.dataset.destination=destination;
  const icons=[...overlay.querySelectorAll('[data-intro-icon]')];
