@@ -136,3 +136,5 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .nd-motion-fixed{font-size:clamp(27px,7.2vw,48px);letter-spacing:-.08em}
 .nd-motion-viewport{font-size:clamp(27px,7.1vw,48px);letter-spacing:-.085em}
 }
+
+.ns-page-design .ns-media-wall,.ns-page-design .ns-media-wall *{pointer-events:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}

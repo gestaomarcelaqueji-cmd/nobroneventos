@@ -35,3 +35,8 @@ body:has(.ns-page-home) .ns-page-home{position:relative;isolation:isolate;paddin
 body:has(.ns-page-home) .ns-footer{position:relative;background:rgba(9,9,11,.88);backdrop-filter:blur(18px)}
 @media(max-width:800px){.ns-page-home .ns-wall-grid{inset:-8% -38%;gap:10px;transform:rotate(-4deg) scale(1.04)}.ns-page-home .ns-wall-column{gap:10px}.ns-page-home .ns-wall-tile{border-radius:5px;filter:grayscale(1) blur(2px) brightness(.55)}body:has(.ns-page-home) .ns-page-home{padding:28px 18px 80px}.ns-page-home .ns-edit-section{margin-bottom:18px;width:100%}.ns-page-home .ns-edit-section>section:not(.ns-empty-gallery){border-radius:22px}.ns-page-home .ns-hero,.ns-page-home .ns-services,.ns-page-home .ns-gallery,.ns-page-home .ns-cta{padding:27px 24px}.ns-page-home .ns-hero h1{font-size:clamp(49px,11vw,75px)}.ns-page-home .ns-hero p{font-size:15px}.ns-page-home .ns-service-link{grid-template-columns:25px minmax(0,1fr) 18px;gap:9px;padding:20px 0}.ns-page-home .ns-service-link strong{font-size:clamp(24px,6vw,36px)}.ns-page-home .ns-cta h2{font-size:clamp(43px,10vw,70px)}.ns-page-home .ns-button{max-width:100%;white-space:normal}}
 @media(prefers-reduced-motion:reduce){.ns-page-home .ns-wall-column{animation:none!important}.ns-page-home .ns-wall-tile{transition:none!important}}
+
+/* Background is decorative: no taps, long-press image menus, or selection. */
+.ns-media-wall,.ns-media-wall *{pointer-events:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+.ns-media-wall .ns-wall-tile{cursor:default!important}
+.ns-media-wall .ns-wall-image{width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat}

@@ -58,3 +58,5 @@ body:has(.ns-page-solutions) .ns-footer{background:rgba(9,9,11,.9);border-top:1p
 .ns-page-solutions .ns-feature-copy p{max-width:830px;line-height:1.65;margin-bottom:26px}
 .ns-page-solutions .ns-feature-image{display:none!important}
 @media(max-width:800px){.ns-page-solutions .ns-feature-grid{display:block}.ns-page-solutions .ns-feature-copy p{max-width:100%;line-height:1.65;margin-bottom:24px}}
+
+.ns-page-solutions .ns-media-wall,.ns-page-solutions .ns-media-wall *{pointer-events:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
