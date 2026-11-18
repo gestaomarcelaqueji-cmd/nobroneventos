@@ -131,9 +131,19 @@ function build(media){
   const seen=new Set();const unique=media.filter(m=>{const key=m.url.split('?')[0];if(seen.has(key))return false;seen.add(key);return true});
   const images=unique.filter(m=>m.type==='image');const motion=designDesktop?[]:unique.filter(m=>m.type==='video');const ordered=[];
   while(images.length||motion.length){if(images.length)ordered.push(images.shift());if(motion.length)ordered.push(motion.shift())}
-  const columns=Array.from({length:3},()=>{const col=document.createElement('div');col.className='ns-wall-column';grid.append(col);return col});
-  ordered.forEach((m,i)=>columns[i%3].append(make(m)));
-  grid.classList.add('ns-wall-desktop');
+  const count=designDesktop?5:3;
+  const columns=Array.from({length:count},()=>{const col=document.createElement('div');col.className='ns-wall-column';grid.append(col);return col});
+  if(designDesktop){
+   // Five tracks cover the rotated edges. Complete a full unique pass before reuse.
+   const height=Math.max(home.scrollHeight,window.innerHeight);
+   const width=Math.max(130,window.innerWidth*.27);
+   const rows=Math.min(30,Math.max(5,Math.ceil(height*1.3/(width*16/9+24))));
+   for(let i=0;i<rows*count&&ordered.length;i++)columns[i%count].append(make(ordered[i%ordered.length]));
+   grid.classList.add('ns-wall-desktop','ns-wall-design-desktop');
+  }else{
+   ordered.forEach((m,i)=>columns[i%count].append(make(m)));
+   grid.classList.add('ns-wall-desktop');
+  }
  }
  wall.append(grid);
  if(reduced)return;
