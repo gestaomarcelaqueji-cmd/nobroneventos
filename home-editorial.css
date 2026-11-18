@@ -40,3 +40,76 @@ body:has(.ns-page-home) .ns-footer{position:relative;background:rgba(9,9,11,.88)
 .ns-media-wall,.ns-media-wall *{pointer-events:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
 .ns-media-wall .ns-wall-tile{cursor:default!important}
 .ns-media-wall .ns-wall-image{width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat}
+
+
+/* Home cinematic editorial composition — real uploaded images, not a moving video wall. */
+body:has(.ns-page-home) .ns-page-home{padding:clamp(18px,3vw,38px) var(--gap) clamp(34px,5vw,65px);overflow:hidden}
+.ns-page-home .ns-edit-section{margin-bottom:clamp(12px,1.7vw,22px)}
+.ns-page-home .ns-edit-section[data-section-id="hero"]{min-height:clamp(470px,51vw,690px);display:flex;align-items:center;isolation:isolate}
+.ns-page-home .ns-edit-section[data-section-id="hero"]>section{position:relative;z-index:2;width:min(72%,870px);min-height:0;background:rgba(13,13,17,.68)!important;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(23px) saturate(110%);-webkit-backdrop-filter:blur(23px) saturate(110%);box-shadow:0 25px 90px #0009}
+.ns-page-home .ns-hero{padding:clamp(34px,5vw,66px)}
+.ns-page-home .ns-hero h1{font-size:clamp(52px,7vw,100px);max-width:12ch}
+.ns-page-home .ns-hero p{max-width:510px}
+.ns-page-home .nh-stage{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.ns-page-home .nh-stage-shade{position:absolute;inset:0;z-index:3;background:linear-gradient(90deg,rgba(7,7,10,.67) 0%,rgba(7,7,10,.22) 52%,rgba(7,7,10,.10) 100%),linear-gradient(0deg,#09090b 0%,transparent 18%,transparent 85%,#09090b 100%)}
+.ns-page-home .nh-glow{position:absolute;z-index:0;width:44%;height:65%;border-radius:50%;filter:blur(75px);opacity:.4;pointer-events:none}
+.ns-page-home .nh-glow-pink{right:9%;top:7%;background:radial-gradient(ellipse,#e847a1 0%,#8e2874 35%,transparent 70%)}
+.ns-page-home .nh-glow-blue{right:-7%;bottom:-16%;background:radial-gradient(ellipse,#22a9db 0%,#21508f 34%,transparent 72%);opacity:.3}
+.ns-page-home .nh-posters{position:absolute;inset:0;z-index:1}
+.ns-page-home .nh-poster{position:absolute;margin:0;width:clamp(125px,16vw,235px);aspect-ratio:3/4;overflow:hidden;border-radius:12px;background:#1d1d22;border:1px solid #ffffff35;box-shadow:0 22px 45px #0009;animation:nh-float 11s ease-in-out infinite alternate}
+.ns-page-home .nh-poster img{width:100%;height:100%;object-fit:cover}
+.ns-page-home .nh-poster-1{right:21%;top:1%;transform:rotate(-7deg);animation-delay:-3s}
+.ns-page-home .nh-poster-2{right:1%;top:12%;transform:rotate(6deg);animation-delay:-8s}
+.ns-page-home .nh-poster-3{right:31%;top:42%;transform:rotate(5deg);filter:grayscale(.55);animation-delay:-1s}
+.ns-page-home .nh-poster-4{right:3%;bottom:-7%;transform:rotate(-5deg);animation-delay:-5s}
+.ns-page-home .nh-poster-5{right:47%;top:5%;transform:rotate(3deg);filter:grayscale(.8) brightness(.75);animation-delay:-6s}
+.ns-page-home .nh-poster-6{right:51%;bottom:-12%;transform:rotate(-3deg);filter:grayscale(.8) brightness(.7);animation-delay:-2s}
+@keyframes nh-float{0%{translate:0 0}100%{translate:0 -13px}}
+.ns-page-home .ns-edit-section[data-section-id="servicos"]>section{padding:clamp(24px,3vw,40px)!important}
+.ns-page-home .ns-services .ns-title{margin-bottom:18px}
+.ns-page-home .ns-services .ns-title h2{font-size:clamp(30px,3.4vw,46px);margin-bottom:7px}
+.ns-page-home .ns-services .ns-title p{font-size:14px}
+.ns-page-home .ns-service-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border:0}
+.ns-page-home .ns-service-link{border:1px solid #ffffff30;border-radius:15px;padding:20px!important;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:148px;background:#ffffff07;transition:background .3s,transform .3s}
+.ns-page-home .ns-service-link:hover{background:#ffffff13;transform:translateY(-4px)}
+.ns-page-home .ns-service-link strong{font-size:clamp(22px,2.5vw,34px)}
+.ns-page-home .ns-service-link p{font-size:13px;line-height:1.5;margin-top:8px}
+.ns-page-home .ns-service-link>b{align-self:flex-end}
+.ns-page-home .ns-edit-section[data-section-id="chamada"]>section{padding:clamp(22px,3vw,36px)!important}
+.ns-page-home .ns-cta>.ns-wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:20px}
+.ns-page-home .ns-cta small{grid-column:1/-1;margin-bottom:8px}
+.ns-page-home .ns-cta h2{font-size:clamp(28px,3.5vw,46px);max-width:none}
+.ns-page-home .ns-cta p{font-size:14px;margin:7px 0 0;grid-column:1}
+.ns-page-home .ns-cta .ns-button{grid-column:2;grid-row:2/4}
+@media(max-width:800px){
+ body:has(.ns-page-home) .ns-page-home{padding:14px 16px 42px}
+ .ns-page-home .ns-edit-section[data-section-id="hero"]{min-height:565px;align-items:flex-end;padding-top:135px}
+ .ns-page-home .ns-edit-section[data-section-id="hero"]>section{width:100%;margin-bottom:15px;background:rgba(12,12,16,.73)!important}
+ .ns-page-home .ns-hero{padding:27px 23px 30px}
+ .ns-page-home .ns-hero h1{font-size:clamp(43px,10.7vw,65px)}
+ .ns-page-home .ns-hero p{font-size:15px}
+ .ns-page-home .nh-stage-shade{background:linear-gradient(0deg,#09090b 0%,rgba(8,8,10,.23) 50%,rgba(8,8,10,.13) 100%),linear-gradient(90deg,#09090b77,transparent 65%)}
+ .ns-page-home .nh-glow{width:85%;height:50%;filter:blur(55px)}
+ .ns-page-home .nh-glow-pink{top:1%;right:14%}
+ .ns-page-home .nh-glow-blue{bottom:20%;right:-35%}
+ .ns-page-home .nh-poster{width:clamp(100px,33vw,170px);border-radius:9px}
+ .ns-page-home .nh-poster-1{top:0;right:39%}
+ .ns-page-home .nh-poster-2{top:8%;right:-5%}
+ .ns-page-home .nh-poster-3{top:21%;right:58%}
+ .ns-page-home .nh-poster-4{top:35%;right:2%}
+ .ns-page-home .nh-poster-5{top:44%;right:62%}
+ .ns-page-home .nh-poster-6{display:none}
+ .ns-page-home .ns-edit-section[data-section-id="servicos"]>section{padding:24px 20px!important}
+ .ns-page-home .ns-service-list{grid-template-columns:1fr;gap:8px}
+ .ns-page-home .ns-service-link{min-height:0;display:grid;grid-template-columns:1fr 22px;padding:15px 16px!important;gap:6px}
+ .ns-page-home .ns-service-link>span{display:none}
+ .ns-page-home .ns-service-link>div{grid-column:1}
+ .ns-page-home .ns-service-link strong{font-size:25px}
+ .ns-page-home .ns-service-link p{font-size:12px;margin-top:4px}
+ .ns-page-home .ns-service-link>b{grid-column:2;grid-row:1;align-self:center}
+ .ns-page-home .ns-edit-section[data-section-id="chamada"]>section{padding:25px 20px!important}
+ .ns-page-home .ns-cta>.ns-wrap{display:block}
+ .ns-page-home .ns-cta h2{font-size:34px}
+ .ns-page-home .ns-cta p{margin:8px 0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ns-page-home .nh-poster{animation:none!important}}
