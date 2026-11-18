@@ -116,7 +116,7 @@ async function setupMotion(){
    video.src=v.url;video.load();
   });
   const place=async(slot,item,initial=false)=>{
-   const ticket=++sequence;
+   
    const video=await makeVideo(item);
    if(!video||disposed||!slot.isConnected){busy.delete(slot);return false;}
    // Never replace a working video until the next video's first frame is ready.
@@ -124,7 +124,8 @@ async function setupMotion(){
    video.className="nm-incoming";slot.append(video);
    requestAnimationFrame(()=>{video.classList.add("nm-visible");slot.classList.add("nm-ready")});
    if(active&&!reduced)video.play().catch(()=>{});
-   assigned.set(slot,item.url);\n   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}busy.delete(slot)},750);
+   assigned.set(slot,item.url);
+   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}busy.delete(slot)},750);
    return true;
   };
   // Start with unique videos in every visible card.
