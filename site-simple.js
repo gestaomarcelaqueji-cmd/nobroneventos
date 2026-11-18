@@ -205,7 +205,7 @@ function setupDesign(){
  const contact=pages.contact?.sections?.find(s=>s.type==="contact");
  const phone=String(contact?.whatsapp||"").replace(/\D/g,"");
  function update(){const n=Number(slider.value),value=cost(n),saved=n*50-value;qty.textContent=String(n);total.textContent=brl(value);regular.textContent=brl(n*50);saving.textContent=brl(saved);slider.style.setProperty("--progress",((n-1)/15*100)+"%");const msg="Olá! Gostaria de contratar "+n+" "+(n===1?"arte":"artes")+" por mês. Valor estimado do pacote: "+brl(value)+".";link.href="https://wa.me/"+(phone.length>=10&&phone.length<=15?phone:"")+"?text="+encodeURIComponent(msg)}
- slider.addEventListener("input",update);update();
+ slider.addEventListener("input",update);for(const [id,delta] of [["#nd-minus",-1],["#nd-plus",1]]){$(id)?.addEventListener("click",()=>{slider.value=String(Math.max(1,Math.min(16,Number(slider.value)+delta)));update()})}update();
  const phrases=["A DATA DO EVENTO.","O EVENTO COMPLETO.","ARTISTAS CONFIRMADOS.","O LINE-UP.","A VENDA DE INGRESSOS.","A VIRADA DE LOTE.","CAMAROTES E RESERVAS.","O MAPA DO EVENTO.","A LOCALIZAÇÃO.","PROMOÇÕES DO BAR.","COMBOS DE BEBIDAS.","A PROGRAMAÇÃO.","A CONTAGEM REGRESSIVA.","A ÚLTIMA CHAMADA.","AVISOS AO PÚBLICO.","A PRÓXIMA EDIÇÃO."];
  if(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)return;
  let idx=0;const animate=()=>{if(!word.isConnected)return;word.classList.add("nd-motion-out");setTimeout(()=>{if(!word.isConnected)return;idx=(idx+1)%phrases.length;word.textContent=phrases[idx];word.classList.remove("nd-motion-out");word.classList.add("nd-motion-in");requestAnimationFrame(()=>requestAnimationFrame(()=>word.classList.remove("nd-motion-in")))},520)};
