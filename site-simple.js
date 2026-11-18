@@ -1,6 +1,27 @@
 (()=>{
 "use strict";
 const {pages,services,baseUrl,publishable}=window.NOBRON_SCHEMA;
+(function initGlassIntro(){
+ const overlay=document.getElementById('ns-intro');
+ if(!overlay)return;
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const preview=new URLSearchParams(location.search).get('cms_preview')==='1'&&window.parent!==window;
+ if(reduced||preview){overlay.remove();return}
+ let finished=false;
+ const start=performance.now();
+ function dismiss(){
+  if(finished)return;
+  finished=true;
+  overlay.classList.add('is-leaving');
+  overlay.addEventListener('transitionend',e=>{if(e.target===overlay)overlay.remove()},{once:true});
+  setTimeout(()=>overlay.remove(),850);
+ }
+ function schedule(){setTimeout(dismiss,Math.max(0,2250-(performance.now()-start)))}
+ // Never hold the UI for a full media gallery or for slow videos.
+ if(document.readyState==='complete')schedule();
+ else window.addEventListener('load',schedule,{once:true});
+ setTimeout(dismiss,3200);
+})();
 const $=(q,root=document)=>root.querySelector(q), $$=(q,root=document)=>[...root.querySelectorAll(q)];
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
 const current=Object.keys(pages).find(k=>pages[k].route===(location.pathname.replace(/\/+$/,"")||"/"))||"home";
