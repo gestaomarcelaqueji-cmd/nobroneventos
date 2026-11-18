@@ -158,3 +158,8 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .nd-design-flyer-b{left:26%}
 .nd-design-flyer-c{right:0}
 }
+
+/* Exact intrinsic artwork ratio: no letterbox, no crop; softly dissolve only at the lower edge. */
+.nd-design-flyer.nd-design-flyer-loaded{height:auto!important;aspect-ratio:auto!important;display:block;overflow:hidden;padding:0!important;background:transparent!important;border:0;outline:0;box-shadow:0 22px 50px #0009;mask-image:linear-gradient(to bottom,#000 0%,#000 85%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 85%,transparent 100%)}
+.nd-design-flyer.nd-design-flyer-loaded img{display:block!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;object-fit:initial!important;object-position:initial!important;background:transparent!important}
+.nd-design-visual{overflow:visible}
