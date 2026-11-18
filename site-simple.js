@@ -224,6 +224,14 @@ function systemsPage(){
  '<section class="sy-final"><div class="sy-container"><small class="sy-eyebrow">PROJETOS SOB MEDIDA</small><h2>Vamos organizar a operação do seu negócio.</h2><p>Conte como funciona sua casa, produtora ou evento. A partir disso, podemos definir quais etapas precisam de um site, de controles de atendimento ou de um sistema de ingressos.</p>'+button('Conversar sobre meu projeto','Sistemas personalizados')+'</div></section></div>';
 }
 
+
+function homeRebuild(){
+ const heroData=sections.find(s=>s.id==="hero")||{title:"Design. Motion. Sistemas.",description:"Divulgação e soluções digitais para eventos, baladas, pubs e artistas."};
+ const ctaData=sections.find(s=>s.id==="chamada")||{title:"Seu evento precisa aparecer.",description:"Solicite uma proposta para seu projeto."};
+ const cards=services.map((v,i)=>'<a class="nh-service" href="'+esc(v.path)+'"><span class="nh-service-icon">'+serviceIcons[i]+'</span><span class="nh-service-text"><strong>'+esc(v.name)+'</strong><span>'+esc(v.description)+'</span></span><span class="nh-service-arrow" aria-hidden="true">↗</span></a>').join("");
+ return '<div class="nh-home"><div class="nh-stage"><div class="nh-glow nh-glow-pink"></div><div class="nh-glow nh-glow-cyan"></div><div class="nh-flyers" id="nh-flyers" aria-hidden="true"></div><div class="nh-stage-shade"></div><div class="nh-hero-glass"><span class="nh-eyebrow">ESTÚDIO DIGITAL</span><h1>'+esc(heroData.title)+'</h1><p>'+esc(heroData.description)+'</p><a class="nh-primary" href="/solucoes">Conheça os serviços <span aria-hidden="true">↗</span></a></div></div><section class="nh-services" aria-label="Nossos serviços"><p class="nh-eyebrow">NOSSOS SERVIÇOS</p><div class="nh-services-grid">'+cards+'</div></section><section class="nh-contact-strip"><div><h2>'+esc(ctaData.title)+'</h2><p>'+esc(ctaData.description)+'</p></div><a href="/contato" class="nh-contact-action"><span>Entrar em contato</span><span aria-hidden="true">↗</span></a></section></div>';
+}
+
 function render(){
  document.title=page.label+" · noBRon";
  const menu=[["Início","/","home"],["Soluções","/solucoes","services"],["Contato","/contato","contact"]];
@@ -235,7 +243,7 @@ function render(){
  const active=["solutions","design","motion","sistemas"].includes(current)?"services":current;
  const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
  const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
- const body=current==="contact"&&!inPreview ? window.NOBRON_CONTACT_PAGE.render(sections) : current==="sistemas"&&!inPreview ? systemsPage() : current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
+ const body=current==="home"&&!inPreview ? homeRebuild() : current==="contact"&&!inPreview ? window.NOBRON_CONTACT_PAGE.render(sections) : current==="sistemas"&&!inPreview ? systemsPage() : current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
  if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
  return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'

@@ -1,28 +1,24 @@
 (()=>{'use strict';
 if(location.pathname!=='/')return;
 const endpoint='https://fsaqzbwxhjpnfgqxdvnz.supabase.co/functions/v1/nobron-v3-public-media';
+let active=false;
 function init(){
- const root=document.querySelector('.ns-page-home');if(!root||root.querySelector('.nh-atmosphere'))return;
- const atmosphere=document.createElement('div');atmosphere.className='nh-atmosphere';atmosphere.setAttribute('aria-hidden','true');
- atmosphere.innerHTML='<div class="nh-aura nh-aura-one"></div><div class="nh-aura nh-aura-two"></div><div class="nh-collage"></div><div class="nh-veil"></div>';root.prepend(atmosphere);
- const collage=atmosphere.querySelector('.nh-collage');
- fetch(endpoint,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('media');return r.json()}).then(data=>{
-  const seen=new Set();
-  const media=(Array.isArray(data.media)?data.media:[]).filter(m=>{
-   if(!m||typeof m.url!=='string'||!/^https:\/\//.test(m.url)||!['image','video'].includes(m.type)||seen.has(m.url))return false;
-   seen.add(m.url);return true;
-  });
-  media.slice(0,7).forEach((m,i)=>{
-   const frame=document.createElement('div');frame.className='nh-sheet nh-sheet-'+(i+1);
-   if(m.type==='video'){const v=document.createElement('video');v.src=m.url;v.muted=true;v.playsInline=true;v.loop=true;v.preload='metadata';frame.append(v);if(i<2&&!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});}
-   else{const img=document.createElement('img');img.src=m.url;img.alt='';img.loading=i<4?'eager':'lazy';img.decoding='async';frame.append(img);}
-   collage.append(frame);
-  });
-  root.classList.toggle('nh-has-media',media.length>0);
- }).catch(()=>{root.classList.add('nh-media-unavailable')});
+ const container=document.getElementById('nh-flyers');if(!container||container.dataset.ready)return;
+ container.dataset.ready='1';
+ fetch(endpoint,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Media unavailable');return r.json()}).then(data=>{
+ const list=Array.isArray(data.media)?data.media:[];
+ const unique=[];const seen=new Set();
+ for(const m of list){if(!m||typeof m.url!=='string'||!m.url.startsWith('https://')||!['image','video'].includes(m.type)||seen.has(m.url))continue;seen.add(m.url);unique.push(m);}
+ unique.slice(0,8).forEach((m,i)=>{
+  const item=document.createElement('div');item.className='nh-flyer nh-flyer-'+(i+1);
+  if(m.type==='image'){const img=document.createElement('img');img.src=m.url;img.alt='';img.decoding='async';img.loading=i<5?'eager':'lazy';img.draggable=false;item.append(img);}
+  else{const v=document.createElement('video');v.src=m.url;v.muted=true;v.loop=true;v.playsInline=true;v.preload='metadata';v.disablePictureInPicture=true;v.setAttribute('controlsList','nodownload noplaybackrate');item.append(v);if(i<2)v.play().catch(()=>{});}
+  container.append(item);
+ });
+ container.classList.toggle('nh-media-present',unique.length>0);
+ }).catch(()=>{container.classList.add('nh-media-error')});
 }
-if(document.querySelector('.ns-page-home'))init();else{
- const observer=new MutationObserver(()=>{if(document.querySelector('.ns-page-home')){observer.disconnect();init()}});
- observer.observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
-}
+const observer=new MutationObserver(()=>{if(document.getElementById('nh-flyers'))init()});
+observer.observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+init();
 })();
