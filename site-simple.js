@@ -107,8 +107,8 @@ async function setupMotion(){
    for(const v of selected.slice(0,6)){
     const item=document.createElement("div");item.className="nm-video-card";
     const vid=document.createElement("video");
-    vid.src=v.url;vid.muted=true;vid.defaultMuted=true;vid.loop=true;vid.playsInline=true;vid.autoplay=!reduced;vid.preload="metadata";vid.controls=false;vid.disablePictureInPicture=true;vid.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");vid.setAttribute("aria-label",v.title||"Trabalho de Motion Design");vid.draggable=false;
-    item.append(vid);group.append(item);
+    vid.src=v.url;vid.muted=true;vid.defaultMuted=true;vid.loop=true;vid.playsInline=true;vid.autoplay=!reduced;vid.preload="auto";vid.controls=false;vid.disablePictureInPicture=true;vid.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");vid.setAttribute("aria-label",v.title||"Trabalho de Motion Design");vid.draggable=false;
+    item.append(vid);group.append(item);vid.addEventListener("loadeddata",()=>{if(!reduced&&!document.hidden)vid.play().catch(()=>{})},{once:true});
    }
    column.append(group);
    if(!reduced&&selected.length>1){const clone=group.cloneNode(true);clone.setAttribute("aria-hidden","true");column.append(clone)}

@@ -58,3 +58,10 @@
  .nm-stage:has(.nm-reel.nm-empty){display:flex}
 }
 @media(prefers-reduced-motion:reduce){.nm-column{animation:none!important}}
+
+/* Ensure video layer stays above the opaque page background */
+.nm-stage{isolation:isolate}
+.nm-reel{z-index:0!important}
+.nm-copy{z-index:2}
+.nm-reel:after{z-index:1;background:linear-gradient(90deg,rgba(9,9,11,.96) 0%,rgba(9,9,11,.79) 31%,rgba(9,9,11,.34) 62%,rgba(9,9,11,.10) 100%)}
+@media(max-width:800px){.nm-reel:after{background:linear-gradient(90deg,rgba(9,9,11,.96) 0%,rgba(9,9,11,.84) 32%,rgba(9,9,11,.40) 61%,rgba(9,9,11,.08) 100%)}}
