@@ -110,7 +110,18 @@ function build(media){
    seen.add(key);return true;
   });
   const cols=Array.from({length:3},()=>{const col=document.createElement('div');col.className='ns-wall-column';grid.append(col);return col});
-  images.forEach((m,i)=>cols[i%3].append(make(m)));
+  // Fill the complete page height rather than ending the gallery after the first media set.
+  // Reuse only after cycling through every unique image, never in adjacent positions.
+  const render=()=>{
+   const height=Math.max(home.scrollHeight,document.documentElement.clientHeight);
+   const colWidth=Math.max(95,(window.innerWidth*.94)/3);
+   const tileHeight=colWidth*16/9+10;
+   const perColumn=Math.min(38,Math.max(8,Math.ceil((height*1.3)/tileHeight)));
+   cols.forEach(col=>col.replaceChildren());
+   if(!images.length)return;
+   for(let i=0;i<perColumn*3;i++)cols[i%3].append(make(images[i%images.length]));
+  };
+  render();
   grid.classList.add('ns-wall-design-mobile');
  }else if(mobile){
   // Preserve the existing mobile composition for other pages.
