@@ -2,21 +2,22 @@
 if(location.pathname!=='/')return;
 const endpoint='https://fsaqzbwxhjpnfgqxdvnz.supabase.co/functions/v1/nobron-v3-public-media';
 function init(){
- const root=document.querySelector('.ns-page-home');
- if(!root)return;
- const hero=root.querySelector('[data-section-id="hero"]');
- if(!hero)return;
- const stage=document.createElement('div');stage.className='nh-stage';stage.setAttribute('aria-hidden','true');
- stage.innerHTML='<div class="nh-glow nh-glow-pink"></div><div class="nh-glow nh-glow-blue"></div><div class="nh-posters"></div><div class="nh-stage-shade"></div>';
- hero.prepend(stage);
- const posters=stage.querySelector('.nh-posters');
- fetch(endpoint,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('media');return r.json()}).then(data=>{
-  const entries=Array.isArray(data.media)?data.media.filter(m=>m&&m.type==='image'&&/^https:\\/\\//.test(m.url)):[];
-  const seen=new Set();const unique=entries.filter(m=>{const key=m.id||m.name||m.url;if(seen.has(key))return false;seen.add(key);return true});
-  // Only unique images: no video downloads or duplicated posters on the hero.
-  unique.slice(0,6).forEach((m,i)=>{const figure=document.createElement('figure');figure.className='nh-poster nh-poster-'+(i+1);const img=document.createElement('img');img.src=m.url;img.alt='';img.loading=i<3?'eager':'lazy';img.decoding='async';img.draggable=false;figure.append(img);posters.append(figure)});
-  if(!unique.length)stage.classList.add('nh-no-media');
- }).catch(()=>stage.classList.add('nh-no-media'));
+ const root=document.querySelector('.ns-page-home');if(!root||root.querySelector('.nh-atmosphere'))return;
+ const atmosphere=document.createElement('div');atmosphere.className='nh-atmosphere';atmosphere.setAttribute('aria-hidden','true');
+ atmosphere.innerHTML='<div class="nh-aura nh-aura-one"></div><div class="nh-aura nh-aura-two"></div><div class="nh-collage"></div><div class="nh-veil"></div>';
+ root.prepend(atmosphere);
+ const collage=atmosphere.querySelector('.nh-collage');
+ fetch(endpoint,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('media');return r.json()}).then(data=>{
+  const media=Array.isArray(data.media)?data.media.filter(m=>m&&typeof m.url==='string'&&m.url.startsWith('https://')&&['image','video'].includes(m.type)):[];
+  const seen=new Set();const unique=media.filter(m=>{if(seen.has(m.url))return false;seen.add(m.url);return true});
+  unique.slice(0,9).forEach((m,i)=>{
+   const frame=document.createElement('div');frame.className='nh-sheet nh-sheet-'+(i+1);
+   if(m.type==='video'){const v=document.createElement('video');v.src=m.url;v.muted=true;v.playsInline=true;v.loop=true;v.preload='metadata';v.setAttribute('aria-hidden','true');frame.append(v);if(i<2&&!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});}
+   else{const img=document.createElement('img');img.src=m.url;img.alt='';img.loading=i<4?'eager':'lazy';img.decoding='async';frame.append(img)}
+   collage.append(frame);
+  });
+  root.classList.toggle('nh-has-media',unique.length>0);
+ }).catch(()=>{});
 }
 if(document.querySelector('.ns-page-home'))init();else{
  const observer=new MutationObserver(()=>{if(document.querySelector('.ns-page-home')){observer.disconnect();init()}});
