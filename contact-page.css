@@ -1,0 +1,50 @@
+.ns-page-contact{background:#0d0d10}
+.nc-page{overflow:hidden}
+.nc-container{width:min(100% - 2*clamp(22px,6vw,90px),1200px);margin-inline:auto}
+.nc-contact-hero{min-height:min(800px,90svh);display:flex;align-items:center;position:relative;background:radial-gradient(ellipse at 90% 90%,#25252a 0%,transparent 48%),#0d0d10;padding:clamp(95px,12vw,160px) 0}
+.nc-hero-label,.nc-eyebrow{display:block;font-size:11px;letter-spacing:.23em;font-weight:800;color:#a9a9b0}
+.nc-hero-label{display:flex;gap:12px;align-items:center}.nc-dot{width:7px;height:7px;background:#f4f4f4;border-radius:50%}
+.nc-contact-hero h1{font-size:clamp(56px,9vw,130px);letter-spacing:-.085em;line-height:.96;max-width:11ch;margin:35px 0}
+.nc-contact-hero p{max-width:690px;font-size:clamp(18px,2.2vw,25px);line-height:1.55;color:#b6b6bc}
+.nc-whatsapp{margin-top:42px;display:inline-flex;align-items:center;justify-content:space-between;gap:70px;background:#f3f3f3;color:#111;border-radius:100px;padding:20px 28px;font-size:16px;font-weight:800;transition:transform .3s,background .3s}
+.nc-whatsapp:hover{transform:translateY(-4px);background:#fff}
+.nc-whatsapp span:last-child{font-size:24px;font-weight:400}
+.nc-hero-index{position:absolute;bottom:30px;right:clamp(22px,6vw,90px);font-size:11px;letter-spacing:.2em;color:#85858b}
+.nc-about{background:#eeefec;color:#121215;padding:clamp(85px,12vw,155px) 0 0}
+.nc-about .nc-eyebrow{color:#6a6a70}
+.nc-about-head{display:grid;grid-template-columns:1.65fr .6fr;gap:8%;align-items:end;padding-bottom:90px}
+.nc-about-head h2{font-size:clamp(46px,6.8vw,95px);line-height:1;letter-spacing:-.08em;max-width:12ch;margin-top:25px}
+.nc-years{border-top:1px solid #a6a6a6;padding-top:18px}
+.nc-years strong{display:flex;align-items:flex-end;gap:10px;font-size:clamp(92px,12vw,170px);line-height:.9;letter-spacing:-.1em}
+.nc-years strong span{font-size:13px;letter-spacing:.1em;padding-bottom:13px}
+.nc-years p{font-size:15px;line-height:1.5;color:#5e5e63;max-width:230px;margin-top:22px}
+.nc-stage{display:grid;grid-template-columns:1fr 1.6fr;gap:8%;border-top:1px solid #b6b6b6;padding:54px 0 80px}
+.nc-stage-meta{display:flex;flex-direction:column;gap:15px;position:sticky;top:30px;align-self:start}
+.nc-stage-meta span{font-size:clamp(26px,3.1vw,43px);font-weight:900;letter-spacing:-.065em}
+.nc-stage-meta small{font-size:10px;letter-spacing:.2em;font-weight:750;color:#666}
+.nc-stage-copy h3{font-size:clamp(32px,4vw,56px);line-height:1.07;letter-spacing:-.065em;margin-bottom:28px}
+.nc-stage-copy p{font-size:clamp(16px,1.65vw,19px);line-height:1.78;color:#525259;margin:0 0 19px;max-width:690px}
+.nc-outro{background:#18181c;color:#f4f4f4;margin:40px calc(-1*clamp(22px,6vw,90px)) 0;padding:clamp(70px,9vw,125px) clamp(22px,6vw,90px)}
+.nc-outro h2{font-size:clamp(43px,6vw,85px);line-height:1.02;letter-spacing:-.075em;max-width:15ch;margin:25px 0}
+.nc-outro p{font-size:clamp(17px,1.8vw,21px);line-height:1.65;color:#b5b5bc;max-width:790px;margin:0 0 20px}
+.nc-outro-link{display:inline-flex;gap:45px;align-items:center;border-bottom:1px solid #aaa;padding:15px 0;margin-top:25px;font-weight:750}
+.nc-outro-link:hover{color:#fff}
+@media(max-width:800px){
+.nc-contact-hero{min-height:calc(85svh - 70px);padding:95px 0 115px}
+.nc-contact-hero h1{font-size:clamp(53px,12vw,78px);margin:28px 0}
+.nc-contact-hero p{font-size:17px}
+.nc-whatsapp{width:100%;gap:12px;padding:18px 22px;margin-top:35px;font-size:15px}
+.nc-about{padding-top:80px}
+.nc-about-head{grid-template-columns:1fr;gap:42px;padding-bottom:70px}
+.nc-about-head h2{font-size:clamp(45px,10vw,68px)}
+.nc-years{display:flex;align-items:end;justify-content:space-between;gap:20px}
+.nc-years strong{font-size:100px}.nc-years p{max-width:145px;font-size:13px}
+.nc-stage{grid-template-columns:1fr;gap:26px;padding:32px 0 55px}
+.nc-stage-meta{position:static;gap:8px}
+.nc-stage-meta span{font-size:28px}
+.nc-stage-copy h3{font-size:36px;margin-bottom:20px}
+.nc-stage-copy p{font-size:16px;line-height:1.7}
+.nc-outro{margin-top:12px;padding-bottom:100px}
+.nc-outro h2{font-size:clamp(42px,10vw,65px)}
+}
+@media(prefers-reduced-motion:reduce){.nc-whatsapp{transition:none}}

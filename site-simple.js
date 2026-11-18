@@ -234,7 +234,7 @@ function render(){
  const active=["solutions","design","motion","sistemas"].includes(current)?"services":current;
  const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
  const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
- const body=current==="sistemas"&&!inPreview ? systemsPage() : current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
+ const body=current==="contact"&&!inPreview ? window.NOBRON_CONTACT_PAGE.render(sections) : current==="sistemas"&&!inPreview ? systemsPage() : current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
  if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
  return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'
