@@ -30,3 +30,37 @@ $('motion-upload-form').onsubmit=async e=>{
  button.disabled=true;note('motion-upload-status','Enviando vídeo...');
  try{await call(MOTION_API+'?title='+encodeURIComponent(title),{method:'POST',headers:{'Content-Type':file.type},body:file});$('motion-upload-form').reset();note('motion-upload-status','Vídeo cadastrado como rascunho. Publique na biblioteca quando estiver pronto.');await loadMotion()}catch(err){note('motion-upload-status',err.message)}finally{button.disabled=false}
 };
+
+(function(){
+ const tabs=[...document.querySelectorAll('[data-admin-tab]')],panels=[...document.querySelectorAll('[data-admin-panel]')];
+ function show(tab){tabs.forEach(b=>{const active=b.dataset.adminTab===tab;b.setAttribute('aria-selected',String(active));b.classList.toggle('active',active)});panels.forEach(p=>p.hidden=p.dataset.adminPanel!==tab);history.replaceState(null,'',location.pathname+'#'+tab)}
+ tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.adminTab)));
+ show(['home','design','motion'].includes(location.hash.slice(1))?location.hash.slice(1):'home');
+ window.addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(['home','design','motion'].includes(t))show(t)});
+ function err(e){const s=String(e?.message||e||'Falha desconhecida');if(/Failed to fetch|NetworkError|Load failed|fetch failed/i.test(s))return 'Falha de conexão com o servidor. Confira a internet e tente novamente. Se o vídeo for grande, tente uma versão mais leve.';if(/413|too large|tamanho|30 MB/i.test(s))return 'Arquivo acima do limite de 30 MB. Comprima o vídeo e tente novamente.';if(/415|formato|mime/i.test(s))return 'Formato não aceito. Utilize MP4 ou WebM.';return s}
+ function result(root,name,ok,msg){const p=document.createElement('p');p.className=ok?'upload-success':'upload-failure';p.textContent=(ok?'✓ ':'✕ ')+name+' — '+msg;root.append(p)}
+ const motionForm=$('motion-upload-form');motionForm.onsubmit=async e=>{
+ e.preventDefault();const files=[...$('motion-file').files],title=$('motion-title').value.trim(),btn=$('motion-upload'),list=$('motion-upload-results');if(!files.length||!title)return;
+ list.replaceChildren();btn.disabled=true;let ok=0;
+ for(let i=0;i<files.length;i++){const f=files[i];note('motion-upload-status','Enviando '+(i+1)+' de '+files.length+': '+f.name);
+ if(!['video/mp4','video/webm'].includes(f.type)){result(list,f.name,false,'Use MP4 ou WebM');continue}
+ if(f.size>30*1024*1024){result(list,f.name,false,'Excede 30 MB');continue}
+ try{await call(MOTION_API+'?title='+encodeURIComponent(files.length===1?title:title+' · '+f.name.replace(/\.[^.]+$/,'')),{method:'POST',headers:{'Content-Type':f.type},body:f});ok++;result(list,f.name,true,'Cadastrado como rascunho')}catch(x){result(list,f.name,false,err(x))}
+ }
+ note('motion-upload-status',ok+' de '+files.length+' vídeos cadastrados. '+(ok?'Use Publicar para exibi-los no site.':'Nenhum arquivo foi cadastrado.'));
+ if(ok===files.length)motionForm.reset();
+ try{await loadMotion()}catch(x){note('motion-status',err(x))}
+ btn.disabled=false;
+ };
+ const homeForm=$('upload-form');homeForm.onsubmit=async e=>{
+ e.preventDefault();const files=[...$('files').files],btn=$('upload'),list=$('home-upload-results');if(!files.length)return;btn.disabled=true;list.replaceChildren();let ok=0;
+ for(let i=0;i<files.length;i++){const f=files[i],max=f.type.startsWith('video/')?30:10;note('upload-status','Enviando '+(i+1)+' de '+files.length+': '+f.name);
+ if(f.size>max*1024*1024){result(list,f.name,false,'Excede '+max+' MB');continue}
+ try{await call(API+'?action=upload',{method:'POST',headers:{'Content-Type':f.type},body:f});ok++;result(list,f.name,true,'Publicado na Home')}catch(x){result(list,f.name,false,err(x))}
+ }
+ note('upload-status',ok+' de '+files.length+' arquivos enviados com sucesso.');
+ if(ok===files.length)homeForm.reset();
+ try{await load()}catch(x){note('status',err(x))}
+ btn.disabled=false;
+ };
+})();

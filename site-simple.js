@@ -92,6 +92,10 @@ async function setupMotion(){
   const r=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1");
   if(!r.ok)throw Error("media");const data=await r.json();
   const items=(data.videos||[]).filter(v=>v.url&&/^https:\/\//.test(v.url));
+  if(!items.length){
+   const fallback=await fetch(baseUrl+"/rest/v1/nobron_v3_media?select=id,object_path,mime&published=eq.true&section=eq.hero&mime=like.video%25&order=display_order.asc",{headers:{apikey:publishable}});
+   if(fallback.ok){const rows=await fallback.json();for(const x of rows){if(x.mime?.startsWith("video/"))items.push({title:"Trabalho em vídeo",url:baseUrl+"/storage/v1/object/public/nobron-public/"+x.object_path})}}
+  }
   if(!items.length){root.classList.add("nm-empty");return}
   root.replaceChildren();
   const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
