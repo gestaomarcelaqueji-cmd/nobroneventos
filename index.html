@@ -6,6 +6,17 @@
   <meta name="theme-color" content="#09090b" />
   <meta name="description" content="noBRon — Design Digital, Motion Design e Sistemas para eventos, baladas, pubs e artistas." />
   <title>noBRon. — Design. Motion. Sistemas.</title>
+  <script>
+    // Supabase may fall back to the configured Site URL when /admin is not allowlisted.
+    // Preserve the one-time authentication response and hand it to the admin page.
+    (function () {
+      var h = new URLSearchParams(location.hash.slice(1));
+      var q = new URLSearchParams(location.search);
+      if ((h.has('access_token') && h.has('refresh_token')) || (q.has('code') && q.has('state'))) {
+        location.replace('/admin' + location.search + location.hash);
+      }
+    }());
+  </script>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
   <link rel="stylesheet" href="/site-simple.css" />
   <script src="/content-schema.js" defer></script>
