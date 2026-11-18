@@ -84,6 +84,7 @@ const endpoint='https://fsaqzbwxhjpnfgqxdvnz.supabase.co/functions/v1/nobron-v3-
 const wall=document.createElement('div');wall.className='ns-media-wall';wall.setAttribute('aria-label','Galeria visual de trabalhos da noBRon');home.prepend(wall);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile=matchMedia('(max-width:800px)').matches;
+const designDesktop=!mobile&&home.classList.contains('ns-page-design');
 const n=mobile?3:3;const videos=[];
 const make=m=>{
  const tile=document.createElement('div');tile.className='ns-wall-tile';tile.setAttribute('aria-hidden','true');
@@ -105,7 +106,7 @@ function build(media){
  }else{
   // Desktop: unique source files, alternated by media type and assigned once.
   const seen=new Set();const unique=media.filter(m=>{const key=m.url.split('?')[0];if(seen.has(key))return false;seen.add(key);return true});
-  const images=unique.filter(m=>m.type==='image');const motion=unique.filter(m=>m.type==='video');const ordered=[];
+  const images=unique.filter(m=>m.type==='image');const motion=designDesktop?[]:unique.filter(m=>m.type==='video');const ordered=[];
   while(images.length||motion.length){if(images.length)ordered.push(images.shift());if(motion.length)ordered.push(motion.shift())}
   const columns=Array.from({length:3},()=>{const col=document.createElement('div');col.className='ns-wall-column';grid.append(col);return col});
   ordered.forEach((m,i)=>columns[i%3].append(make(m)));
