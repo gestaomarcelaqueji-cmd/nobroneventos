@@ -1,0 +1,52 @@
+/* noBRon / Soluções: editorial glass experience. No page data or navigation changes. */
+body:has(.ns-page-solutions){background:#09090b;color:#f6f6f7}
+body:has(.ns-page-solutions) .ns-top{background:rgba(9,9,11,.9);border-bottom:1px solid #ffffff21;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.ns-page-solutions{position:relative;isolation:isolate;background:#09090b;padding:clamp(38px,6vw,88px) var(--gap) clamp(70px,8vw,130px);min-height:100vh}
+.ns-page-solutions .ns-media-wall{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at center,#29292d,#09090b 80%)}
+.ns-page-solutions .ns-media-wall:after{content:"";position:absolute;inset:0;z-index:2;background:rgba(0,0,0,.60);pointer-events:none}
+.ns-page-solutions .ns-wall-grid{position:absolute;inset:-15% -6%;display:flex;gap:clamp(10px,1.7vw,22px);transform:rotate(-5deg) scale(1.08);pointer-events:auto}
+.ns-page-solutions .ns-wall-column{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px;animation:ns-wall-up 55s linear infinite;will-change:transform}
+.ns-page-solutions .ns-wall-column:nth-child(even){animation-name:ns-wall-down;animation-duration:65s}
+.ns-page-solutions .ns-wall-tile{flex:none;display:block;position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;border-radius:8px;background:#1d1d21;outline:1px solid #ffffff10;pointer-events:auto;cursor:pointer;filter:grayscale(1) blur(3px) brightness(.65);transition:filter .4s,transform .4s;z-index:1}
+.ns-page-solutions .ns-wall-tile img,.ns-page-solutions .ns-wall-tile video{width:100%;height:100%;object-fit:cover}
+.ns-page-solutions .ns-wall-tile:hover,.ns-page-solutions .ns-wall-tile:focus-visible,.ns-page-solutions .ns-wall-tile.is-active{filter:grayscale(0) blur(0) brightness(1);transform:scale(1.035);z-index:4;outline:1px solid #ffffff8c}
+.ns-page-solutions .ns-wall-grid:has(.ns-wall-tile:hover) .ns-wall-column,.ns-page-solutions .ns-wall-grid:has(.ns-wall-tile:focus-visible) .ns-wall-column,.ns-page-solutions .ns-wall-grid:has(.ns-wall-tile.is-active) .ns-wall-column{animation-play-state:paused}
+.ns-page-solutions .ns-edit-section{position:relative;width:min(100%,1320px);margin:0 auto clamp(18px,2.5vw,32px)}
+.ns-page-solutions .ns-edit-section>section{background:rgba(17,17,20,.68)!important;color:#f7f7f7!important;border:1px solid #ffffff48;border-radius:24px;box-shadow:0 20px 65px #0007;backdrop-filter:blur(23px) saturate(110%);-webkit-backdrop-filter:blur(23px) saturate(110%);overflow:hidden}
+.ns-page-solutions .ns-divider{display:none}
+.ns-page-solutions .ns-hero{min-height:0;display:block;padding:clamp(36px,6vw,82px)}
+.ns-page-solutions .ns-hero-copy{max-width:960px}
+.ns-page-solutions .ns-hero h1{font-size:clamp(52px,7vw,110px);max-width:16ch;line-height:.94;overflow-wrap:normal}
+.ns-page-solutions .ns-hero p{color:#c8c8cc;font-size:clamp(16px,1.8vw,22px);max-width:680px}
+.ns-page-solutions .ns-hero-art{display:none}
+.ns-page-solutions .ns-feature{padding:clamp(30px,4.5vw,64px)}
+.ns-page-solutions .ns-feature-grid{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.56fr);gap:clamp(22px,4vw,70px);align-items:center}
+.ns-page-solutions .ns-feature-copy{min-width:0}
+.ns-page-solutions .ns-feature-copy h2{font-size:clamp(40px,5vw,76px);line-height:1;max-width:12ch;margin-bottom:18px}
+.ns-page-solutions .ns-feature-copy p{color:#c7c7cb;opacity:1;font-size:clamp(15px,1.5vw,19px);max-width:580px}
+.ns-page-solutions .ns-feature-copy>small{color:#bdbdc3}
+.ns-page-solutions .ns-feature .ns-button{background:#f4f4f4;color:#111;border-radius:100px;padding-inline:24px}
+.ns-page-solutions .ns-feature-image{min-height:230px;height:clamp(230px,22vw,350px);border-radius:18px;clip-path:none!important;transform:none!important;background:rgba(35,35,39,.52)!important;border:1px solid #ffffff32}
+.ns-page-solutions .ns-feature-image.ns-graphic{padding:25px;display:grid;place-items:center}
+.ns-page-solutions .ns-feature-image.ns-graphic strong{font-size:clamp(28px,3.5vw,56px);line-height:1;letter-spacing:-.07em}
+.ns-page-solutions .ns-feature-image.ns-reveal{background:#202025!important}
+body:has(.ns-page-solutions) .ns-footer{background:rgba(9,9,11,.9);border-top:1px solid #ffffff25}
+@media(max-width:800px){
+.ns-page-solutions{padding:24px 18px 85px}
+.ns-page-solutions .ns-wall-grid{inset:-8% -38%;gap:10px;transform:rotate(-4deg) scale(1.04)}
+.ns-page-solutions .ns-wall-column{gap:10px}
+.ns-page-solutions .ns-wall-tile{border-radius:5px;filter:grayscale(1) blur(2px) brightness(.55)}
+.ns-page-solutions .ns-edit-section{width:100%;margin-bottom:16px}
+.ns-page-solutions .ns-edit-section>section{border-radius:22px}
+.ns-page-solutions .ns-hero{padding:30px 24px 34px}
+.ns-page-solutions .ns-hero h1{font-size:clamp(43px,10.2vw,72px);max-width:100%;overflow-wrap:break-word}
+.ns-page-solutions .ns-hero p{font-size:15px;margin-bottom:0}
+.ns-page-solutions .ns-feature{padding:26px 24px}
+.ns-page-solutions .ns-feature-grid{display:flex;flex-direction:column;align-items:stretch;gap:22px}
+.ns-page-solutions .ns-feature-copy h2{font-size:clamp(36px,9vw,60px);max-width:100%;overflow-wrap:break-word}
+.ns-page-solutions .ns-feature-copy p{font-size:15px;margin-bottom:20px}
+.ns-page-solutions .ns-feature-image{min-height:0;height:clamp(150px,42vw,240px);width:100%;border-radius:14px}
+.ns-page-solutions .ns-feature-image.ns-graphic strong{font-size:clamp(27px,8vw,42px)}
+.ns-page-solutions .ns-feature .ns-button{max-width:100%;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){.ns-page-solutions .ns-wall-column{animation:none!important}.ns-page-solutions .ns-wall-tile{transition:none!important}}
