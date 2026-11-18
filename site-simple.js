@@ -99,10 +99,10 @@ async function setupMotion(){
   if(!items.length){root.classList.add("nm-empty");return}
   root.replaceChildren();
   const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  for(let c=0;c<2;c++){
+  for(let c=0;c<4;c++){
    const column=document.createElement("div");column.className="nm-column nm-column-"+c;
    const group=document.createElement("div");group.className="nm-group";
-   const source=items.filter((_,i)=>i%2===c);
+   const source=items.filter((_,i)=>i%4===c);
    const selected=source.length?source:items;
    for(const v of selected.slice(0,6)){
     const item=document.createElement("div");item.className="nm-video-card";
