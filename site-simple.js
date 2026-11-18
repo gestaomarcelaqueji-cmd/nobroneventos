@@ -93,7 +93,9 @@ async function setupMotion(){
  const tiles=[...root.querySelectorAll("[data-motion-tile]")];
  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
  let visible=true,disposed=false;
- const observer=new IntersectionObserver(entries=>{visible=!!entries[0]?.isIntersecting&&!document.hidden;if(!visible)root.querySelectorAll("video").forEach(v=>v.pause())},{threshold:.02});
+ const resume=()=>{if(reduced||!visible||document.hidden)return;const candidates=tiles.slice(0,3).map(t=>t.querySelector("video")).filter(Boolean);candidates.forEach(v=>{v.muted=true;v.play().catch(()=>{})})};
+ const observer=new IntersectionObserver(entries=>{visible=!!entries[0]?.isIntersecting&&!document.hidden;if(!visible)root.querySelectorAll("video").forEach(v=>v.pause());else resume()},{threshold:.02});
+ document.addEventListener("visibilitychange",()=>{if(document.hidden)root.querySelectorAll("video").forEach(v=>v.pause());else{visible=true;resume()}});
  observer.observe(root);
  try{
   const response=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1",{cache:"no-store"});
@@ -111,7 +113,7 @@ async function setupMotion(){
   let cursor=count,rotating=false;
   function prepare(item){
    return new Promise(resolve=>{
-    const v=document.createElement("video");v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.preload="metadata";v.disablePictureInPicture=true;v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");
+    const v=document.createElement("video");v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;v.preload="auto";v.autoplay=false;v.disablePictureInPicture=true;v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");
     let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timeout);resolve(ok?v:null)};
     const timeout=setTimeout(()=>finish(false),12000);
     v.addEventListener("loadeddata",()=>finish(true),{once:true});v.addEventListener("error",()=>finish(false),{once:true});
@@ -126,11 +128,11 @@ async function setupMotion(){
    const previous=[...tile.querySelectorAll("video")].filter(v=>v!==next);
    setTimeout(()=>{previous.forEach(v=>{v.pause();v.remove()});next.classList.remove("nm-incoming")},850);
    assigned.set(tile,item.url);
-   if(play&&visible&&!document.hidden&&!reduced)next.play().catch(()=>{});
+   if((play||tiles.indexOf(tile)<3)&&visible&&!document.hidden&&!reduced){next.muted=true;next.play().catch(()=>{})}
    return true;
   }
-  // Progressive reveal; retain each first frame as a poster instead of playing nine streams.
-  await Promise.all(tiles.slice(0,Math.min(3,count)).map((tile,i)=>show(tile,items[i],false)));
+  // Autoplay three muted videos immediately; keep the other tiles as static first frames to reduce mobile load.
+  await Promise.all(tiles.slice(0,Math.min(3,count)).map((tile,i)=>show(tile,items[i],true)));
   for(let i=3;i<count;i++){
    if(!root.isConnected){disposed=true;break}
    await show(tiles[i],items[i],false);
