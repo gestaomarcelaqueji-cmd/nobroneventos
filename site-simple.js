@@ -226,7 +226,7 @@ function systemsPage(){
 
 function render(){
  document.title=page.label+" · noBRon";
- const menu=[["Início","/","home"],["Design","/design","design"],["Motion","/motion","motion"],["Sistemas","/sistemas","sistemas"],["Contato","/contato","contact"]];
+ const menu=[["Início",pages.home.route,"home"],["Design",pages.design.route,"design"],["Motion",pages.motion.route,"motion"],["Sistemas",pages.sistemas.route,"sistemas"],["Contato",pages.contact.route,"contact"]];
  const svg={
  home:'<path d="m3 10 9-7 9 7v10H3V10Z"/><path d="M9 20v-7h6v7"/>',
  design:'<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>',
