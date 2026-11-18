@@ -104,6 +104,17 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .nd-motion-viewport{width:auto;min-width:0;min-height:0;font-size:clamp(18px,3vw,43px);line-height:1.15}
 .nd-motion-viewport span{white-space:nowrap}
 .ns-page-design .nd-design-portfolio{background:#101115e8;border-radius:22px;padding:clamp(20px,3vw,38px);backdrop-filter:blur(14px)}
+@media(min-width:801px){
+.ns-page-design .ns-media-wall{overflow:hidden}
+.ns-page-design .ns-media-wall:after{background:linear-gradient(90deg,#09090bf2 0%,#09090bd9 25%,#09090b73 58%,#09090b66 100%);pointer-events:none}
+.ns-page-design .ns-wall-grid.ns-wall-desktop{inset:-12% -8% -12% 31%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:clamp(12px,1.5vw,24px);transform:perspective(1200px) rotateY(-19deg) rotateZ(7deg) scale(1.12);transform-origin:65% 40%;pointer-events:none}
+.ns-page-design .ns-wall-desktop .ns-wall-column{display:flex;flex-direction:column;gap:clamp(12px,1.5vw,22px);min-width:0;animation:ns-wall-up 44s ease-in-out infinite alternate;will-change:transform}
+.ns-page-design .ns-wall-desktop .ns-wall-column:nth-child(even){animation:ns-wall-down 49s ease-in-out infinite alternate}
+.ns-page-design .ns-wall-desktop .ns-wall-tile{width:100%;aspect-ratio:9/16;overflow:hidden;background:#0b0b10;border-radius:13px;filter:grayscale(.85) brightness(.76);pointer-events:none}
+.ns-page-design .ns-wall-desktop .ns-wall-tile:nth-child(3n+2){filter:grayscale(0) brightness(.88)}
+.ns-page-design .ns-wall-desktop .ns-wall-image{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}
+.ns-page-design .ns-wall-desktop .ns-wall-tile video{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#0b0b10}
+}
 @media(max-width:800px){
 .ns-page-design .ns-wall-grid{inset:-5% -45%;gap:9px;transform:rotate(-3deg) scale(1.03)}
 .ns-page-design .ns-wall-column{gap:9px}
