@@ -226,13 +226,13 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}h1,h2,h3
 .ns-intro:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 40% 49%,#d43c8a13,transparent 35%),radial-gradient(ellipse at 60% 55%,#2dc0d312,transparent 35%);pointer-events:none}
 .ns-intro-center{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:21px;transform:translateY(-2vh)}
 .ns-intro-symbols{position:relative;width:96px;height:96px;filter:drop-shadow(0 8px 20px #0009)}
-.ns-intro-symbol{position:absolute;inset:0;width:100%;height:100%;color:#d9dce4;opacity:0;transform:translateY(12px) scale(.88);animation:ns-intro-cycle 1.35s ease-in-out both}
-.ns-intro-symbol:nth-child(2){animation-delay:.42s}
-.ns-intro-symbol:nth-child(3){animation-delay:.84s}
+.ns-intro-symbol{position:absolute;inset:0;width:100%;height:100%;color:#d9dce4;opacity:0;transform:translateY(12px) scale(.88);animation:ns-intro-cycle .48s ease-in-out both}
+.ns-intro-symbol:nth-child(2){animation-delay:.50s}
+.ns-intro-symbol:nth-child(3){animation-delay:1s}
 .ns-intro-symbol path{stroke:#d9dce4}
-.ns-intro-symbols:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,#fff9 47%,transparent 62%);mix-blend-mode:screen;opacity:.22;animation:ns-intro-shine 1.3s ease-out both}
+.ns-intro-symbols:after{content:none}
 .ns-intro-brand{font-size:clamp(17px,3vw,23px);font-weight:850;letter-spacing:-.08em;color:#e4e5eb;text-shadow:0 1px 12px #fff2}
 .ns-intro.is-leaving{transform:translate3d(0,-105%,0);opacity:.1;pointer-events:none}
-@keyframes ns-intro-cycle{0%{opacity:0;transform:translateY(12px) scale(.88)}15%,65%{opacity:1;transform:translateY(0) scale(1)}85%,100%{opacity:0;transform:translateY(-12px) scale(1.04)}}
+@keyframes ns-intro-cycle{0%{opacity:0;transform:translateY(8px) scale(.94)}22%,70%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-8px) scale(.97)}}
 @keyframes ns-intro-shine{0%{transform:translateX(-70%)}100%{transform:translateX(70%)}}
 @media(prefers-reduced-motion:reduce){.ns-intro,.ns-intro-symbol,.ns-intro-symbols:after{animation:none!important;transition:none!important}.ns-intro-symbol{opacity:0}.ns-intro-symbol:first-child{opacity:1;transform:none}.ns-intro.is-leaving{opacity:0;transform:none}}
