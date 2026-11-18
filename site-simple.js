@@ -83,14 +83,14 @@ function contact(s){
 }
 
 function motionPage(){
- return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-hidden="true"><div class="nm-feature nm-feature-a"></div><div class="nm-feature nm-feature-b"></div></div><div class="nm-copy"><small>SOLUÇÕES</small><h1>Motion Design.</h1><p>Produzimos <strong>flyers animados, teasers e vídeos promocionais</strong> para festas, shows, baladas, pubs, casas noturnas e artistas.</p><p>Com animações de fotografias, textos e elementos gráficos, destacamos atrações, datas, ingressos e programações em conteúdos para Reels, Stories, telões e painéis de LED.</p><a class="nm-button" href="/contato">Solicitar orçamento <span aria-hidden="true">↗</span></a></div></section></div>';
+ return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-hidden="true"><div class="nm-feature nm-feature-a"></div><div class="nm-feature nm-feature-b"></div><div class="nm-feature nm-feature-c"></div><div class="nm-feature nm-feature-d"></div></div><div class="nm-copy"><small>SOLUÇÕES</small><h1>Motion Design.</h1><p>Produzimos <strong>flyers animados, teasers e vídeos promocionais</strong> para festas, shows, baladas, pubs, casas noturnas e artistas.</p><p>Com animações de fotografias, textos e elementos gráficos, destacamos atrações, datas, ingressos e programações em conteúdos para Reels, Stories, telões e painéis de LED.</p><a class="nm-button" href="/contato">Solicitar orçamento <span aria-hidden="true">↗</span></a></div></section></div>';
 }
 async function setupMotion(){
  if(current!=="motion"||inPreview)return;
  const root=$("#nm-reel");if(!root)return;
- const slots=[$(".nm-feature-a",root),$(".nm-feature-b",root)];
+ const slots=["a","b","c","d"].slice(0,matchMedia("(max-width:800px)").matches?3:4).map(k=>$(".nm-feature-"+k,root));
  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
- let disposed=false,active=true,timer=null,sequence=0;
+ let disposed=false,active=true,timer=null;const assigned=new Map();const busy=new Set();
  const pauseAll=()=>slots.forEach(s=>s.querySelector("video")?.pause());
  const visibility=()=>{active=!document.hidden&&!!root.getClientRects().length;if(!active)pauseAll();else slots.forEach(s=>s.querySelector("video")?.play().catch(()=>{}))};
  document.addEventListener("visibilitychange",visibility);
@@ -118,31 +118,35 @@ async function setupMotion(){
   const place=async(slot,item,initial=false)=>{
    const ticket=++sequence;
    const video=await makeVideo(item);
-   if(!video||disposed||!slot.isConnected)return false;
+   if(!video||disposed||!slot.isConnected){busy.delete(slot);return false;}
    // Never replace a working video until the next video's first frame is ready.
    const previous=slot.querySelector("video");
    video.className="nm-incoming";slot.append(video);
    requestAnimationFrame(()=>{video.classList.add("nm-visible");slot.classList.add("nm-ready")});
    if(active&&!reduced)video.play().catch(()=>{});
-   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}},750);
+   assigned.set(slot,item.url);\n   setTimeout(()=>{if(video.isConnected){previous?.pause();previous?.remove();video.classList.remove("nm-incoming")}busy.delete(slot)},750);
    return true;
   };
-  await Promise.all(slots.map((slot,i)=>items[i]?place(slot,items[i],true):Promise.resolve(false)));
-  if(reduced||items.length<=2)return;
-  let cursor=2,side=0;
+  // Start with unique videos in every visible card.
+  await Promise.all(slots.map((slot,i)=>items[i]?place(slot,items[i]):Promise.resolve(false)));
+  if(reduced||items.length<=slots.length)return;
+  let cursor=slots.length,side=0;
   const rotate=async()=>{
    if(!root.isConnected){disposed=true;observer.disconnect();return}
    if(active){
-    const slot=slots[side];const other=slots[1-side];
-    const otherUrl=other.querySelector("video")?.currentSrc||other.querySelector("video")?.src;
-    let tries=0,chosen=null;
-    while(tries<items.length){const candidate=items[cursor%items.length];cursor++;tries++;if(candidate.url!==otherUrl&&candidate.url!==(slot.querySelector("video")?.src)){chosen=candidate;break}}
+    const slot=slots[side%slots.length];
+    const displayed=new Set(assigned.values());
+    let chosen=null;
+    for(let tries=0;tries<items.length;tries++){
+     const candidate=items[cursor%items.length];cursor++;
+     if(!displayed.has(candidate.url)){chosen=candidate;break}
+    }
     if(chosen)await place(slot,chosen);
-    side=1-side;
+    side++;
    }
-   timer=setTimeout(rotate,7500);
+   timer=setTimeout(rotate,6500);
   };
-  timer=setTimeout(rotate,7500);
+  timer=setTimeout(rotate,6500);
  }catch{root.classList.add("nm-empty")}
 }
 
