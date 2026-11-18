@@ -119,9 +119,15 @@ body:has(.ns-page-design) .ns-top{background:#09090b;border-bottom:1px solid #ff
 .ns-page-design .ns-wall-desktop .ns-wall-image{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}
 }
 @media(max-width:800px){
-.ns-page-design .ns-wall-grid{inset:-5% -45%;gap:9px;transform:rotate(-3deg) scale(1.03)}
-.ns-page-design .ns-wall-column{gap:9px}
-.ns-page-design .ns-wall-tile{border-radius:5px}
+.ns-page-design .ns-wall-grid.ns-wall-design-mobile{position:absolute;inset:-1% -11% -1% 17%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:9px;transform:perspective(950px) rotateY(-10deg) rotateZ(5deg);transform-origin:62% 18%;pointer-events:none}
+.ns-page-design .ns-wall-design-mobile .ns-wall-column{display:flex;flex-direction:column;gap:10px;min-width:0;animation:ns-wall-up 57s linear infinite alternate}
+.ns-page-design .ns-wall-design-mobile .ns-wall-column:nth-child(2){animation:ns-wall-down 63s linear infinite alternate}
+.ns-page-design .ns-wall-design-mobile .ns-wall-column:nth-child(3){animation-duration:69s}
+.ns-page-design .ns-wall-design-mobile .ns-wall-tile{flex:none;width:100%;aspect-ratio:9/16;transform:none;border:1px solid #e12b8e3d;border-radius:7px;background:#0d0d11;filter:grayscale(1) brightness(.55);box-shadow:0 0 14px #cc18751a;overflow:hidden}
+.ns-page-design .ns-wall-design-mobile .ns-wall-tile:nth-child(3n+2){border-color:#18c1cf45;filter:grayscale(.45) brightness(.72);box-shadow:0 0 16px #08b8c51c}
+.ns-page-design .ns-wall-design-mobile .ns-wall-image{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}
+.ns-page-design>.ns-media-wall:after{background:linear-gradient(180deg,#09090bc2 0%,#09090b5c 18%,#09090bb8 45%,#09090bdb 74%,#09090bf5 100%),linear-gradient(90deg,#09090bdf 0%,transparent 78%)}
+.ns-page-design .nd-design-intro{position:relative;z-index:2;background:linear-gradient(115deg,#09090be9,#09090bbd);backdrop-filter:blur(8px)}
 .ns-page-design .nd-design-intro{padding:20px 10px}
 
 
