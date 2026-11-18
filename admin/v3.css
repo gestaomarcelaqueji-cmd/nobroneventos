@@ -4,3 +4,5 @@
 /* Admin previews match the actual Story composition. */
 .design-card-preview{aspect-ratio:9/16}
 .design-card-preview img{object-fit:contain;background:#0d0d10}
+
+.motion-admin{margin-top:48px}.motion-admin h2{font-size:clamp(25px,3vw,34px);letter-spacing:-.05em}.motion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:16px;margin:20px 0}.motion-admin-item{background:#19191e;border:1px solid #35353b;border-radius:14px;padding:12px;min-width:0}.motion-admin-item video{width:100%;aspect-ratio:9/16;object-fit:contain;background:#08080a;border-radius:9px}.motion-admin-item input{font-size:13px;padding:10px}.motion-admin-item p{font-size:12px;margin:8px 0}.motion-admin-actions{display:flex;flex-wrap:wrap;gap:6px}.motion-admin-actions button{font-size:11px;padding:8px 10px;margin:0}

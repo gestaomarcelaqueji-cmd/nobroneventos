@@ -82,6 +82,40 @@ function contact(s){
  return '<section class="ns-contact"><div class="ns-wrap">'+title(s)+(channels.length?'<div class="ns-contact-list">'+channels.map(x=>'<a href="'+esc(x.href)+'" target="_blank" rel="noopener"><strong>'+x.name+'</strong><span>'+esc(x.desc)+'</span><b>↗</b></a>').join("")+'</div>':'<p class="ns-contact-pending">Os canais de atendimento serão disponibilizados aqui.</p>')+'</div></section>';
 }
 
+function motionPage(){
+ return '<div class="nm-shell"><section class="nm-stage"><div class="nm-reel" id="nm-reel" aria-label="Vídeos de Motion Design"><div class="nm-reel-empty" aria-hidden="true"></div></div><div class="nm-copy"><small>MOTION DESIGN</small><h1>Sua divulgação em movimento.</h1><p>Criamos flyers animados, teasers e vídeos promocionais para <strong>festas, shows, baladas, pubs, casas noturnas e artistas.</strong></p><p>Animamos fotografias, elementos gráficos, textos e informações para anunciar eventos, apresentar atrações e divulgar programações.</p><p>Produzimos materiais para Reels, Stories, telões, painéis de LED e outros formatos de exibição.</p><a class="nm-button" href="/contato">Solicitar orçamento <span>↗</span></a></div></section></div>';
+}
+async function setupMotion(){
+ if(current!=="motion"||inPreview)return;
+ const root=$("#nm-reel");if(!root)return;
+ try{
+  const r=await fetch(baseUrl+"/functions/v1/nobron-motion-videos?public=1");
+  if(!r.ok)throw Error("media");const data=await r.json();
+  const items=(data.videos||[]).filter(v=>v.url&&/^https:\/\//.test(v.url));
+  if(!items.length){root.classList.add("nm-empty");return}
+  root.replaceChildren();
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  for(let c=0;c<2;c++){
+   const column=document.createElement("div");column.className="nm-column nm-column-"+c;
+   const group=document.createElement("div");group.className="nm-group";
+   const source=items.filter((_,i)=>i%2===c);
+   const selected=source.length?source:items;
+   for(const v of selected.slice(0,6)){
+    const item=document.createElement("div");item.className="nm-video-card";
+    const vid=document.createElement("video");
+    vid.src=v.url;vid.muted=true;vid.defaultMuted=true;vid.loop=true;vid.playsInline=true;vid.autoplay=!reduced;vid.preload="metadata";vid.controls=false;vid.disablePictureInPicture=true;vid.setAttribute("controlsList","nodownload noplaybackrate nofullscreen");vid.setAttribute("aria-label",v.title||"Trabalho de Motion Design");vid.draggable=false;
+    item.append(vid);group.append(item);
+   }
+   column.append(group);
+   if(!reduced&&selected.length>1){const clone=group.cloneNode(true);clone.setAttribute("aria-hidden","true");column.append(clone)}
+   root.append(column);
+  }
+  const observer=new IntersectionObserver(entries=>{for(const e of entries){const v=e.target;if(e.isIntersecting&&!document.hidden&&!reduced)v.play().catch(()=>{});else v.pause()}},{rootMargin:"100px"});
+  root.querySelectorAll("video").forEach(v=>observer.observe(v));
+  document.addEventListener("visibilitychange",()=>root.querySelectorAll("video").forEach(v=>document.hidden?v.pause():(!reduced&&v.play().catch(()=>{}))));
+ }catch{root.classList.add("nm-empty")}
+}
+
 function designPage(doc){
  const heroSection=doc.find(s=>s.id==="hero")||{};
  const gallerySection=doc.find(s=>s.id==="galeria"&&s.visible!==false);
@@ -130,7 +164,7 @@ function render(){
  const active=["solutions","design","motion","sistemas"].includes(current)?"services":current;
  const nav=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'>'+n+'</a>').join("");
  const mobile=menu.map(([n,p,k])=>'<a href="'+p+'" '+(active===k?'aria-current="page"':"")+'><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+svg[k]+'</svg><span>'+n+'</span></a>').join("");
- const body=current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
+ const body=current==="motion"&&!inPreview ? motionPage() : current==="design"&& !inPreview ? designPage(sections) : sections.filter(s=>s.visible!==false).map((s,i)=>{
  if(s.type==="gallery"&&!inPreview&&!galleryItems(s,target()).length)return "";
  const block=({hero:()=>hero(s),services:()=>servicesSection(s),feature:()=>feature(s,i),formats:()=>formats(s),gallery:()=>gallery(s),cta:()=>cta(s),contact:()=>contact(s)})[s.type];
  return '<div class="ns-edit-section" data-section-id="'+esc(s.id)+'">'+(block?block():"")+endDivider(s,i)+'</div>'
@@ -143,6 +177,7 @@ function render(){
  setupAutoscroll();
  setupDesign();
  setupDesignCards();
+ setupMotion();
  $$(".ns-gallery").forEach(section=>{
   $$("[data-direction]",section).forEach(btn=>btn.onclick=()=>{
    const track=$(".ns-gallery-track"+(innerWidth<=800?".ns-gallery-m":".ns-gallery-d"),section);
